@@ -44,6 +44,8 @@
 #define M_PI		3.14159265358979323846
 #endif
 
+const auto RABBIT_NAME_1 = "AMANDA";
+
 gob_t rabbit_gobs = { 0 };
 gob_t font_gobs = { 0 };
 gob_t object_gobs = { 0 };
@@ -256,9 +258,57 @@ static void flip_pixels(unsigned char *pixels)
 	}
 }
 
+
+void serverSendKillPacket(int killer, int victim)
+{
+	int c1 = killer;
+	int c2 = victim;
+	int x = player[victim].x;
+	int y = player[victim].y;
+	int c4 = 0;
+	int s1 = 0;
+
+	player[c1].y_add = -player[c1].y_add;
+	if (player[c1].y_add > -262144L)
+		player[c1].y_add = -262144L;
+	player[c1].jump_abort = 1;
+	player[c2].dead_flag = 1;
+	if (player[c2].anim != 6) {
+		player[c2].anim = 6;
+		player[c2].frame = 0;
+		player[c2].frame_tick = 0;
+		player[c2].image = player_anims[player[c2].anim].frame[player[c2].frame].image + player[c2].direction * 9;
+		if (main_info.no_gore == 0) {
+			for (c4 = 0; c4 < 6; c4++)
+				add_object(OBJ_FUR, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3, (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
+			for (c4 = 0; c4 < 6; c4++)
+				add_object(OBJ_FLESH, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3, (rnd(65535) - 32768) * 3, 0, 76);
+			for (c4 = 0; c4 < 6; c4++)
+				add_object(OBJ_FLESH, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3, (rnd(65535) - 32768) * 3, 0, 77);
+			for (c4 = 0; c4 < 8; c4++)
+				add_object(OBJ_FLESH, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3, (rnd(65535) - 32768) * 3, 0, 78);
+			for (c4 = 0; c4 < 10; c4++)
+				add_object(OBJ_FLESH, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3, (rnd(65535) - 32768) * 3, 0, 79);
+		}
+		dj_play_sfx(SFX_DEATH, (unsigned short)(SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+		player[c1].bumps++;
+		if (player[c1].bumps >= JNB_END_SCORE) {
+			endscore_reached = 1;
+		}
+		player[c1].bumped[c2]++;
+		s1 = player[c1].bumps % 100;
+		add_leftovers(0, 360, 34 + c1 * 64, s1 / 10, &number_gobs);
+		add_leftovers(1, 360, 34 + c1 * 64, s1 / 10, &number_gobs);
+		add_leftovers(0, 376, 34 + c1 * 64, s1 - (s1 / 10) * 10, &number_gobs);
+		add_leftovers(1, 376, 34 + c1 * 64, s1 - (s1 / 10) * 10, &number_gobs);
+	}
+}
+
 static void player_kill(int c1, int c2)
 {
 	if (player[c1].y_add >= 0) {
+
+		serverSendKillPacket(c1, c2);
 	} else {
 		if (player[c2].y_add < 0)
 			player[c2].y_add = 0;
@@ -583,11 +633,11 @@ static int menu_loop(void)
 
 		draw_begin();
 
-		put_text(main_info.view_page, 100, 50, "DOTT", 2);
+		put_text(main_info.view_page, 100, 50, RABBIT_NAME_1, 2);
 		put_text(main_info.view_page, 160, 50, "JIFFY", 2);
 		put_text(main_info.view_page, 220, 50, "FIZZ", 2);
 		put_text(main_info.view_page, 280, 50, "MIJJI", 2);
-		put_text(main_info.view_page, 40, 80, "DOTT", 2);
+		put_text(main_info.view_page, 40, 80, RABBIT_NAME_1, 2);
 		put_text(main_info.view_page, 40, 110, "JIFFY", 2);
 		put_text(main_info.view_page, 40, 140, "FIZZ", 2);
 		put_text(main_info.view_page, 40, 170, "MIJJI", 2);
@@ -804,6 +854,8 @@ void steer_players(void)
 {
 	int c1, c2;
 	int s1 = 0, s2 = 0;
+
+	update_player_actions();
 
 	for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
 

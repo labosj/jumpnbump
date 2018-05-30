@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="jumpnbump" TARGET_NAME="mytest" CONFIG_NAME="Debug">
+  <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="jumpnbump" TARGET_NAME="mytest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="jumpnbump" RUN_TARGET_NAME="jumpnbump">
     <method />
   </configuration>
 </component>

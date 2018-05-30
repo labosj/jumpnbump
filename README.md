@@ -1,5 +1,13 @@
 # Jump 'n Bump
 
+This source is donwloaded from [here](https://archive.org/details/jumpnbump_1.60)
+And modified by me
+
+Changes so far.
+ - Flies removed.
+ - Network code removed (need complete refactor).
+ - Level builder removed.
+
 This is a game for the whole family. You play cute fluffy little bunnies and
 hop on each other's heads.
 
@@ -52,6 +60,14 @@ the players are using the same `-dat level.dat`, if any.
 
 To build Jump 'n Bump you will need the SDL2, SDL2_mixer and SDL2_net
 development libraries, as well as BZip2 and Zlib.
+
+In lubuntu you just need to install the following commands
+```
+sudo apt install libsdl2-dev
+sudo apt install libsdl2-mixer-dev libsdl2-net-dev
+sudo apt install zlib1g-dev libbz2-dev
+```
+
 
 You can then run `make` to build the engine, and `make install` (as root or
 sudo) to install it system wide. You can impact the default installation paths

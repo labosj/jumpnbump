@@ -532,7 +532,7 @@ void put_block(int page, int x, int y, int width, int height, void *buffer)
 }
 
 
-void put_text(int page, int x, int y, char *text, int align)
+void put_text(int page, int x, int y, const char *text, int align)
 {
 	int c1;
 	int t1;

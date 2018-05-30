@@ -100,26 +100,26 @@ int intr_sysupdate()
 				if(e.button.button == SDL_BUTTON_LEFT)
 					{
 					SDL_Scancode scancode = KEY_PL3_LEFT;
-					scancode &= 0x7fff;
+					scancode = static_cast<SDL_Scancode>(scancode & 0x7fff);
 					if(e.button.state == SDL_RELEASED)
 						{
 						if(key_pressed(KEY_PL3_JUMP) && (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(SDL_BUTTON_RIGHT)))
 							addkey(KEY_PL3_RIGHT & 0x7fff);
 						else
-							scancode |= 0x8000;
+							scancode = static_cast<SDL_Scancode>(scancode | 0x8000);
 						}
 					addkey(scancode);
 					}
 				else if(e.button.button == SDL_BUTTON_RIGHT)
 					{
 					SDL_Scancode scancode = KEY_PL3_RIGHT;
-					scancode &= 0x7fff;
+					scancode = static_cast<SDL_Scancode>(scancode & 0x7fff);
 					if (e.button.state == SDL_RELEASED)
 						{
 						if(key_pressed(KEY_PL3_JUMP) && (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(SDL_BUTTON_LEFT)))
 							addkey(KEY_PL3_LEFT & 0x7fff);
 						else
-							scancode |= 0x8000;
+							scancode = static_cast<SDL_Scancode>(scancode | 0x8000);
 						}
 					addkey(scancode);
 					}
@@ -184,9 +184,9 @@ int intr_sysupdate()
 							addkey(1 & 0x7fff);
 						break;
 					default:
-						e.key.keysym.scancode &= 0x7fff;
+						e.key.keysym.scancode = static_cast<SDL_Scancode>(e.key.keysym.scancode & 0x7fff);
 						if (e.type == SDL_KEYUP)
-							e.key.keysym.scancode |= 0x8000;
+                            e.key.keysym.scancode = static_cast<SDL_Scancode>(e.key.keysym.scancode |  0x8000);
 						addkey(e.key.keysym.scancode);
 						break;
 				}

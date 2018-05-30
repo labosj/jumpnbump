@@ -21,7 +21,7 @@ include_directories(${BZIP2_INCLUDE_DIRS})
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_executable(jumpnbump sdl/gfx.c sdl/input.c sdl/interrpt.c sdl/sound.c filter.c menu.c main.cpp)
+add_executable(jumpnbump sdl/gfx.cpp sdl/input.cpp sdl/interrpt.cpp sdl/sound.cpp filter.cpp menu.cpp main.cpp)
 
 target_link_libraries(jumpnbump ${SDL2_LIBRARIES})
 target_link_libraries(jumpnbump ${ZLIB_LIBRARIES})

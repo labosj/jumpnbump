@@ -52,7 +52,7 @@ static int fullscreen = 0;
 static int vinited = 0;
 static void *screen_buffer[2];
 static int drawing_enable = 0;
-static void *background = NULL;
+static unsigned char *background = nullptr;
 static int background_drawn;
 static void *mask = NULL;
 static int dirty_blocks[2][25*16*2];
@@ -357,7 +357,7 @@ void flippage(int page)
 		return;
 	}
 	dest=(unsigned char *)jnb_surface->pixels;
-	src=screen_buffer[page];
+	src=reinterpret_cast<unsigned char*>(screen_buffer[page]);
 	for (y=0; y<screen_height; y++) {
 		for (x=0; x<25; x++) {
 			int count;
@@ -450,7 +450,7 @@ void fillpalette(int red, int green, int blue)
 }
 
 
-void get_block(int page, int x, int y, int width, int height, void *buffer)
+void get_block(int page, int x, int y, int width, int height, unsigned char *buffer)
 {
 	unsigned char *buffer_ptr, *vga_ptr;
 	int h;
@@ -488,7 +488,7 @@ void get_block(int page, int x, int y, int width, int height, void *buffer)
 }
 
 
-void put_block(int page, int x, int y, int width, int height, void *buffer)
+void put_block(int page, int x, int y, int width, int height, unsigned char *buffer)
 {
 	int h;
 	unsigned char *vga_ptr, *buffer_ptr;
@@ -782,7 +782,7 @@ int pob_hs_y(int image, gob_t *gob)
 }
 
 
-int read_pcx(unsigned char * handle, void *buf, int buf_len, char *pal)
+int read_pcx(unsigned char * handle, unsigned char *buf, int buf_len, char *pal)
 {
 	unsigned char *buffer=buf;
 	short c1;
@@ -822,11 +822,11 @@ void register_background(unsigned char *pixels, char pal[768])
 		return;
 	assert(pal);
 	if (scale_up) {
-		background = malloc(screen_pitch*screen_height);
+		background = reinterpret_cast<unsigned char*>(malloc(screen_pitch*screen_height));
 		assert(background);
 		do_scale2x(pixels, JNB_WIDTH, JNB_HEIGHT, (unsigned char *)background);
 	} else {
-		background = malloc(JNB_WIDTH*JNB_HEIGHT);
+		background = reinterpret_cast<unsigned char*>(malloc(JNB_WIDTH*JNB_HEIGHT));
 		assert(background);
 		memcpy(background, pixels, JNB_WIDTH*JNB_HEIGHT);
 	}
@@ -837,17 +837,17 @@ int register_gob(unsigned char *handle, gob_t *gob, int len)
 	unsigned char *gob_data;
 	int i;
 
-	gob_data = malloc(len);
+	gob_data = reinterpret_cast<unsigned char*>(malloc(len));
 	memcpy(gob_data, handle, len);
 
 	gob->num_images = (short)((gob_data[0]) + (gob_data[1] << 8));
 
-	gob->width = malloc(gob->num_images*sizeof(int));
-	gob->height = malloc(gob->num_images*sizeof(int));
-	gob->hs_x = malloc(gob->num_images*sizeof(int));
-	gob->hs_y = malloc(gob->num_images*sizeof(int));
-	gob->data = malloc(gob->num_images*sizeof(void *));
-	gob->orig_data = malloc(gob->num_images*sizeof(void *));
+	gob->width = reinterpret_cast<int*>(malloc(gob->num_images*sizeof(int)));
+	gob->height = reinterpret_cast<int*>(malloc(gob->num_images*sizeof(int)));
+	gob->hs_x = reinterpret_cast<int*>(malloc(gob->num_images*sizeof(int)));
+	gob->hs_y =reinterpret_cast<int*>( malloc(gob->num_images*sizeof(int)));
+	gob->data = reinterpret_cast<void**>(malloc(gob->num_images*sizeof(void *)));
+	gob->orig_data = reinterpret_cast<void**>(malloc(gob->num_images*sizeof(void *)));
 	for (i=0; i<gob->num_images; i++) {
 		int image_size;
 		int offset;

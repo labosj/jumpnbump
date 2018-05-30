@@ -430,7 +430,7 @@ char dj_load_sfx(unsigned char * file_handle, char *filename, int file_length, c
 	if (main_info.no_sound)
 		return 0;
 
-	sounds[sfx_num].buf = malloc(file_length);
+	sounds[sfx_num].buf = reinterpret_cast<unsigned char*>(malloc(file_length));
 
 	memcpy(sounds[sfx_num].buf, file_handle, file_length);
 

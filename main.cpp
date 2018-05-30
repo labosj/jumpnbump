@@ -43,8 +43,10 @@
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif
+int endscore_reached;
 
 const auto RABBIT_NAME_1 = "AMANDA";
+const auto RABBIT_NAME_2 = "EDWIN";
 
 gob_t rabbit_gobs = { 0 };
 gob_t font_gobs = { 0 };
@@ -634,11 +636,11 @@ static int menu_loop(void)
 		draw_begin();
 
 		put_text(main_info.view_page, 100, 50, RABBIT_NAME_1, 2);
-		put_text(main_info.view_page, 160, 50, "JIFFY", 2);
+		put_text(main_info.view_page, 160, 50, RABBIT_NAME_2, 2);
 		put_text(main_info.view_page, 220, 50, "FIZZ", 2);
 		put_text(main_info.view_page, 280, 50, "MIJJI", 2);
 		put_text(main_info.view_page, 40, 80, RABBIT_NAME_1, 2);
-		put_text(main_info.view_page, 40, 110, "JIFFY", 2);
+		put_text(main_info.view_page, 40, 110, RABBIT_NAME_2, 2);
 		put_text(main_info.view_page, 40, 140, "FIZZ", 2);
 		put_text(main_info.view_page, 40, 170, "MIJJI", 2);
 
@@ -1875,6 +1877,8 @@ int init_program(int argc, char *argv[], char *pal)
 				main_info.no_sound = 1;
 			else if (stricmp(argv[c1], "-musicnosound") == 0)
 				main_info.music_no_sound = 1;
+			else if (stricmp(argv[c1], "-nomusic") == 0)
+				main_info.no_music = true;
 			else if (stricmp(argv[c1], "-nogore") == 0)
 				main_info.no_gore = 1;
 			else if (stricmp(argv[c1], "-nojoy") == 0)

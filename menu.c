@@ -138,7 +138,6 @@ int menu(void)
 			} else if (key_pressed(1) == 0)
 				esc_pressed = 0;
 
-			update_player_actions();
 			for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
 				if (end_loop_flag == 1 && new_game_flag == 1) {
 					if ((player[c1].x >> 16) > (165 + c1 * 2)) {

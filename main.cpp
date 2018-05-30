@@ -27,6 +27,7 @@
 
 #include "globals.h"
 #include <fcntl.h>
+#include <string>
 #ifndef _WIN32
 #include <unistd.h>
 #endif
@@ -38,8 +39,6 @@
 #ifdef ZLIB_SUPPORT
 #include "zlib.h"
 #endif
-
-#include "network.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
@@ -55,7 +54,6 @@ player_t player[JNB_MAX_PLAYERS];
 player_anim_t player_anims[7];
 object_t objects[NUM_OBJECTS];
 joy_t joy;
-mouse_t mouse;
 
 char datfile_name[2048];
 
@@ -88,6 +86,7 @@ unsigned int ban_map[17][22] = {
 };
 
 #define GET_BAN_MAP_XY(x,y) ban_map[(y) >> 4][(x) >> 4]
+
 
 struct {
 	int num_frames;
@@ -257,36 +256,14 @@ static void flip_pixels(unsigned char *pixels)
 	}
 }
 
-
-void get_closest_player_to_point(int x,int y,int *dist,int *closest_player)
-{
-	int c1;
-	int cur_dist = 0;
-
-	*dist = 0x7fff;
-	for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
-		if (player[c1].enabled == 1) {
-			cur_dist = (int)sqrt((x - ((player[c1].x >> 16) + 8)) * (x - ((player[c1].x >> 16) + 8)) + (y - ((player[c1].y >> 16) + 8)) * (y - ((player[c1].y >> 16) + 8)));
-			if (cur_dist < *dist) {
-				*closest_player = c1;
-				*dist = cur_dist;
-			}
-		}
-	}
-}
-
-
 static void player_kill(int c1, int c2)
 {
 	if (player[c1].y_add >= 0) {
-		if (is_server)
-			serverSendKillPacket(c1, c2);
 	} else {
 		if (player[c2].y_add < 0)
 			player[c2].y_add = 0;
 	}
 }
-
 
 static void check_cheats(void)
 {
@@ -427,15 +404,7 @@ static void game_loop(void) {
 		while (update_count) {
 
 			if (endscore_reached || (key_pressed(1) == 1)) {
-#ifdef USE_NET
-				if (is_net) {
-					if (is_server) {
-						serverTellEveryoneGoodbye();
-					} else {
-						tellServerGoodbye();
-					}
-				}
-#endif
+
 				end_loop_flag = 1;
 				memset(pal, 0, 768);
 				mod_fade_direction = 0;
@@ -443,17 +412,6 @@ static void game_loop(void) {
 
 			check_cheats();
 
-#ifdef USE_NET
-			if (is_net) {
-				if (is_server) {
-					update_players_from_clients();
-				} else {
-					if (!update_players_from_server()) {
-						break;  /* got a BYE packet */
-					}
-				}
-			}
-#endif
 
 			steer_players();
 
@@ -557,29 +515,8 @@ static void game_loop(void) {
 			update_count--;
 		}
 
-#ifdef USE_NET
-		if (is_net) {
-			if ( (player[client_player_num].dead_flag == 0) &&
-				(
-				 (player[client_player_num].action_left) ||
-				 (player[client_player_num].action_right) ||
-				 (player[client_player_num].action_up) ||
-				 (player[client_player_num].jump_ready == 0)
-				)
-			   ) {
-				tellServerNewPosition();
-			}
-		}
-#endif
-
 		update_count = intr_sysupdate();
 
-#ifdef USE_NET
-		if (is_net) {
-			if ((server_said_bye) || ((fade_flag == 0) && (end_loop_flag == 1)))
-				break;
-		} else
-#endif
 		if ((fade_flag == 0) && (end_loop_flag == 1))
 			break;
 	}
@@ -599,9 +536,9 @@ static int menu_loop(void)
 
 	while (1) {
 
-		if (!is_net)
-			if (menu() != 0)
-				deinit_program();
+		if (menu() != 0)
+			deinit_program();
+
 
 		if (key_pressed(1) == 1) {
 			return 0;
@@ -631,23 +568,6 @@ static int menu_loop(void)
 		main_info.draw_page = 1;
 
 		game_loop();
-
-#ifdef USE_NET
-		if (is_net) {
-			if (is_server) {
-				serverTellEveryoneGoodbye();
-				SDLNet_TCP_Close(sock);
-				sock = NULL;
-			} else {
-				if (!server_said_bye) {
-					tellServerGoodbye();
-				}
-
-				SDLNet_TCP_Close(sock);
-				sock = NULL;
-			}
-		}
-#endif
 
 		main_info.view_page = 0;
 		main_info.draw_page = 1;
@@ -762,9 +682,6 @@ static int menu_loop(void)
 
 		dj_set_nosound(1);
 		dj_stop_mod();
-
-		if (is_net)
-			return 0; /* don't go back to menu if in net game. */
 	}
 }
 
@@ -879,205 +796,6 @@ tile = ban_map[pos_y][pos_x];
 return tile;
 }
 
-void cpu_move(void)
-{
-	int lm, rm, jm;
-	int i, j;
-	int cur_posx, cur_posy, tar_posx, tar_posy;
-	int players_distance;
-	player_t* target = NULL;
-	int nearest_distance = -1;
-
-	for (i = 0; i < JNB_MAX_PLAYERS; i++)
-		{
-	  nearest_distance = -1;
-		if(ai[i] && player[i].enabled)		// this player is a computer
-			{		// get nearest target
-			for (j = 0; j < JNB_MAX_PLAYERS; j++)
-				{
-				int deltax, deltay;
-
-				if(i == j || !player[j].enabled)
-					continue;
-
-				deltax = player[j].x - player[i].x;
-				deltay = player[j].y - player[i].y;
-				players_distance = deltax*deltax + deltay*deltay;
-
-				if (players_distance < nearest_distance || nearest_distance == -1)
-					{
-					target = &player[j];
-					nearest_distance = players_distance;
-					}
-				}
-
-			if(target == NULL)
-				continue;
-
-			cur_posx = player[i].x >> 16;
-			cur_posy = player[i].y >> 16;
-			tar_posx = target->x >> 16;
-			tar_posy = target->y >> 16;
-
-			/** nearest player found, get him */
-			/* here goes the artificial intelligence code */
-
-			/* X-axis movement */
-			if(tar_posx > cur_posx)       // if true target is on the right side
-				{    // go after him
-				lm=0;
-				rm=1;
-				}
-			else    // target on the left side
-				{
-				lm=1;
-				rm=0;
-				}
-
-			if(cur_posy - tar_posy < 32 && cur_posy - tar_posy > 0 &&
-              tar_posx - cur_posx < 32+8 && tar_posx - cur_posx > -32)
-				{
-				lm = !lm;
-				rm = !rm;
-				}
-			else if(tar_posx - cur_posx < 4+8 && tar_posx - cur_posx > -4)
-				{      // makes the bunnies less "nervous"
-				lm=0;
-				lm=0;
-				}
-
-			/* Y-axis movement */
-			if(map_tile(cur_posx, cur_posy+16) != BAN_VOID &&
-				((i == 0 && key_pressed(KEY_PL1_JUMP)) ||
-				(i == 1 && key_pressed(KEY_PL2_JUMP)) ||
-				(i == 2 && key_pressed(KEY_PL3_JUMP)) ||
-				(i == 3 && key_pressed(KEY_PL4_JUMP))))
-					jm=0;   // if we are on ground and jump key is being pressed,
-									//first we have to release it or else we won't be able to jump more than once
-
-			else if(map_tile(cur_posx, cur_posy-8) != BAN_VOID &&
-				map_tile(cur_posx, cur_posy-8) != BAN_WATER)
-					jm=0;   // don't jump if there is something over it
-
-			else if(map_tile(cur_posx-(lm*8)+(rm*16), cur_posy) != BAN_VOID &&
-				map_tile(cur_posx-(lm*8)+(rm*16), cur_posy) != BAN_WATER &&
-				cur_posx > 16 && cur_posx < 352-16-8)  // obstacle, jump
-					jm=1;   // if there is something on the way, jump over it
-
-			else if(((i == 0 && key_pressed(KEY_PL1_JUMP)) ||
-							(i == 1 && key_pressed(KEY_PL2_JUMP)) ||
-							(i == 2 && key_pressed(KEY_PL3_JUMP)) ||
-							(i == 3 && key_pressed(KEY_PL4_JUMP))) &&
-							(map_tile(cur_posx-(lm*8)+(rm*16), cur_posy+8) != BAN_VOID &&
-							map_tile(cur_posx-(lm*8)+(rm*16), cur_posy+8) != BAN_WATER))
-					jm=1;   // this makes it possible to jump over 2 tiles
-
-			else if(cur_posy - tar_posy < 32 && cur_posy - tar_posy > 0 &&
-              tar_posx - cur_posx < 32+8 && tar_posx - cur_posx > -32)  // don't jump - running away
-				jm=0;
-
-			else if(tar_posy <= cur_posy)   // target on the upper side
-				jm=1;
-			else   // target below
-				jm=0;
-
-			/** Artificial intelligence done, now apply movements */
-			if(lm)
-				{
-				SDL_Scancode key;
-				if(i == 0)
-					key = KEY_PL1_LEFT;
-				else if(i == 1)
-					key = KEY_PL2_LEFT;
-				else if(i == 2)
-					key = KEY_PL3_LEFT;
-				else
-					key = KEY_PL4_LEFT;
-
-				key &= 0x7fff;
-				addkey(key);
-				}
-			else
-				{
-				SDL_Scancode key;
-				if(i == 0)
-					key = KEY_PL1_LEFT;
-				else if(i == 1)
-					key = KEY_PL2_LEFT;
-				else if(i == 2)
-					key = KEY_PL3_LEFT;
-				else
-					key = KEY_PL4_LEFT;
-
-				key &= 0x7fff;
-				addkey(key | 0x8000);
-				}
-
-			if(rm)
-				{
-				SDL_Scancode key;
-				if(i == 0)
-					key = KEY_PL1_RIGHT;
-				else if(i == 1)
-					key = KEY_PL2_RIGHT;
-				else if(i == 2)
-					key = KEY_PL3_RIGHT;
-				else
-					key = KEY_PL4_RIGHT;
-
-				key &= 0x7fff;
-				addkey(key);
-				}
-			else
-				{
-				SDL_Scancode key;
-				if(i == 0)
-					key = KEY_PL1_RIGHT;
-				else if(i == 1)
-					key = KEY_PL2_RIGHT;
-				else if(i == 2)
-					key = KEY_PL3_RIGHT;
-				else
-					key = KEY_PL4_RIGHT;
-
-				key &= 0x7fff;
-				addkey(key | 0x8000);
-				}
-
-			if(jm)
-				{
-				SDL_Scancode key;
-				if(i == 0)
-					key = KEY_PL1_JUMP;
-				else if(i == 1)
-					key = KEY_PL2_JUMP;
-				else if(i == 2)
-					key = KEY_PL3_JUMP;
-				else
-					key = KEY_PL4_JUMP;
-
-				key &= 0x7fff;
-				addkey(key);
-				}
-			else
-				{
-				SDL_Scancode key;
-				if(i == 0)
-					key = KEY_PL1_JUMP;
-				else if(i == 1)
-					key = KEY_PL2_JUMP;
-				else if(i == 2)
-					key = KEY_PL3_JUMP;
-				else
-					key = KEY_PL4_JUMP;
-
-				key &= 0x7fff;
-				addkey(key | 0x8000);
-				}
-			}
-		}
-}
-
 
 #define GET_BAN_MAP_IN_WATER(s1, s2) (GET_BAN_MAP_XY((s1), ((s2) + 7)) == BAN_VOID || GET_BAN_MAP_XY(((s1) + 15), ((s2) + 7)) == BAN_VOID) && (GET_BAN_MAP_XY((s1), ((s2) + 8)) == BAN_WATER || GET_BAN_MAP_XY(((s1) + 15), ((s2) + 8)) == BAN_WATER)
 
@@ -1086,9 +804,6 @@ void steer_players(void)
 {
 	int c1, c2;
 	int s1 = 0, s2 = 0;
-
-	cpu_move();
-	update_player_actions();
 
 	for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
 
@@ -1408,13 +1123,7 @@ void position_player(int player_num)
 			player[player_num].frame_tick = 0;
 			player[player_num].image = player_anims[player[player_num].anim].frame[player[player_num].frame].image;
 
-			if (is_server) {
-#ifdef USE_NET
-				if (is_net)
-					serverSendAlive(player_num);
-#endif
-				player[player_num].dead_flag = 0;
-			}
+			player[player_num].dead_flag = 0;
 
 			break;
 		}
@@ -1968,23 +1677,10 @@ static void preread_datafile(const char *fname)
     int fd = 0;
     int len;
 
-#ifdef ZLIB_SUPPORT
-    char *gzfilename;
-    gzFile gzf;
-#endif
 
 #ifdef BZLIB_SUPPORT
-    char *bzfilename;
-    BZFILE *bzf;
-#endif
-
-#ifdef BZLIB_SUPPORT
-    bzfilename = malloc(strlen(fname) + 5);
-    strcpy(bzfilename, fname);
-    strcat(bzfilename, ".bz2");
-    bzf = BZ2_bzopen(bzfilename, "rb");
-    free(bzfilename);
-    bzfilename = NULL;
+    auto bzfilename =  std::string(fname) + ".bz2";
+    BZFILE *bzf = BZ2_bzopen(bzfilename.c_str(), "rb");
 
     if (bzf != NULL) {
         int bufsize = 0;
@@ -2023,12 +1719,10 @@ static void preread_datafile(const char *fname)
 #endif
 
 #ifdef ZLIB_SUPPORT
-    gzfilename = malloc(strlen(fname) + 4);
-    strcpy(gzfilename, fname);
-    strcat(gzfilename, ".gz");
-    gzf = gzopen(gzfilename, "rb");
-    free(gzfilename);
-    gzfilename = NULL;
+
+
+    auto gzfilename = std::string(fname) + ".gz";
+    gzFile gzf = gzopen(gzfilename.c_str(), "rb");
 
     if (gzf != NULL) {
         int bufsize = 0;
@@ -2108,9 +1802,6 @@ int init_program(int argc, char *argv[], char *pal)
 		1, 0, 8, 5, 0, 0, 0, 0, 0, 0
 	};
 
-#ifdef USE_NET
-	memset(&net_info, 0, sizeof(net_info));
-#endif
 
 #ifdef DOS
 	if (__djgpp_nearptr_enable() == 0)
@@ -2158,20 +1849,6 @@ int init_program(int argc, char *argv[], char *pal)
 					if (client_player_num < 0)
 						client_player_num = atoi(argv[c1 + 1]);
 				}
-#ifdef USE_NET
-			} else if (stricmp(argv[c1], "-server") == 0) {
-				if (c1 < (argc - 1)) {
-					is_server = 1;
-					is_net = 1;
-					netarg = argv[c1 + 1];
-				}
-			} else if (stricmp(argv[c1], "-connect") == 0) {
-				if (c1 < (argc - 1)) {
-					is_server = 0;
-					is_net = 1;
-					netarg = argv[c1 + 1];
-				}
-#endif
 			}
 			else if (strstr(argv[1],"-v")) {
 				printf("jumpnbump %s compiled with", JNB_VERSION);
@@ -2373,9 +2050,9 @@ all provided the user didn't choose one on the commandline. */
 		dj_set_sfx_settings(SFX_FLY, &fly);
 	}
 
-	if ((background_pic = malloc(JNB_WIDTH*JNB_HEIGHT)) == NULL)
+	if ((background_pic = reinterpret_cast<unsigned char*>(malloc(JNB_WIDTH*JNB_HEIGHT))) == nullptr)
 		return 1;
-	if ((mask_pic = malloc(JNB_WIDTH*JNB_HEIGHT)) == NULL)
+	if ((mask_pic = reinterpret_cast<unsigned char*>(malloc(JNB_WIDTH*JNB_HEIGHT))) == nullptr)
 		return 1;
 	memset(mask_pic, 0, JNB_WIDTH*JNB_HEIGHT);
 	register_mask(mask_pic);
@@ -2459,16 +2136,6 @@ all provided the user didn't choose one on the commandline. */
 			joy.calib_data.y3 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24); handle += 4;
 		}
 	}
-
-#ifdef USE_NET
-	if (is_net) {
-		if (is_server) {
-			init_server(netarg);
-		} else {
-			connect_to_server(netarg);
-		}
-	}
-#endif
 
 	return 0;
 
@@ -2644,10 +2311,10 @@ void write_calib_data(void)
 	char *mem;
 	int ofs;
 
-	if ((handle = fopen(datfile_name, "rb")) == NULL)
+	if ((handle = fopen(datfile_name, "rb")) == nullptr)
 		return;
 	len = filelength(fileno(handle));
-	if ((mem = malloc(len)) == NULL)
+	if ((mem = reinterpret_cast<char *>(malloc(len))) == nullptr)
 		return;
 	fread(mem, 1, len, handle);
 	fclose(handle);

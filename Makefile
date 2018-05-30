@@ -5,12 +5,13 @@ DATADIR ?= $(PREFIX)/share
 # Can be overridden to use e.g. /usr/share/games
 GAMEDATADIR ?= $(DATADIR)
 EXE ?=
+CC = g++
 
 CFLAGS ?= -Wall -O2 -ffast-math -funroll-loops
 SDL_CFLAGS = `sdl2-config --cflags`
 DEFINES = -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DNDEBUG -DUSE_SDL -DUSE_NET -DZLIB_SUPPORT -DBZLIB_SUPPORT
 INCLUDES = -I.
-CFLAGS += $(DEFINES) $(SDL_CFLAGS) $(INCLUDES)
+CFLAGS += $(DEFINES) $(SDL_CFLAGS) $(INCLUDES) --std=c++11
 export SDL_CFLAGS
 export DEFINES
 export INCLUDES
@@ -45,9 +46,6 @@ globals.h: globals.pre
 
 data: $(MODIFY_TARGET)
 	$(MAKE) -C data
-
-jnbmenu:
-	$(MAKE) -C menu
 
 clean:
 	for dir in data modify sdl; do $(MAKE) clean -C $$dir; done

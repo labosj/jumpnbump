@@ -26,6 +26,3 @@ add_executable(jumpnbump sdl/gfx.cpp sdl/input.cpp sdl/interrpt.cpp sdl/sound.cp
 target_link_libraries(jumpnbump ${SDL2_LIBRARIES})
 target_link_libraries(jumpnbump ${ZLIB_LIBRARIES})
 target_link_libraries(jumpnbump ${BZIP2_LIBRARIES})
-
-#add_custom_target(mytest COMMAND make -C ${mytest_SOURCE_DIR}
-#        CLION_EXE_DIR=${PROJECT_BINARY_DIR})

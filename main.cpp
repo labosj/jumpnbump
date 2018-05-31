@@ -614,6 +614,7 @@ static int menu_loop(void)
 		dj_set_nosound(0);
 
 		bunnies_in_space = jetpack = pogostick = blood_is_thicker_than_water = 0;
+		//blood_is_thicker_than_water = 1; HERE IS TO MOD THE CHEATS
 		main_info.page_info[0].num_pobs = 0;
 		main_info.page_info[1].num_pobs = 0;
 		main_info.view_page = 0;
@@ -1845,7 +1846,6 @@ int init_program(int argc, char *argv[], char *pal)
 	unsigned char *handle = (unsigned char *) NULL;
 	int c1 = 0, c2 = 0;
 	int load_flag = 0;
-	sfx_data fly;
 	int player_anim_data[] = {
 		1, 0, 0, 0x7fff, 0, 0, 0, 0, 0, 0,
 		4, 0, 0, 4, 1, 4, 2, 4, 3, 4,
@@ -1883,10 +1883,8 @@ int init_program(int argc, char *argv[], char *pal)
 				main_info.no_gore = 1;
 			else if (stricmp(argv[c1], "-nojoy") == 0)
 				main_info.joy_enabled = 0;
-#ifdef USE_SDL
 			else if (stricmp(argv[c1], "-fullscreen") == 0)
 				fs_toggle();
-#endif
 			else if (stricmp(argv[c1], "-scaleup") == 0)
 				set_scaling(1);
 			else if (stricmp(argv[c1], "-mirror") == 0)
@@ -1920,10 +1918,6 @@ int init_program(int argc, char *argv[], char *pal)
 				printf("  -h                       this help\n");
 				printf("  -v                       print version\n");
 				printf("  -dat level.dat           play a different level\n");
-#ifdef USE_NET
-				printf("  -server playercount      start as server waiting for players\n");
-				printf("  -connect host            connect to server\n");
-#endif
 				printf("  -player num              set main player to num (0-3). Needed for networking\n");
 				printf("  -fullscreen              run in fullscreen mode\n");
 				printf("  -nosound                 play without sound\n");
@@ -2087,23 +2081,6 @@ all provided the user didn't choose one on the commandline. */
 			strcpy(main_info.error_str, "Error loading 'splash.smp', aborting...\n");
 			return 1;
 		}
-
-		if ((handle = dat_open("fly.smp")) == 0) {
-			strcpy(main_info.error_str, "Error loading 'fly.smp', aborting...\n");
-			return 1;
-		}
-		if (dj_load_sfx(handle, 0, dat_filelen("fly.smp"), DJ_SFX_TYPE_SMP, SFX_FLY) != 0) {
-			strcpy(main_info.error_str, "Error loading 'fly.smp', aborting...\n");
-			return 1;
-		}
-
-		dj_get_sfx_settings(SFX_FLY, &fly);
-		fly.priority = 10;
-		fly.default_freq = SFX_FLY_FREQ;
-		fly.loop = 1;
-		fly.loop_start = 0;
-		fly.loop_length = fly.length;
-		dj_set_sfx_settings(SFX_FLY, &fly);
 	}
 
 	if ((background_pic = reinterpret_cast<unsigned char*>(malloc(JNB_WIDTH*JNB_HEIGHT))) == nullptr)

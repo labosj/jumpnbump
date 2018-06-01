@@ -23,7 +23,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "globals.h"
+#include "src/globals.h"
 
 static int num_joys=0;
 static SDL_Joystick *joys[4];

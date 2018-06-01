@@ -25,9 +25,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "globals.h"
+#include "src/globals.h"
 #include "SDL_endian.h"
-#include "filter.h"
+#include "src/filter.h"
 
 #ifdef _WIN32
     #include "jumpnbump32.xpm"

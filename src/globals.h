@@ -43,7 +43,7 @@ extern "C" {
 #endif
 #include <time.h>
 #include <math.h>
-#include <dj.h>
+#include <src/dj.h>
 
 #ifdef DOS
 # include <conio.h>

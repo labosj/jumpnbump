@@ -31,7 +31,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #endif
-#include "globals.h"
+#include "src/globals.h"
 
 char keyb[256];
 char last_keys[50];

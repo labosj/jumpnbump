@@ -542,12 +542,3 @@ void dj_set_mod_volume(main_info_t& main_info, char volume)
 	Mix_VolumeMusic(volume);
 #endif
 }
-
-char dj_load_mod(unsigned char * file_handle, char *filename, char mod_num)
-{
-	return 0;
-}
-
-void dj_free_mod(char mod_num)
-{
-}

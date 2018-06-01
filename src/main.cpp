@@ -2010,34 +2010,6 @@ all provided the user didn't choose one on the commandline. */
 		dj_set_num_sfx_channels(5);
 		dj_set_sfx_volume(main_info, 64);
 
-
-		if ((handle = dat_open("jump.mod")) == 0) {
-			main_info.error_str = "Error loading 'jump.mod', aborting...\n";
-			return 1;
-		}
-		if (dj_load_mod(handle, 0, MOD_MENU) != 0) {
-			main_info.error_str = "Error loading 'jump.mod', aborting...\n";
-			return 1;
-		}
-
-		if ((handle = dat_open("bump.mod")) == 0) {
-			main_info.error_str = "Error loading 'bump.mod', aborting...\n";
-			return 1;
-		}
-		if (dj_load_mod(handle, 0, MOD_GAME) != 0) {
-			main_info.error_str = "Error loading 'bump.mod', aborting...\n";
-			return 1;
-		}
-
-		if ((handle = dat_open("scores.mod")) == 0) {
-			main_info.error_str = "Error loading 'scores.mod', aborting...\n";
-			return 1;
-		}
-		if (dj_load_mod(handle, 0, MOD_SCORES) != 0) {
-			main_info.error_str = "Error loading 'scores.mod', aborting...\n";
-			return 1;
-		}
-
 		if ((handle = dat_open("jump.smp")) == 0) {
 			main_info.error_str = "Error loading 'jump.smp', aborting...\n";
 			return 1;
@@ -2172,8 +2144,6 @@ void deinit_program(void)
 	__dpmi_regs regs;
 #endif
 
-	dj_free_mod(MOD_MENU);
-	dj_free_mod(MOD_GAME);
 	dj_free_sfx(main_info, SFX_DEATH);
 	dj_free_sfx(main_info,SFX_SPRING);
 	dj_free_sfx(main_info,SFX_SPLASH);

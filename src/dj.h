@@ -107,6 +107,5 @@ extern char dj_ready_mod(main_info_t&, char mod_num);
 extern char dj_start_mod(main_info_t&);
 extern void dj_stop_mod(main_info_t&);
 extern void dj_set_mod_volume(main_info_t&, char volume);
-extern char dj_load_mod(unsigned char *file_handle, char *filename, char mod_num);
-extern void dj_free_mod(char mod_num);
+
 

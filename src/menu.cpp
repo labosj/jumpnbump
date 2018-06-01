@@ -28,13 +28,11 @@
 #include "globals.h"
 #include "menu.h"
 
-char *menu_background;
-
 char menu_pal[768];
 char menu_cur_pal[768];
 
-char *message[] = {
-	"Jump 'n Bump "JNB_VERSION,
+const char *message[] = {
+	"Jump 'n Bump " JNB_VERSION,
 	"by Brainchild Design in 1998.",
 	"Code by Mattias Brynervall.",
 	"Graphics by Martin Magnusson",
@@ -355,7 +353,8 @@ int menu(main_info_t& main_info)
 								player[c1].frame_tick = 0;
 								player[c1].image = player_anims[player[c1].anim].frame[player[c1].frame].image + player[c1].direction * 9;
 								player[c1].jump_ready = 0;
-								dj_play_sfx(main_info, SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
+											64, 0, -1);
 							}
 						} else {
 							if ((player[c1].y >> 16) >= (138 + c1 * 2)) {
@@ -365,7 +364,8 @@ int menu(main_info_t& main_info)
 								player[c1].frame_tick = 0;
 								player[c1].image = player_anims[player[c1].anim].frame[player[c1].frame].image + player[c1].direction * 9;
 								player[c1].jump_ready = 0;
-								dj_play_sfx(main_info, SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
+											64, 0, -1);
 							}
 						}
 					}
@@ -532,7 +532,7 @@ int menu(main_info_t& main_info)
 
 				flippage(main_info.view_page);
 
-				wait_vrt(1);
+				wait_vrt();
 			}
 
 			if (fade_flag != 0) {
@@ -592,7 +592,7 @@ int menu_init(main_info_t& main_info)
 		menu_pal[(240 + c1) * 3 + 2] = c1 << 2;
 	}
 
-	register_background(background_pic, menu_pal);
+	register_background(background_pic);
 	register_mask(mask_pic);
 
 	for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {

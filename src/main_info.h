@@ -14,11 +14,9 @@ struct main_info_t {
 	static const int NUM_POBS = 200;
 
 	int joy_enabled;
-	int mouse_enabled;
 	int no_sound;
 	int music_no_sound;
 	int no_gore;
-	bool no_music = false;
 	std::string error_str;
 	int draw_page, view_page;
 	struct {

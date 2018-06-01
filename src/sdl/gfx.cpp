@@ -209,7 +209,7 @@ void open_screen(void)
 
 	SDL_SetWindowTitle(sdlWindow, "Jump 'n Bump");
 
-	icon=load_xpm_from_array(jumpnbump_xpm);
+	icon=load_xpm_from_array(const_cast<char **>(jumpnbump_xpm));
 	if (icon==NULL) {
 	    printf("Couldn't load icon\n");
 	} else {
@@ -245,7 +245,7 @@ void fs_toggle()
 }
 
 
-void wait_vrt(int mix)
+void wait_vrt()
 {
 	return;
 }
@@ -656,13 +656,13 @@ void put_text(int page, int x, int y, const char *text, int align)
 
 		else
 			continue;
-		put_pob(page, cur_x, y, image, &font_gobs, 1, mask_pic);
+		put_pob(page, cur_x, y, image, &font_gobs, 1);
 		cur_x += pob_width(image, &font_gobs) + 1;
 	}
 }
 
 
-void put_pob(int page, int x, int y, int image, gob_t *gob, int use_mask, void *mask_pic)
+void put_pob(int page, int x, int y, int image, gob_t *gob, int use_mask)
 {
 	int c1, c2;
 	int pob_x, pob_y;
@@ -809,7 +809,7 @@ int read_pcx(unsigned char * handle, unsigned char *buf, int buf_len, char *pal)
 }
 
 
-void register_background(unsigned char *pixels, char pal[768])
+void register_background(unsigned char *pixels)
 {
 	if (background) {
 		free(background);
@@ -818,7 +818,6 @@ void register_background(unsigned char *pixels, char pal[768])
 	background_drawn = 0;
 	if (!pixels)
 		return;
-	assert(pal);
 	if (scale_up) {
 		background = reinterpret_cast<unsigned char*>(malloc(screen_pitch*screen_height));
 		assert(background);

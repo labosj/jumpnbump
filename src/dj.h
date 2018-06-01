@@ -21,21 +21,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 
 #define DJ_SFX_TYPE_SMP 2
 
 
 typedef struct sfx_data {
-  char priority;
-  unsigned short default_freq;
-  char default_volume;
-  unsigned long length;
+    unsigned long length;
   char loop;
-  unsigned long loop_start, loop_length;
-  unsigned char *buf;
+    unsigned char *buf;
 } sfx_data;
 
 
@@ -46,9 +39,11 @@ extern unsigned short dj_set_mixing_freq(unsigned short freq);
 
 extern char dj_set_num_sfx_channels(char num_channels);
 extern void dj_set_sfx_volume(main_info_t&, char volume);
-extern void dj_play_sfx(main_info_t&, unsigned char sfx_num, unsigned short freq, char volume, char panning, unsigned short delay, char channel);
+extern void
+dj_play_sfx(main_info_t &, unsigned char sfx_num, unsigned short freq, char volume, char panning, char channel);
 extern void dj_stop_sfx_channel(main_info_t&, char channel_num);
-extern char dj_load_sfx(main_info_t&, unsigned char *file_handle, char *filename, int file_length, char sfx_type, unsigned char sfx_num);
+extern char
+dj_load_sfx(main_info_t &, unsigned char *file_handle, char *filename, int file_length, unsigned char sfx_num);
 extern void dj_free_sfx(main_info_t&, unsigned char sfx_num);
 
 extern char dj_ready_mod(main_info_t&, char mod_num);

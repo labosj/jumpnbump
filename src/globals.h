@@ -72,8 +72,6 @@
 
 #define JNB_END_SCORE 100
 
-#define JNB_INETPORT 11111
-
 extern int client_player_num;
 void tellServerPlayerMoved(int playerid, int movement_type, int newval);
 #define MOVEMENT_LEFT  1
@@ -140,7 +138,6 @@ extern int ai[JNB_MAX_PLAYERS];
 #define MOD_SCORES 2
 
 #define SFX_JUMP 0
-#define SFX_LAND 1
 #define SFX_DEATH 2
 #define SFX_SPRING 3
 #define SFX_SPLASH 4
@@ -148,7 +145,6 @@ extern int ai[JNB_MAX_PLAYERS];
 #define NUM_SFX 6
 
 #define SFX_JUMP_FREQ 15000
-#define SFX_LAND_FREQ 15000
 #define SFX_DEATH_FREQ 20000
 #define SFX_SPRING_FREQ 15000
 #define SFX_SPLASH_FREQ 12000
@@ -243,21 +239,21 @@ int init_program(int argc, char *argv[], char *pal);
 void deinit_program(void);
 unsigned short rnd(unsigned short max);
 int read_level(void);
-unsigned char *dat_open(char *file_name);
-int dat_filelen(char *file_name);
+unsigned char *dat_open(const std::string &file_name);
+int dat_filelen(const std::string& file_name);
 void write_calib_data(void);
 
 
 /* input.c */
 
 void init_inputs(main_info_t&);
-int calib_joy(int type);
+int calib_joy();
 
 /* gfx.c */
 
 void set_scaling(int scale);
 void open_screen(void);
-void wait_vrt(int mix);
+void wait_vrt();
 void draw_begin(void);
 void draw_end(void);
 void flippage(int page);
@@ -274,13 +270,13 @@ void get_block(int page, int x, int y, int width, int height, unsigned char *buf
 void put_block(int page, int x, int y, int width, int height, unsigned char *buffer);
 
 void put_text(int page, int x, int y, const char *text, int align);
-void put_pob(int page, int x, int y, int image, gob_t *gob, int mask, void *mask_pic);
+void put_pob(int page, int x, int y, int image, gob_t *gob, int mask);
 int pob_width(int image, gob_t *gob);
 int pob_height(int image, gob_t *gob);
 int pob_hs_x(int image, gob_t *gob);
 int pob_hs_y(int image, gob_t *gob);
 int read_pcx(unsigned char * handle, unsigned char *buffer, int buf_len, char *pal);
-void register_background(unsigned char *pixels, char pal[768]);
+void register_background(unsigned char *pixels);
 int register_gob(unsigned char *handle, gob_t *gob, int len);
 
 void register_mask(void *pixels);

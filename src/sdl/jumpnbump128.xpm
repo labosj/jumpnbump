@@ -1,5 +1,5 @@
 /* XPM */
-static char * jumpnbump_xpm[] = {
+static const char * jumpnbump_xpm[] = {
 "128 128 65 1",
 " 	c None",
 ".	c #06070A",

@@ -35,7 +35,7 @@ static SDL_Joystick *joys[4];
 /* I find using the vertical axis to be annoying -- dnb */
 #define JOY_JUMP(num) (num_joys>num && SDL_JoystickGetButton(joys[num], 0))
 
-int calib_joy(int type)
+int calib_joy()
 {
 	return 1;
 }
@@ -49,7 +49,6 @@ void init_inputs(main_info_t& main_info)
 	for(i = 0; i < 4 && i < num_joys; ++i)
 		joys[i] = SDL_JoystickOpen(i);
 
-	main_info.mouse_enabled = 0;
 	main_info.joy_enabled = 0;
 }
 

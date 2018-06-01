@@ -26,6 +26,7 @@
  */
 
 #include "globals.h"
+#include "menu.h"
 #include <fcntl.h>
 #include <string>
 #ifndef _WIN32
@@ -38,6 +39,9 @@
 
 #ifdef ZLIB_SUPPORT
 #include "zlib.h"
+#include "main_info.h"
+#include "gob.h"
+
 #endif
 
 #ifndef M_PI
@@ -48,10 +52,10 @@ int endscore_reached;
 const auto RABBIT_NAME_1 = "AMANDA";
 const auto RABBIT_NAME_2 = "EDWIN";
 
-gob_t rabbit_gobs = { 0 };
-gob_t font_gobs = { 0 };
-gob_t object_gobs = { 0 };
-gob_t number_gobs = { 0 };
+gob_t rabbit_gobs = {0 };
+gob_t font_gobs = {0 };
+gob_t object_gobs = {0 };
+gob_t number_gobs = {0 };
 
 main_info_t main_info;
 player_t player[JNB_MAX_PLAYERS];
@@ -292,7 +296,7 @@ void serverSendKillPacket(int killer, int victim)
 			for (c4 = 0; c4 < 10; c4++)
 				add_object(OBJ_FLESH, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3, (rnd(65535) - 32768) * 3, 0, 79);
 		}
-		dj_play_sfx(SFX_DEATH, (unsigned short)(SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+		dj_play_sfx(main_info, SFX_DEATH, (unsigned short)(SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
 		player[c1].bumps++;
 		if (player[c1].bumps >= JNB_END_SCORE) {
 			endscore_reached = 1;
@@ -444,10 +448,10 @@ static void game_loop(void) {
 
 	mod_vol = sfx_vol = 0;
 	mod_fade_direction = 1;
-	dj_ready_mod(MOD_GAME);
-	dj_set_mod_volume((char)mod_vol);
-	dj_set_sfx_volume((char)mod_vol);
-	dj_start_mod();
+	dj_ready_mod(main_info, MOD_GAME);
+	dj_set_mod_volume(main_info, (char)mod_vol);
+	dj_set_sfx_volume(main_info, (char)mod_vol);
+	dj_start_mod(main_info);
 
 	intr_sysupdate();
 
@@ -510,20 +514,20 @@ static void game_loop(void) {
 			if (mod_fade_direction == 1) {
 				if (mod_vol < 30) {
 					mod_vol++;
-					dj_set_mod_volume((char)mod_vol);
+					dj_set_mod_volume(main_info, (char)mod_vol);
 				}
 				if (sfx_vol < 64) {
 					sfx_vol++;
-					dj_set_sfx_volume((char)sfx_vol);
+					dj_set_sfx_volume(main_info, (char)sfx_vol);
 				}
 			} else {
 				if (mod_vol > 0) {
 					mod_vol--;
-					dj_set_mod_volume((char)mod_vol);
+					dj_set_mod_volume(main_info, (char)mod_vol);
 				}
 				if (sfx_vol > 0) {
 					sfx_vol--;
-					dj_set_sfx_volume((char)sfx_vol);
+					dj_set_sfx_volume(main_info, (char)sfx_vol);
 				}
 			}
 
@@ -588,7 +592,7 @@ static int menu_loop(void)
 
 	while (1) {
 
-		if (menu() != 0)
+		if (menu(main_info) != 0)
 			deinit_program();
 
 
@@ -625,7 +629,7 @@ static int menu_loop(void)
 		main_info.view_page = 0;
 		main_info.draw_page = 1;
 
-		dj_stop_sfx_channel(4);
+		dj_stop_sfx_channel(main_info, 4);
 
 		deinit_level();
 
@@ -672,11 +676,11 @@ static int menu_loop(void)
 		flippage(main_info.view_page);
 
 		if ((handle = dat_open("menu.pcx")) == 0) {
-			strcpy(main_info.error_str, "Error loading 'menu.pcx', aborting...\n");
+			main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
 			return 1;
 		}
 		if (read_pcx(handle, background_pic, JNB_WIDTH*JNB_HEIGHT, pal) != 0) {
-			strcpy(main_info.error_str, "Error loading 'menu.pcx', aborting...\n");
+			main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
 			return 1;
 		}
 
@@ -692,15 +696,15 @@ static int menu_loop(void)
 		setpalette(0, 256, cur_pal);
 
 		mod_vol = 0;
-		dj_ready_mod(MOD_SCORES);
-		dj_set_mod_volume((char)mod_vol);
-		dj_start_mod();
+		dj_ready_mod(main_info, MOD_SCORES);
+		dj_set_mod_volume(main_info, (char)mod_vol);
+		dj_start_mod(main_info);
 		dj_set_nosound(0);
 
 		while (key_pressed(1) == 0) {
 			if (mod_vol < 35)
 				mod_vol++;
-			dj_set_mod_volume((char)mod_vol);
+			dj_set_mod_volume(main_info, (char)mod_vol);
 			for (c1 = 0; c1 < 768; c1++) {
 				if (cur_pal[c1] < pal[c1])
 					cur_pal[c1]++;
@@ -720,7 +724,7 @@ static int menu_loop(void)
 
 		while (mod_vol > 0) {
 			mod_vol--;
-			dj_set_mod_volume((char)mod_vol);
+			dj_set_mod_volume(main_info, (char)mod_vol);
 			for (c1 = 0; c1 < 768; c1++) {
 				if (cur_pal[c1] > pal[c1])
 					cur_pal[c1]--;
@@ -734,7 +738,7 @@ static int menu_loop(void)
 		fillpalette(0, 0, 0);
 
 		dj_set_nosound(1);
-		dj_stop_mod();
+		dj_stop_mod(main_info);
 	}
 }
 
@@ -925,9 +929,9 @@ void steer_players(void)
 							player[c1].jump_ready = 0;
 							player[c1].jump_abort = 1;
 							if (pogostick == 0)
-								dj_play_sfx(SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
 							else
-								dj_play_sfx(SFX_SPRING, (unsigned short)(SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_SPRING, (unsigned short)(SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
 						}
 						/* jump out of water */
 						if (GET_BAN_MAP_IN_WATER(s1, s2)) {
@@ -940,9 +944,9 @@ void steer_players(void)
 							player[c1].jump_ready = 0;
 							player[c1].jump_abort = 1;
 							if (pogostick == 0)
-								dj_play_sfx(SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
 							else
-								dj_play_sfx(SFX_SPRING, (unsigned short)(SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_SPRING, (unsigned short)(SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
 						}
 					}
 					/* fall down by gravity */
@@ -1045,7 +1049,7 @@ void steer_players(void)
 							}
 						}
 					}
-					dj_play_sfx(SFX_SPRING, (unsigned short)(SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+					dj_play_sfx(main_info, SFX_SPRING, (unsigned short)(SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
 				}
 				s1 = (player[c1].x >> 16);
 				s2 = (player[c1].y >> 16);
@@ -1074,9 +1078,9 @@ void steer_players(void)
 						if (player[c1].y_add >= 32768) {
 							add_object(OBJ_SPLASH, (player[c1].x >> 16) + 8, ((player[c1].y >> 16) & 0xfff0) + 15, 0, 0, OBJ_ANIM_SPLASH, 0);
 							if (blood_is_thicker_than_water == 0)
-								dj_play_sfx(SFX_SPLASH, (unsigned short)(SFX_SPLASH_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_SPLASH, (unsigned short)(SFX_SPLASH_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
 							else
-								dj_play_sfx(SFX_SPLASH, (unsigned short)(SFX_SPLASH_FREQ + rnd(2000) - 5000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_SPLASH, (unsigned short)(SFX_SPLASH_FREQ + rnd(2000) - 5000), 64, 0, 0, -1);
 						}
 					}
 					/* slowly move up to water surface */
@@ -1549,7 +1553,7 @@ void update_objects(void)
 int add_pob(int page, int x, int y, int image, gob_t *pob_data)
 {
 
-	if (main_info.page_info[page].num_pobs >= NUM_POBS)
+	if (main_info.page_info[page].num_pobs >= main_info_t::NUM_POBS)
 		return 1;
 
 	main_info.page_info[page].pobs[main_info.page_info[page].num_pobs].x = x;
@@ -1629,21 +1633,21 @@ int init_level(int level, char *pal)
 	int s1, s2;
 
 	if ((handle = dat_open("level.pcx")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'level.pcx', aborting...\n");
+		main_info.error_str =  "Error loading 'level.pcx', aborting...\n";
 		return 1;
 	}
 	if (read_pcx(handle, background_pic, JNB_WIDTH*JNB_HEIGHT, pal) != 0) {
-		strcpy(main_info.error_str, "Error loading 'level.pcx', aborting...\n");
+		main_info.error_str = "Error loading 'level.pcx', aborting...\n";
 		return 1;
 	}
 	if (flip)
 		flip_pixels(background_pic);
 	if ((handle = dat_open("mask.pcx")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'mask.pcx', aborting...\n");
+		main_info.error_str =  "Error loading 'mask.pcx', aborting...\n";
 		return 1;
 	}
 	if (read_pcx(handle, mask_pic, JNB_WIDTH*JNB_HEIGHT, 0) != 0) {
-		strcpy(main_info.error_str, "Error loading 'mask.pcx', aborting...\n");
+		main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
 		return 1;
 	}
 	if (flip)
@@ -1714,7 +1718,7 @@ int init_level(int level, char *pal)
 void deinit_level(void)
 {
 	dj_set_nosound(1);
-	dj_stop_mod();
+	dj_stop_mod(main_info);
 }
 
 
@@ -1957,16 +1961,16 @@ all provided the user didn't choose one on the commandline. */
 	}
 
 	if ((handle = dat_open("menu.pcx")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'menu.pcx', aborting...\n");
+		main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
 		return 1;
 	}
 	if (read_pcx(handle, background_pic, JNB_WIDTH*JNB_HEIGHT, pal) != 0) {
-		strcpy(main_info.error_str, "Error loading 'menu.pcx', aborting...\n");
+		main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
 		return 1;
 	}
 
 	if ((handle = dat_open("rabbit.gob")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'rabbit.gob', aborting...\n");
+		main_info.error_str = "Error loading 'rabbit.gob', aborting...\n";
 		return 1;
 	}
 	if (register_gob(handle, &rabbit_gobs, dat_filelen("rabbit.gob"))) {
@@ -1975,7 +1979,7 @@ all provided the user didn't choose one on the commandline. */
 	}
 
 	if ((handle = dat_open("objects.gob")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'objects.gob', aborting...\n");
+		main_info.error_str = "Error loading 'objects.gob', aborting...\n";
 		return 1;
 	}
 	if (register_gob(handle, &object_gobs, dat_filelen("objects.gob"))) {
@@ -1984,7 +1988,7 @@ all provided the user didn't choose one on the commandline. */
 	}
 
 	if ((handle = dat_open("font.gob")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'font.gob', aborting...\n");
+		main_info.error_str = "Error loading 'font.gob', aborting...\n";
 		return 1;
 	}
 	if (register_gob(handle, &font_gobs, dat_filelen("font.gob"))) {
@@ -1993,7 +1997,7 @@ all provided the user didn't choose one on the commandline. */
 	}
 
 	if ((handle = dat_open("numbers.gob")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'numbers.gob', aborting...\n");
+		main_info.error_str = "Error loading 'numbers.gob', aborting...\n";
 		return 1;
 	}
 	if (register_gob(handle, &number_gobs, dat_filelen("numbers.gob"))) {
@@ -2002,11 +2006,11 @@ all provided the user didn't choose one on the commandline. */
 	}
 
 	if (read_level() != 0) {
-		strcpy(main_info.error_str, "Error loading 'levelmap.txt', aborting...\n");
+		main_info.error_str = "Error loading 'levelmap.txt', aborting...\n";
 		return 1;
 	}
 
-	dj_init();
+	dj_init(main_info);
 
 	if (main_info.no_sound == 0) {
 		dj_autodetect_sd();
@@ -2015,70 +2019,69 @@ all provided the user didn't choose one on the commandline. */
 		dj_set_auto_mix(0);
 		dj_set_dma_time(8);
 		dj_set_num_sfx_channels(5);
-		dj_set_sfx_volume(64);
+		dj_set_sfx_volume(main_info, 64);
 		dj_set_nosound(1);
-		dj_start();
 
 		if ((handle = dat_open("jump.mod")) == 0) {
-			strcpy(main_info.error_str, "Error loading 'jump.mod', aborting...\n");
+			main_info.error_str = "Error loading 'jump.mod', aborting...\n";
 			return 1;
 		}
 		if (dj_load_mod(handle, 0, MOD_MENU) != 0) {
-			strcpy(main_info.error_str, "Error loading 'jump.mod', aborting...\n");
+			main_info.error_str = "Error loading 'jump.mod', aborting...\n";
 			return 1;
 		}
 
 		if ((handle = dat_open("bump.mod")) == 0) {
-			strcpy(main_info.error_str, "Error loading 'bump.mod', aborting...\n");
+			main_info.error_str = "Error loading 'bump.mod', aborting...\n";
 			return 1;
 		}
 		if (dj_load_mod(handle, 0, MOD_GAME) != 0) {
-			strcpy(main_info.error_str, "Error loading 'bump.mod', aborting...\n");
+			main_info.error_str = "Error loading 'bump.mod', aborting...\n";
 			return 1;
 		}
 
 		if ((handle = dat_open("scores.mod")) == 0) {
-			strcpy(main_info.error_str, "Error loading 'scores.mod', aborting...\n");
+			main_info.error_str = "Error loading 'scores.mod', aborting...\n";
 			return 1;
 		}
 		if (dj_load_mod(handle, 0, MOD_SCORES) != 0) {
-			strcpy(main_info.error_str, "Error loading 'scores.mod', aborting...\n");
+			main_info.error_str = "Error loading 'scores.mod', aborting...\n";
 			return 1;
 		}
 
 		if ((handle = dat_open("jump.smp")) == 0) {
-			strcpy(main_info.error_str, "Error loading 'jump.smp', aborting...\n");
+			main_info.error_str = "Error loading 'jump.smp', aborting...\n";
 			return 1;
 		}
-		if (dj_load_sfx(handle, 0, dat_filelen("jump.smp"), DJ_SFX_TYPE_SMP, SFX_JUMP) != 0) {
-			strcpy(main_info.error_str, "Error loading 'jump.smp', aborting...\n");
+		if (dj_load_sfx(main_info, handle, 0, dat_filelen("jump.smp"), DJ_SFX_TYPE_SMP, SFX_JUMP) != 0) {
+			main_info.error_str = "Error loading 'jump.smp', aborting...\n";
 			return 1;
 		}
 
 		if ((handle = dat_open("death.smp")) == 0) {
-			strcpy(main_info.error_str, "Error loading 'death.smp', aborting...\n");
+			main_info.error_str = "Error loading 'death.smp', aborting...\n";
 			return 1;
 		}
-		if (dj_load_sfx(handle, 0, dat_filelen("death.smp"), DJ_SFX_TYPE_SMP, SFX_DEATH) != 0) {
-			strcpy(main_info.error_str, "Error loading 'death.smp', aborting...\n");
+		if (dj_load_sfx(main_info, handle, 0, dat_filelen("death.smp"), DJ_SFX_TYPE_SMP, SFX_DEATH) != 0) {
+			main_info.error_str = "Error loading 'death.smp', aborting...\n";
 			return 1;
 		}
 
 		if ((handle = dat_open("spring.smp")) == 0) {
-			strcpy(main_info.error_str, "Error loading 'spring.smp', aborting...\n");
+			main_info.error_str = "Error loading 'spring.smp', aborting...\n";
 			return 1;
 		}
-		if (dj_load_sfx(handle, 0, dat_filelen("spring.smp"), DJ_SFX_TYPE_SMP, SFX_SPRING) != 0) {
-			strcpy(main_info.error_str, "Error loading 'spring.smp', aborting...\n");
+		if (dj_load_sfx(main_info, handle, 0, dat_filelen("spring.smp"), DJ_SFX_TYPE_SMP, SFX_SPRING) != 0) {
+			main_info.error_str = "Error loading 'spring.smp', aborting...\n";
 			return 1;
 		}
 
 		if ((handle = dat_open("splash.smp")) == 0) {
-			strcpy(main_info.error_str, "Error loading 'splash.smp', aborting...\n");
+			main_info.error_str = "Error loading 'splash.smp', aborting...\n";
 			return 1;
 		}
-		if (dj_load_sfx(handle, 0, dat_filelen("splash.smp"), DJ_SFX_TYPE_SMP, SFX_SPLASH) != 0) {
-			strcpy(main_info.error_str, "Error loading 'splash.smp', aborting...\n");
+		if (dj_load_sfx(main_info, handle, 0, dat_filelen("splash.smp"), DJ_SFX_TYPE_SMP, SFX_SPLASH) != 0) {
+			main_info.error_str = "Error loading 'splash.smp', aborting...\n";
 			return 1;
 		}
 	}
@@ -2099,7 +2102,7 @@ all provided the user didn't choose one on the commandline. */
 
 	setpalette(0, 256, pal);
 
-	init_inputs();
+	init_inputs(main_info);
 
 	recalculate_gob(&font_gobs, pal);
 
@@ -2158,7 +2161,7 @@ all provided the user didn't choose one on the commandline. */
 		}
 		if (load_flag == 1) {
 			if ((handle = dat_open("calib.dat")) == 0) {
-				strcpy(main_info.error_str, "Error loading 'calib.dat', aborting...\n");
+				main_info.error_str = "Error loading 'calib.dat', aborting...\n";
 				return 1;
 			}
 			joy.calib_data.x1 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24); handle += 4;
@@ -2183,10 +2186,10 @@ void deinit_program(void)
 	dj_stop();
 	dj_free_mod(MOD_MENU);
 	dj_free_mod(MOD_GAME);
-	dj_free_sfx(SFX_DEATH);
-	dj_free_sfx(SFX_SPRING);
-	dj_free_sfx(SFX_SPLASH);
-	dj_deinit();
+	dj_free_sfx(main_info, SFX_DEATH);
+	dj_free_sfx(main_info,SFX_SPRING);
+	dj_free_sfx(main_info,SFX_SPLASH);
+	dj_deinit(main_info);
 
 	if (background_pic != 0)
 		free(background_pic);
@@ -2200,11 +2203,8 @@ void deinit_program(void)
 	__dpmi_int(0x10, &regs);
 #endif
 
-	if (main_info.error_str[0] != 0) {
+	if (!main_info.error_str.empty() ) {
 		printf("%s", main_info.error_str);
-#ifdef _WIN32
-		MessageBox(0, main_info.error_str, "Jump 'n Bump", 0);
-#endif
 		exit(1);
 	} else
 		exit(0);
@@ -2231,7 +2231,7 @@ int read_level(void)
 	int chr;
 
 	if ((handle = dat_open("levelmap.txt")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'levelmap.txt', aborting...\n");
+		main_info.error_str = "Error loading 'levelmap.txt', aborting...\n";
 		return 1;
 	}
 

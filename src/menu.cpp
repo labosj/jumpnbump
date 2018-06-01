@@ -26,6 +26,7 @@
  */
 
 #include "globals.h"
+#include "menu.h"
 
 char *menu_background;
 
@@ -66,7 +67,7 @@ char *message[] = {
 
 #define NUM_MESSAGES (sizeof(message)/sizeof(char *))
 
-int menu(void)
+int menu(main_info_t& main_info)
 {
 	int c1;
 	int esc_pressed;
@@ -77,7 +78,7 @@ int menu(void)
 	char fade_pal[48];
 	int update_count;
 
-	if (menu_init() != 0)
+	if (menu_init(main_info) != 0)
 		return 1;
 
 	/* After a game, we have to release the keys, cause AI player
@@ -99,10 +100,10 @@ int menu(void)
 
 	mod_vol = 0;
 	mod_fade_direction = 1;
-	dj_ready_mod(MOD_MENU);
-	dj_set_mod_volume((char)mod_vol);
-	dj_set_sfx_volume(64);
-	dj_start_mod();
+	dj_ready_mod(main_info, MOD_MENU);
+	dj_set_mod_volume(main_info, (char)mod_vol);
+	dj_set_sfx_volume(main_info, 64);
+	dj_start_mod(main_info);
 	dj_set_nosound(0);
 
 	memset(fade_pal, 0, 48);
@@ -358,7 +359,7 @@ int menu(void)
 								player[c1].frame_tick = 0;
 								player[c1].image = player_anims[player[c1].anim].frame[player[c1].frame].image + player[c1].direction * 9;
 								player[c1].jump_ready = 0;
-								dj_play_sfx(SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
 							}
 						} else {
 							if ((player[c1].y >> 16) >= (138 + c1 * 2)) {
@@ -368,7 +369,7 @@ int menu(void)
 								player[c1].frame_tick = 0;
 								player[c1].image = player_anims[player[c1].anim].frame[player[c1].frame].image + player[c1].direction * 9;
 								player[c1].jump_ready = 0;
-								dj_play_sfx(SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
+								dj_play_sfx(main_info, SFX_JUMP, (unsigned short)(SFX_JUMP_FREQ + rnd(2000) - 1000), 64, 0, 0, -1);
 							}
 						}
 					}
@@ -463,12 +464,12 @@ int menu(void)
 				if (mod_fade_direction == 1) {
 					if (mod_vol < 35) {
 						mod_vol++;
-						dj_set_mod_volume((char)mod_vol);
+						dj_set_mod_volume(main_info, (char)mod_vol);
 					}
 				} else {
 					if (mod_vol > 0) {
 						mod_vol--;
-						dj_set_mod_volume((char)mod_vol);
+						dj_set_mod_volume(main_info, (char)mod_vol);
 					}
 				}
 			}
@@ -484,7 +485,7 @@ int menu(void)
 				}
 			}
 			if (fade_flag == 0 && end_loop_flag == 1) {
-				menu_deinit();
+				menu_deinit(main_info);
 				if (new_game_flag == 1)
 					return 0;
 				else
@@ -562,13 +563,13 @@ int menu(void)
 
 	}
 
-	menu_deinit();
+	menu_deinit(main_info);
 	return 0;
 
 }
 
 
-int menu_init(void)
+int menu_init(main_info_t& main_info)
 {
 	unsigned char *handle;
 	int c1;
@@ -576,19 +577,19 @@ int menu_init(void)
 	fillpalette(0, 0, 0);
 
 	if ((handle = dat_open("menu.pcx")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'menu.pcx', aborting...\n");
+        main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
 		return 1;
 	}
 	if (read_pcx(handle, background_pic, JNB_WIDTH*JNB_HEIGHT, menu_pal) != 0) {
-		strcpy(main_info.error_str, "Error loading 'menu.pcx', aborting...\n");
+        main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
 		return 1;
 	}
 	if ((handle = dat_open("menumask.pcx")) == 0) {
-		strcpy(main_info.error_str, "Error loading 'menumask.pcx', aborting...\n");
+        main_info.error_str = "Error loading 'menumask.pcx', aborting...\n";
 		return 1;
 	}
 	if (read_pcx(handle, mask_pic, JNB_WIDTH*JNB_HEIGHT, 0) != 0) {
-		strcpy(main_info.error_str, "Error loading 'menumask.pcx', aborting...\n");
+		main_info.error_str = "Error loading 'menumask.pcx', aborting...\n";
 		return 1;
 	}
 	memset(menu_cur_pal, 0, 768);
@@ -631,7 +632,7 @@ int menu_init(void)
 }
 
 
-void menu_deinit(void)
+void menu_deinit(main_info_t&)
 {
 	dj_set_nosound(1);
 }

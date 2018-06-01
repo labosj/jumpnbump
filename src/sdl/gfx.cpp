@@ -28,14 +28,12 @@
 #include "src/globals.h"
 #include "SDL_endian.h"
 #include "src/filter.h"
+#include <SDL.h>
 
-#ifdef _WIN32
-    #include "jumpnbump32.xpm"
-#elif __APPLE__
-    #include "jumpnbump128.xpm"
-#else
-    #include "jumpnbump64.xpm"
-#endif
+
+#include "jumpnbump64.xpm"
+#include "src/gob.h"
+
 SDL_Surface *icon;
 
 int screen_width=400;

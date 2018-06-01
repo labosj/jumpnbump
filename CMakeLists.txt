@@ -1,22 +1,18 @@
 cmake_minimum_required(VERSION 3.10)
 project(jumpnbump)
 
-add_definitions(-Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DNDEBUG -DUSE_SDL -DZLIB_SUPPORT -DBZLIB_SUPPORT)
-
 find_package(SDL2 REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
-
-
 
 ## This must be set because a bug in ubuntu cmake config file.
 ## see https://stackoverflow.com/questions/45730098/cmake-leading-or-trailing-whitespace-policy-cmp0004
 set(SDL2_LIBRARIES "-L${SDL2_LIBDIR} -lSDL2 -lSDL2_mixer")
 
-add_executable(jumpnbump src/filter.cpp src/menu.cpp src/main.cpp)
+add_executable(jumpnbump src/sdl/gfx.cpp src/sdl/input.cpp src/sdl/interrpt.cpp src/sdl/sound.cpp src/filter.cpp src/main_info.cpp src/gob.cpp src/menu.cpp src/main.cpp src/menu.h)
 
 target_compile_features(jumpnbump PRIVATE cxx_std_11)
-target_sources(jumpnbump PRIVATE src/sdl/gfx.cpp src/sdl/input.cpp src/sdl/interrpt.cpp src/sdl/sound.cpp)
+target_compile_definitions(jumpnbump PRIVATE -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DNDEBUG -DUSE_SDL -DZLIB_SUPPORT -DBZLIB_SUPPORT)
 
 target_include_directories(jumpnbump PRIVATE ${SDL2_INCLUDE_DIRS})
 target_include_directories(jumpnbump PRIVATE ${ZLIB_INCLUDE_DIRS})

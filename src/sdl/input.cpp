@@ -24,6 +24,7 @@
  */
 
 #include "src/globals.h"
+#include <SDL.h>
 
 static int num_joys=0;
 static SDL_Joystick *joys[4];
@@ -40,7 +41,7 @@ int calib_joy(int type)
 }
 
 
-void init_inputs(void)
+void init_inputs(main_info_t& main_info)
 {
 	int i;
 

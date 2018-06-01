@@ -28,11 +28,9 @@
 #ifndef __GLOBALS_H
 #define __GLOBALS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <src/main_info.h>
+#include <SDL.h>
 
-#include "config.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -64,7 +62,6 @@ extern "C" {
 #else
 # ifdef USE_SDL
 #  include <sys/stat.h>
-#  include "SDL.h"
 #  if USE_SDL_MIXER
 #   include "SDL_mixer.h"
 #  endif
@@ -117,9 +114,7 @@ extern int ai[JNB_MAX_PLAYERS];
 #define KEY_PL4_JUMP	SDL_SCANCODE_KP_8
 #endif
 
-#define NUM_POBS 200
 #define NUM_OBJECTS 200
-#define NUM_FLIES 20
 #define NUM_LEFTOVERS 50
 
 #define OBJ_SPRING 0
@@ -175,34 +170,6 @@ extern int ai[JNB_MAX_PLAYERS];
 #endif
 
 typedef struct {
-	int num_images;
-	int *width;
-	int *height;
-	int *hs_x;
-	int *hs_y;
-	void **data;
-	void **orig_data;
-} gob_t;
-
-struct main_info_t {
-	int joy_enabled, mouse_enabled;
-	int no_sound, music_no_sound, no_gore;
-	bool no_music = false;
-	char error_str[256];
-	int draw_page, view_page;
-	struct {
-		int num_pobs;
-		struct {
-			int x, y;
-			int image;
-			gob_t *pob_data;
-			int back_buf_ofs;
-		} pobs[NUM_POBS];
-	} page_info[2];
-	void *pob_backbuf[2];
-};
-
-typedef struct {
 	int action_left,action_up,action_right;
 	int enabled, dead_flag;
 	int bumps;
@@ -242,16 +209,10 @@ typedef struct {
 	} calib_data;
 } joy_t;
 
-typedef struct {
-	int but1, but2, but3;
-} mouse_t;
-
-extern main_info_t main_info;
 extern player_t player[JNB_MAX_PLAYERS];
 extern player_anim_t player_anims[7];
 extern object_t objects[NUM_OBJECTS];
 extern joy_t joy;
-extern mouse_t mouse;
 
 extern char datfile_name[2048];
 
@@ -272,9 +233,7 @@ void add_object(int type, int x, int y, int x_add, int y_add, int anim, int fram
 void update_objects(void);
 void update_player_actions();
 int add_pob(int page, int x, int y, int image, gob_t *pob_data);
-void draw_flies(int page);
 void draw_pobs(int page);
-void redraw_flies_background(int page);
 void redraw_pob_backgrounds(int page);
 int add_leftovers(int page, int x, int y, int image, gob_t *pob_data);
 void draw_leftovers(int page);
@@ -291,15 +250,8 @@ void write_calib_data(void);
 
 /* input.c */
 
-void init_inputs(void);
+void init_inputs(main_info_t&);
 int calib_joy(int type);
-
-/* menu.c */
-
-int menu(void);
-int menu_init(void);
-void menu_deinit(void);
-
 
 /* gfx.c */
 
@@ -356,8 +308,5 @@ int addkey(unsigned int key);
 
 #endif
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

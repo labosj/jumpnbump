@@ -471,11 +471,9 @@ static void game_loop(void) {
 
 			steer_players();
 
-			dj_mix();
 
 			collision_check();
 
-			dj_mix();
 
 			main_info.page_info[main_info.draw_page].num_pobs = 0;
 			for (i = 0; i < JNB_MAX_PLAYERS; i++) {
@@ -485,9 +483,6 @@ static void game_loop(void) {
 
 			update_objects();
 
-			dj_mix();
-
-			dj_mix();
 
 			if (update_count == 1) {
 				int c2;
@@ -506,7 +501,6 @@ static void game_loop(void) {
 
 				draw_pobs(main_info.draw_page);
 
-				dj_mix();
 
 				draw_end();
 			}
@@ -615,8 +609,6 @@ static int menu_loop(void)
 		register_background(background_pic, pal);
 		flippage(0);
 
-		dj_set_nosound(0);
-
 		bunnies_in_space = jetpack = pogostick = blood_is_thicker_than_water = 0;
 		//blood_is_thicker_than_water = 1; HERE IS TO MOD THE CHEATS
 		main_info.page_info[0].num_pobs = 0;
@@ -699,7 +691,6 @@ static int menu_loop(void)
 		dj_ready_mod(main_info, MOD_SCORES);
 		dj_set_mod_volume(main_info, (char)mod_vol);
 		dj_start_mod(main_info);
-		dj_set_nosound(0);
 
 		while (key_pressed(1) == 0) {
 			if (mod_vol < 35)
@@ -709,14 +700,14 @@ static int menu_loop(void)
 				if (cur_pal[c1] < pal[c1])
 					cur_pal[c1]++;
 			}
-			dj_mix();
+
 			intr_sysupdate();
 			wait_vrt(0);
 			setpalette(0, 256, cur_pal);
 			flippage(main_info.view_page);
 		}
 		while (key_pressed(1) == 1) {
-			dj_mix();
+
 			intr_sysupdate();
 		}
 
@@ -729,7 +720,7 @@ static int menu_loop(void)
 				if (cur_pal[c1] > pal[c1])
 					cur_pal[c1]--;
 			}
-			dj_mix();
+
 			wait_vrt(0);
 			setpalette(0, 256, cur_pal);
 			flippage(main_info.view_page);
@@ -737,7 +728,7 @@ static int menu_loop(void)
 
 		fillpalette(0, 0, 0);
 
-		dj_set_nosound(1);
+
 		dj_stop_mod(main_info);
 	}
 }
@@ -1717,7 +1708,7 @@ int init_level(int level, char *pal)
 
 void deinit_level(void)
 {
-	dj_set_nosound(1);
+
 	dj_stop_mod(main_info);
 }
 
@@ -2013,14 +2004,12 @@ all provided the user didn't choose one on the commandline. */
 	dj_init(main_info);
 
 	if (main_info.no_sound == 0) {
-		dj_autodetect_sd();
+
 		dj_set_mixing_freq(20000);
-		dj_set_stereo(0);
-		dj_set_auto_mix(0);
-		dj_set_dma_time(8);
+
 		dj_set_num_sfx_channels(5);
 		dj_set_sfx_volume(main_info, 64);
-		dj_set_nosound(1);
+
 
 		if ((handle = dat_open("jump.mod")) == 0) {
 			main_info.error_str = "Error loading 'jump.mod', aborting...\n";
@@ -2183,7 +2172,6 @@ void deinit_program(void)
 	__dpmi_regs regs;
 #endif
 
-	dj_stop();
 	dj_free_mod(MOD_MENU);
 	dj_free_mod(MOD_GAME);
 	dj_free_sfx(main_info, SFX_DEATH);

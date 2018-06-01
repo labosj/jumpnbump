@@ -104,7 +104,6 @@ int menu(main_info_t& main_info)
 	dj_set_mod_volume(main_info, (char)mod_vol);
 	dj_set_sfx_volume(main_info, 64);
 	dj_start_mod(main_info);
-	dj_set_nosound(0);
 
 	memset(fade_pal, 0, 48);
 	setpalette(240, 16, fade_pal);
@@ -123,9 +122,6 @@ int menu(main_info_t& main_info)
 
 	update_count = 1;
 	while (1) {
-
-		dj_mix();
-
 		for(c1 = 0; c1 < JNB_MAX_PLAYERS; c1++)		// set AI to false
 			ai[c1] = 0;
 
@@ -445,7 +441,6 @@ int menu(main_info_t& main_info)
 				player[c1].image = player_anims[player[c1].anim].frame[player[c1].frame].image + player[c1].direction * 9;
 			}
 
-			dj_mix();
 
 			main_info.page_info[main_info.draw_page].num_pobs = 0;
 
@@ -458,8 +453,6 @@ int menu(main_info_t& main_info)
 				draw_begin();
 				draw_pobs(main_info.draw_page);
 				draw_end();
-
-				dj_mix();
 
 				if (mod_fade_direction == 1) {
 					if (mod_vol < 35) {
@@ -549,8 +542,6 @@ int menu(main_info_t& main_info)
 			if (update_count == 1) {
 				setpalette(240, 16, fade_pal);
 
-				dj_mix();
-
 				draw_begin();
 				redraw_pob_backgrounds(main_info.draw_page);
 				draw_end();
@@ -634,5 +625,4 @@ int menu_init(main_info_t& main_info)
 
 void menu_deinit(main_info_t&)
 {
-	dj_set_nosound(1);
 }

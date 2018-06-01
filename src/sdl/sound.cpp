@@ -303,41 +303,9 @@ void dj_deinit(main_info_t& main_info)
 	SDL_Quit();
 }
 
-void dj_stop(void)
-{
-}
-
-char dj_autodetect_sd(void)
-{
-	return 0;
-}
-
-char dj_set_stereo(char flag)
-{
-	return 0;
-}
-
-void dj_set_auto_mix(char flag)
-{
-}
-
 unsigned short dj_set_mixing_freq(unsigned short freq)
 {
 	return freq;
-}
-
-void dj_set_dma_time(unsigned short time)
-{
-}
-
-void dj_set_nosound(char flag)
-{
-}
-
-/* mix handling */
-
-void dj_mix(void)
-{
 }
 
 /* sfx handling */

@@ -24,39 +24,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef DOS
-#include <pc.h>
-#include <dpmi.h>
-#include <go32.h>
-#include <sys/nearptr.h>
-#endif
 
-#define DJ_SD_TYPE_NOSOUND 0
-#define DJ_SD_TYPE_SBLASTER 1
-
-#define DJ_SFX_TYPE_SSS 0
-#define DJ_SFX_TYPE_WAV 1
 #define DJ_SFX_TYPE_SMP 2
 
-
-typedef struct dj_hardware_info {
-	char sd_type;
-  short sd_version;
-	short port;
-	char irq;
-	char dma;
-} dj_hardware_info;
-
-typedef struct dj_mixing_info {
-  char sfx_volume, num_sfx_channels;
-  char mod_volume, num_mod_channels;
-	char stereo_mix, auto_mix;
-  unsigned short mixing_freq;
-  unsigned short dma_time, dmabuf_len;
-  char cur_dmabuf;
-	unsigned long dmabuf_address[2];
-  char *mixed_buf;
-} dj_mixing_info;
 
 typedef struct sfx_data {
   char priority;
@@ -67,28 +37,6 @@ typedef struct sfx_data {
   unsigned long loop_start, loop_length;
   unsigned char *buf;
 } sfx_data;
-
-typedef struct dj_mod_info {
-  char num_channels;
-	char speed;
-	short bpm;
-	char order_pos;
-	char pat_pos;
-	char name[20];
-	struct {
-		char name[22];
-		unsigned short length;
-		char finetune;
-		char volume;
-		unsigned short loop_start;
-		unsigned short loop_length;
-		char *buf;
-	} samples[31];
-	char song_length;
-	char num_pat;
-	char pat_order[128];
-  char *pat[128];
-} dj_mod_info;
 
 
 extern char dj_init(main_info_t&);

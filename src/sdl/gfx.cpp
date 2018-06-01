@@ -873,10 +873,6 @@ int register_gob(unsigned char *handle, gob_t *gob, int len)
 }
 
 
-void recalculate_gob(gob_t *gob, char pal[768])
-{
-}
-
 void register_mask(void *pixels)
 {
 	if (mask) {

@@ -347,34 +347,6 @@ void dj_play_sfx(main_info_t& main_info, unsigned char sfx_num, unsigned short f
 	SDL_UnlockAudio();
 }
 
-char dj_get_sfx_settings(main_info_t& main_info, unsigned char sfx_num, sfx_data *data)
-{
-	if (main_info.no_sound)
-		return 0;
-
-	memcpy(data, &sounds[sfx_num], sizeof(sfx_data));
-	return 0;
-}
-
-char dj_set_sfx_settings(main_info_t& main_info, unsigned char sfx_num, sfx_data *data)
-{
-	if (main_info.no_sound)
-		return 0;
-
-	memcpy(&sounds[sfx_num], data, sizeof(sfx_data));
-	return 0;
-}
-
-void dj_set_sfx_channel_volume(main_info_t& main_info, char channel_num, char volume)
-{
-	if (main_info.no_sound)
-		return;
-
-	SDL_LockAudio();
-	updateSoundParams(channel_num, volume*2);
-	SDL_UnlockAudio();
-}
-
 void dj_stop_sfx_channel(main_info_t& main_info, char channel_num)
 {
 	if (main_info.no_sound)

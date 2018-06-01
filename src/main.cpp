@@ -357,7 +357,6 @@ static void check_cheats(void)
 				pal[432+i] = water[i];
 		}
 		register_background(background_pic, pal);
-		recalculate_gob(&object_gobs, pal);
 		last_keys[0] = 0;
 	}
 }
@@ -601,9 +600,6 @@ static int menu_loop(void)
 		memset(cur_pal, 0, 768);
 		setpalette(0, 256, cur_pal);
 
-		recalculate_gob(&rabbit_gobs, pal);
-		recalculate_gob(&object_gobs, pal);
-		recalculate_gob(&number_gobs, pal);
 
 		flippage(1);
 		register_background(background_pic, pal);
@@ -2065,7 +2061,6 @@ all provided the user didn't choose one on the commandline. */
 
 	init_inputs(main_info);
 
-	recalculate_gob(&font_gobs, pal);
 
 	if (main_info.joy_enabled == 1) {
 		load_flag = 0;
@@ -2154,7 +2149,6 @@ void deinit_program(void)
 	if (mask_pic != 0)
 		free(mask_pic);
 
-	remove_keyb_handler();
 
 #ifdef DOS
 	regs.x.ax = 0x3;

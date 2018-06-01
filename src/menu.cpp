@@ -592,9 +592,6 @@ int menu_init(main_info_t& main_info)
 		menu_pal[(240 + c1) * 3 + 2] = c1 << 2;
 	}
 
-	recalculate_gob(&rabbit_gobs, menu_pal);
-	recalculate_gob(&font_gobs, menu_pal);
-	recalculate_gob(&object_gobs, menu_pal);
 	register_background(background_pic, menu_pal);
 	register_mask(mask_pic);
 

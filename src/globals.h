@@ -282,7 +282,7 @@ int pob_hs_y(int image, gob_t *gob);
 int read_pcx(unsigned char * handle, unsigned char *buffer, int buf_len, char *pal);
 void register_background(unsigned char *pixels, char pal[768]);
 int register_gob(unsigned char *handle, gob_t *gob, int len);
-void recalculate_gob(gob_t *gob, char pal[768]);
+
 void register_mask(void *pixels);
 
 /* gfx.c */
@@ -298,7 +298,7 @@ int intr_sysupdate();
 extern char last_keys[50];
 
 int hook_keyb_handler(void);
-void remove_keyb_handler(void);
+
 int key_pressed(int key);
 int addkey(unsigned int key);
 

@@ -47,6 +47,7 @@
 #include "zlib.h"
 #include "main_info.h"
 #include "gob.h"
+#include "player.h"
 
 #endif
 

@@ -62,13 +62,13 @@
 #else
 # ifdef USE_SDL
 #  include <sys/stat.h>
+#include "player.h"
+
 #  if USE_SDL_MIXER
 #   include "SDL_mixer.h"
 #  endif
 # endif
 #endif
-
-#define JNB_MAX_PLAYERS 4
 
 #define JNB_END_SCORE 100
 
@@ -164,17 +164,6 @@ extern int ai[JNB_MAX_PLAYERS];
 #define	DATA_PATH "/home/edwin/Projects/jumpnbump/data/jumpbump.dat"
 #endif
 #endif
-
-typedef struct {
-	int action_left,action_up,action_right;
-	int enabled, dead_flag;
-	int bumps;
-	int bumped[JNB_MAX_PLAYERS];
-	int x, y;
-	int x_add, y_add;
-	int direction, jump_ready, jump_abort, in_water;
-	int anim, frame, frame_tick, image;
-} player_t;
 
 typedef struct {
 	int num_frames;

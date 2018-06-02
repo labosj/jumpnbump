@@ -27,7 +27,6 @@
 
 #include "src/globals.h"
 #include "SDL_endian.h"
-#include "src/filter.h"
 #include <SDL.h>
 
 
@@ -818,15 +817,10 @@ void register_background(unsigned char *pixels)
 	background_drawn = 0;
 	if (!pixels)
 		return;
-	if (scale_up) {
-		background = reinterpret_cast<unsigned char*>(malloc(screen_pitch*screen_height));
-		assert(background);
-		do_scale2x(pixels, JNB_WIDTH, JNB_HEIGHT, (unsigned char *)background);
-	} else {
+
 		background = reinterpret_cast<unsigned char*>(malloc(JNB_WIDTH*JNB_HEIGHT));
 		assert(background);
 		memcpy(background, pixels, JNB_WIDTH*JNB_HEIGHT);
-	}
 }
 
 int register_gob(unsigned char *handle, gob_t *gob, int len)
@@ -859,13 +853,9 @@ int register_gob(unsigned char *handle, gob_t *gob, int len)
 		image_size = gob->width[i] * gob->height[i];
 		gob->orig_data[i] = malloc(image_size);
 		memcpy(gob->orig_data[i], &gob_data[offset], image_size);
-		if (scale_up) {
-			image_size = gob->width[i] * gob->height[i] * 4;
-			gob->data[i] = malloc(image_size);
-			do_scale2x((unsigned char *)gob->orig_data[i], gob->width[i], gob->height[i], (unsigned char *)gob->data[i]);
-		} else {
+
 			gob->data[i] = (unsigned short *)gob->orig_data[i];
-		}
+
 	}
 	free(gob_data);
 	return 0;
@@ -879,13 +869,8 @@ void register_mask(void *pixels)
 		mask = NULL;
 	}
 	assert(pixels);
-	if (scale_up) {
-		mask = malloc(screen_pitch*screen_height);
-		assert(mask);
-		do_scale2x((unsigned char *)pixels, JNB_WIDTH, JNB_HEIGHT, (unsigned char *)mask);
-	} else {
+
 		mask = malloc(JNB_WIDTH*JNB_HEIGHT);
 		assert(mask);
 		memcpy(mask, pixels, JNB_WIDTH*JNB_HEIGHT);
-	}
 }

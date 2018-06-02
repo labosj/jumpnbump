@@ -59,7 +59,7 @@ int endscore_reached;
 
 const auto RABBIT_NAME_1 = "AMANDA";
 const auto RABBIT_NAME_2 = "EDWIN";
-unsigned char *datafile_buffer = NULL;
+unsigned char *datafile_buffer = nullptr;
 
 gob_t rabbit_gobs = {0};
 gob_t font_gobs = {0};
@@ -1886,12 +1886,6 @@ int init_program(int argc, char *argv[], char *pal) {
             1, 0, 8, 5, 0, 0, 0, 0, 0, 0
     };
 
-
-#ifdef DOS
-    if (__djgpp_nearptr_enable() == 0)
-        return 1;
-#endif
-
     srand(time(NULL));
 
     if (hook_keyb_handler() != 0)
@@ -1960,17 +1954,6 @@ int init_program(int argc, char *argv[], char *pal) {
 
     preread_datafile(datfile_name);
 
-#if 0
-    /** It should not be necessary to assign a default player number here. The
-    server assigns one in init_server, the client gets one assigned by the server,
-    all provided the user didn't choose one on the commandline. */
-        if (is_net) {
-            if (client_player_num < 0)
-                    client_player_num = 0;
-            player[client_player_num].enabled = 1;
-        }
-#endif
-
     main_info.pob_backbuf[0] = malloc(screen_pitch * screen_height);
     main_info.pob_backbuf[1] = malloc(screen_pitch * screen_height);
 
@@ -1983,7 +1966,7 @@ int init_program(int argc, char *argv[], char *pal) {
         }
     }
 
-    if ((handle = dat_open("menu.pcx", datafile_buffer)) == 0) {
+    if ((handle = dat_open("menu.pcx", datafile_buffer)) == nullptr) {
         main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
         return 1;
     }
@@ -1992,7 +1975,7 @@ int init_program(int argc, char *argv[], char *pal) {
         return 1;
     }
 
-    if ((handle = dat_open("rabbit.gob", datafile_buffer)) == 0) {
+    if ((handle = dat_open("rabbit.gob", datafile_buffer)) == nullptr) {
         main_info.error_str = "Error loading 'rabbit.gob', aborting...\n";
         return 1;
     }
@@ -2001,7 +1984,7 @@ int init_program(int argc, char *argv[], char *pal) {
         return 1;
     }
 
-    if ((handle = dat_open("objects.gob", datafile_buffer)) == 0) {
+    if ((handle = dat_open("objects.gob", datafile_buffer)) == nullptr) {
         main_info.error_str = "Error loading 'objects.gob', aborting...\n";
         return 1;
     }
@@ -2010,7 +1993,7 @@ int init_program(int argc, char *argv[], char *pal) {
         return 1;
     }
 
-    if ((handle = dat_open("font.gob", datafile_buffer)) == 0) {
+    if ((handle = dat_open("font.gob", datafile_buffer)) == nullptr) {
         main_info.error_str = "Error loading 'font.gob', aborting...\n";
         return 1;
     }
@@ -2019,7 +2002,7 @@ int init_program(int argc, char *argv[], char *pal) {
         return 1;
     }
 
-    if ((handle = dat_open("numbers.gob", datafile_buffer)) == 0) {
+    if ((handle = dat_open("numbers.gob", datafile_buffer)) == nullptr) {
         main_info.error_str = "Error loading 'numbers.gob', aborting...\n";
         return 1;
     }
@@ -2175,10 +2158,7 @@ int init_program(int argc, char *argv[], char *pal) {
 
 }
 
-void deinit_program(void) {
-#ifdef DOS
-    __dpmi_regs regs;
-#endif
+void deinit_program() {
 
     dj_free_sfx(main_info, SFX_DEATH);
     dj_free_sfx(main_info, SFX_SPRING);
@@ -2190,11 +2170,6 @@ void deinit_program(void) {
     if (mask_pic != 0)
         free(mask_pic);
 
-
-#ifdef DOS
-    regs.x.ax = 0x3;
-    __dpmi_int(0x10, &regs);
-#endif
 
     if (!main_info.error_str.empty()) {
         printf("%s", main_info.error_str.c_str());

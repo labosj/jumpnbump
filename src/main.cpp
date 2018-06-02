@@ -48,6 +48,7 @@
 #include "main_info.h"
 #include "gob.h"
 #include "player.h"
+#include "data.h"
 
 #endif
 
@@ -58,6 +59,7 @@ int endscore_reached;
 
 const auto RABBIT_NAME_1 = "AMANDA";
 const auto RABBIT_NAME_2 = "EDWIN";
+unsigned char *datafile_buffer = NULL;
 
 gob_t rabbit_gobs = {0};
 gob_t font_gobs = {0};
@@ -248,20 +250,6 @@ int pogostick, bunnies_in_space, jetpack, blood_is_thicker_than_water;
 
 int client_player_num = -1;
 
-#ifndef _WIN32
-
-int filelength(int handle) {
-    struct stat buf;
-
-    if (fstat(handle, &buf) == -1) {
-        perror("filelength");
-        exit(EXIT_FAILURE);
-    }
-
-    return buf.st_size;
-}
-
-#endif
 
 
 static void flip_pixels(unsigned char *pixels) {
@@ -448,7 +436,7 @@ static void game_loop(void) {
 
     mod_vol = sfx_vol = 0;
     mod_fade_direction = 1;
-    dj_ready_mod(main_info, MOD_GAME);
+    dj_ready_mod(main_info, MOD_GAME, datafile_buffer);
     dj_set_mod_volume(main_info, (char) mod_vol);
     dj_set_sfx_volume(main_info, (char) mod_vol);
     dj_start_mod(main_info);
@@ -573,7 +561,7 @@ static void game_loop(void) {
 }
 
 
-static int menu_loop(void) {
+static int menu_loop(unsigned char* datafile_buffer) {
     unsigned char *handle;
     int mod_vol;
     int c1, c2;
@@ -585,7 +573,7 @@ static int menu_loop(void) {
 
     while (1) {
 
-        if (menu(main_info) != 0)
+        if (menu(main_info, datafile_buffer) != 0)
             deinit_program();
 
 
@@ -663,7 +651,7 @@ static int menu_loop(void) {
 
         flippage(main_info.view_page);
 
-        if ((handle = dat_open("menu.pcx")) == 0) {
+        if ((handle = dat_open("menu.pcx", datafile_buffer)) == 0) {
             main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
             return 1;
         }
@@ -684,7 +672,7 @@ static int menu_loop(void) {
         setpalette(0, 256, cur_pal);
 
         mod_vol = 0;
-        dj_ready_mod(main_info, MOD_SCORES);
+        dj_ready_mod(main_info, MOD_SCORES, datafile_buffer);
         dj_set_mod_volume(main_info, (char) mod_vol);
         dj_start_mod(main_info);
 
@@ -736,7 +724,7 @@ int main(int argc, char *argv[]) {
     if (init_program(argc, argv, pal) != 0)
         deinit_program();
 
-    result = menu_loop();
+    result = menu_loop(datafile_buffer);
 
     deinit_program();
 
@@ -1672,7 +1660,7 @@ int init_level(int level, char *pal) {
     int c1, c2;
     int s1, s2;
 
-    if ((handle = dat_open("level.pcx")) == 0) {
+    if ((handle = dat_open("level.pcx", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'level.pcx', aborting...\n";
         return 1;
     }
@@ -1682,7 +1670,7 @@ int init_level(int level, char *pal) {
     }
     if (flip)
         flip_pixels(background_pic);
-    if ((handle = dat_open("mask.pcx")) == 0) {
+    if ((handle = dat_open("mask.pcx", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
         return 1;
     }
@@ -1771,8 +1759,6 @@ void deinit_level(void) {
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
-
-unsigned char *datafile_buffer = NULL;
 
 static void preread_datafile(const char *fname) {
     int fd = 0;
@@ -1911,7 +1897,7 @@ int init_program(int argc, char *argv[], char *pal) {
     if (hook_keyb_handler() != 0)
         return 1;
 
-    memset(&main_info, 0, sizeof(main_info));
+    //memset(&main_info, 0, sizeof(main_info));
 
     strcpy(datfile_name, DATA_PATH);
 
@@ -1997,7 +1983,7 @@ int init_program(int argc, char *argv[], char *pal) {
         }
     }
 
-    if ((handle = dat_open("menu.pcx")) == 0) {
+    if ((handle = dat_open("menu.pcx", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
         return 1;
     }
@@ -2006,38 +1992,38 @@ int init_program(int argc, char *argv[], char *pal) {
         return 1;
     }
 
-    if ((handle = dat_open("rabbit.gob")) == 0) {
+    if ((handle = dat_open("rabbit.gob", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'rabbit.gob', aborting...\n";
         return 1;
     }
-    if (register_gob(handle, &rabbit_gobs, dat_filelen("rabbit.gob"))) {
+    if (register_gob(handle, &rabbit_gobs, dat_filelen("rabbit.gob", datafile_buffer))) {
         /* error */
         return 1;
     }
 
-    if ((handle = dat_open("objects.gob")) == 0) {
+    if ((handle = dat_open("objects.gob", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'objects.gob', aborting...\n";
         return 1;
     }
-    if (register_gob(handle, &object_gobs, dat_filelen("objects.gob"))) {
+    if (register_gob(handle, &object_gobs, dat_filelen("objects.gob", datafile_buffer))) {
         /* error */
         return 1;
     }
 
-    if ((handle = dat_open("font.gob")) == 0) {
+    if ((handle = dat_open("font.gob", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'font.gob', aborting...\n";
         return 1;
     }
-    if (register_gob(handle, &font_gobs, dat_filelen("font.gob"))) {
+    if (register_gob(handle, &font_gobs, dat_filelen("font.gob", datafile_buffer))) {
         /* error */
         return 1;
     }
 
-    if ((handle = dat_open("numbers.gob")) == 0) {
+    if ((handle = dat_open("numbers.gob", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'numbers.gob', aborting...\n";
         return 1;
     }
-    if (register_gob(handle, &number_gobs, dat_filelen("numbers.gob"))) {
+    if (register_gob(handle, &number_gobs, dat_filelen("numbers.gob", datafile_buffer))) {
         /* error */
         return 1;
     }
@@ -2056,38 +2042,38 @@ int init_program(int argc, char *argv[], char *pal) {
         dj_set_num_sfx_channels(5);
         dj_set_sfx_volume(main_info, 64);
 
-        if ((handle = dat_open("jump.smp")) == 0) {
+        if ((handle = dat_open("jump.smp", datafile_buffer)) == 0) {
             main_info.error_str = "Error loading 'jump.smp', aborting...\n";
             return 1;
         }
-        if (dj_load_sfx(main_info, handle, 0, dat_filelen("jump.smp"), SFX_JUMP) != 0) {
+        if (dj_load_sfx(main_info, handle, 0, dat_filelen("jump.smp", datafile_buffer), SFX_JUMP) != 0) {
             main_info.error_str = "Error loading 'jump.smp', aborting...\n";
             return 1;
         }
 
-        if ((handle = dat_open("death.smp")) == 0) {
+        if ((handle = dat_open("death.smp", datafile_buffer)) == 0) {
             main_info.error_str = "Error loading 'death.smp', aborting...\n";
             return 1;
         }
-        if (dj_load_sfx(main_info, handle, 0, dat_filelen("death.smp"), SFX_DEATH) != 0) {
+        if (dj_load_sfx(main_info, handle, 0, dat_filelen("death.smp", datafile_buffer), SFX_DEATH) != 0) {
             main_info.error_str = "Error loading 'death.smp', aborting...\n";
             return 1;
         }
 
-        if ((handle = dat_open("spring.smp")) == 0) {
+        if ((handle = dat_open("spring.smp", datafile_buffer)) == 0) {
             main_info.error_str = "Error loading 'spring.smp', aborting...\n";
             return 1;
         }
-        if (dj_load_sfx(main_info, handle, 0, dat_filelen("spring.smp"), SFX_SPRING) != 0) {
+        if (dj_load_sfx(main_info, handle, 0, dat_filelen("spring.smp", datafile_buffer), SFX_SPRING) != 0) {
             main_info.error_str = "Error loading 'spring.smp', aborting...\n";
             return 1;
         }
 
-        if ((handle = dat_open("splash.smp")) == 0) {
+        if ((handle = dat_open("splash.smp", datafile_buffer)) == 0) {
             main_info.error_str = "Error loading 'splash.smp', aborting...\n";
             return 1;
         }
-        if (dj_load_sfx(main_info, handle, 0, dat_filelen("splash.smp"), SFX_SPLASH) != 0) {
+        if (dj_load_sfx(main_info, handle, 0, dat_filelen("splash.smp", datafile_buffer), SFX_SPLASH) != 0) {
             main_info.error_str = "Error loading 'splash.smp', aborting...\n";
             return 1;
         }
@@ -2166,7 +2152,7 @@ int init_program(int argc, char *argv[], char *pal) {
             }
         }
         if (load_flag == 1) {
-            if ((handle = dat_open("calib.dat")) == 0) {
+            if ((handle = dat_open("calib.dat", datafile_buffer)) == 0) {
                 main_info.error_str = "Error loading 'calib.dat', aborting...\n";
                 return 1;
             }
@@ -2235,7 +2221,7 @@ int read_level() {
     int c1, c2;
     int chr;
 
-    if ((handle = dat_open("levelmap.txt")) == 0) {
+    if ((handle = dat_open("levelmap.txt", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'levelmap.txt', aborting...\n";
         return 1;
     }
@@ -2262,137 +2248,3 @@ int read_level() {
 }
 
 
-unsigned char *dat_open(const std::string &file_name) {
-    int num;
-    int c1;
-    char name[21];
-    int ofs;
-    unsigned char *ptr;
-
-    if (datafile_buffer == NULL)
-        return 0;
-
-    memset(name, 0, sizeof(name));
-
-    num = ((datafile_buffer[0] << 0) +
-           (datafile_buffer[1] << 8) +
-           (datafile_buffer[2] << 16) +
-           (datafile_buffer[3] << 24));
-
-    ptr = datafile_buffer + 4;
-
-    for (c1 = 0; c1 < num; c1++) {
-
-        memcpy(name, ptr, 12);
-        ptr += 12;
-
-
-        if (name == file_name) {
-            ofs = ((ptr[0] << 0) +
-                   (ptr[1] << 8) +
-                   (ptr[2] << 16) +
-                   (ptr[3] << 24));
-
-            return (datafile_buffer + ofs);
-        }
-        ptr += 8;
-    }
-
-    return 0;
-}
-
-
-int dat_filelen(const std::string &file_name) {
-    unsigned char *ptr;
-    int num;
-    int c1;
-    char name[21];
-    int len;
-
-    memset(name, 0, sizeof(name));
-
-    num = ((datafile_buffer[0] << 0) +
-           (datafile_buffer[1] << 8) +
-           (datafile_buffer[2] << 16) +
-           (datafile_buffer[3] << 24));
-
-    ptr = datafile_buffer + 4;
-
-    for (c1 = 0; c1 < num; c1++) {
-
-        memcpy(name, ptr, 12);
-        ptr += 12;
-
-        if (name == file_name) {
-
-            ptr += 4;
-            len = ((ptr[0] << 0) +
-                   (ptr[1] << 8) +
-                   (ptr[2] << 16) +
-                   (ptr[3] << 24));
-
-            return len;
-        }
-        ptr += 8;
-    }
-
-    return 0;
-}
-
-
-void write_calib_data(void) {
-    FILE *handle;
-    int c1;
-    int len, num;
-    char *mem;
-    int ofs;
-
-    if ((handle = fopen(datfile_name, "rb")) == nullptr)
-        return;
-    len = filelength(fileno(handle));
-    if ((mem = reinterpret_cast<char *>(malloc(len))) == nullptr)
-        return;
-    fread(mem, 1, len, handle);
-    fclose(handle);
-
-    ofs = 4;
-    num = *(int *) (&mem[0]);
-    for (c1 = 0; c1 < num; c1++) {
-        if (strnicmp(&mem[ofs], "calib.dat", strlen("calib.dat")) == 0) {
-            ofs = *(int *) (&mem[ofs + 12]);
-            break;
-        }
-        ofs += 20;
-    }
-
-    mem[ofs] = joy.calib_data.x1 & 0xff;
-    mem[ofs + 1] = (joy.calib_data.x1 >> 8) & 0xff;
-    mem[ofs + 2] = (joy.calib_data.x1 >> 16) & 0xff;
-    mem[ofs + 3] = (joy.calib_data.x1 >> 24) & 0xff;
-    mem[ofs + 4] = joy.calib_data.x2 & 0xff;
-    mem[ofs + 5] = (joy.calib_data.x2 >> 8) & 0xff;
-    mem[ofs + 6] = (joy.calib_data.x2 >> 16) & 0xff;
-    mem[ofs + 7] = (joy.calib_data.x2 >> 24) & 0xff;
-    mem[ofs + 8] = joy.calib_data.x3 & 0xff;
-    mem[ofs + 9] = (joy.calib_data.x3 >> 8) & 0xff;
-    mem[ofs + 10] = (joy.calib_data.x3 >> 16) & 0xff;
-    mem[ofs + 11] = (joy.calib_data.x3 >> 24) & 0xff;
-    mem[ofs + 12] = joy.calib_data.y1 & 0xff;
-    mem[ofs + 13] = (joy.calib_data.y1 >> 8) & 0xff;
-    mem[ofs + 14] = (joy.calib_data.y1 >> 16) & 0xff;
-    mem[ofs + 15] = (joy.calib_data.y1 >> 24) & 0xff;
-    mem[ofs + 16] = joy.calib_data.y2 & 0xff;
-    mem[ofs + 17] = (joy.calib_data.y2 >> 8) & 0xff;
-    mem[ofs + 18] = (joy.calib_data.y2 >> 16) & 0xff;
-    mem[ofs + 19] = (joy.calib_data.y2 >> 24) & 0xff;
-    mem[ofs + 20] = joy.calib_data.y3 & 0xff;
-    mem[ofs + 21] = (joy.calib_data.y3 >> 8) & 0xff;
-    mem[ofs + 22] = (joy.calib_data.y3 >> 16) & 0xff;
-    mem[ofs + 23] = (joy.calib_data.y3 >> 24) & 0xff;
-
-    if ((handle = fopen(datfile_name, "wb")) == NULL)
-        return;
-    fwrite(mem, 1, len, handle);
-    fclose(handle);
-
-}

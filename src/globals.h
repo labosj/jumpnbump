@@ -228,9 +228,6 @@ int init_program(int argc, char *argv[], char *pal);
 void deinit_program(void);
 unsigned short rnd(unsigned short max);
 int read_level(void);
-unsigned char *dat_open(const std::string &file_name);
-int dat_filelen(const std::string& file_name);
-void write_calib_data(void);
 
 
 /* input.c */

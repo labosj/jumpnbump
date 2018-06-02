@@ -32,6 +32,7 @@
 
 #ifndef NO_SDL_MIXER
 #include "SDL_mixer.h"
+#include "../data.h"
 
 static Mix_Music *current_music = (Mix_Music *) NULL;
 #endif
@@ -396,7 +397,7 @@ void dj_free_sfx(main_info_t& main_info, unsigned char sfx_num)
 
 /* mod handling */
 
-char dj_ready_mod(main_info_t& main_info, char mod_num)
+char dj_ready_mod(main_info_t& main_info, char mod_num, unsigned char *datafile_buffer)
 {
 #ifndef NO_SDL_MIXER
 	FILE *tmp;
@@ -410,16 +411,16 @@ char dj_ready_mod(main_info_t& main_info, char mod_num)
 
 	switch (mod_num) {
 	case MOD_MENU:
-		fp = dat_open("jump.mod");
-		len = dat_filelen("jump.mod");
+		fp = dat_open("jump.mod", datafile_buffer);
+		len = dat_filelen("jump.mod", datafile_buffer);
 		break;
 	case MOD_GAME:
-		fp = dat_open("bump.mod");
-		len = dat_filelen("bump.mod");
+		fp = dat_open("bump.mod", datafile_buffer);
+		len = dat_filelen("bump.mod", datafile_buffer);
 		break;
 	case MOD_SCORES:
-		fp = dat_open("scores.mod");
-		len = dat_filelen("scores.mod");
+		fp = dat_open("scores.mod", datafile_buffer);
+		len = dat_filelen("scores.mod", datafile_buffer);
 		break;
 	default:
 		fprintf(stderr, "bogus parameter to dj_ready_mod()\n");

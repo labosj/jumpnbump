@@ -7,8 +7,8 @@
 
 struct main_info_t;
 
-int menu(main_info_t& main_info);
-int menu_init(main_info_t& main_info);
+int menu(main_info_t& main_info, unsigned char* datafile_buffer);
+int menu_init(main_info_t& main_info, unsigned char* datafile_buffer);
 void menu_deinit(main_info_t& main_info);
 
 

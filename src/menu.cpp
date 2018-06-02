@@ -27,6 +27,7 @@
 
 #include "globals.h"
 #include "menu.h"
+#include "data.h"
 
 char menu_pal[768];
 char menu_cur_pal[768];
@@ -65,7 +66,7 @@ const char *message[] = {
 
 #define NUM_MESSAGES (sizeof(message)/sizeof(char *))
 
-int menu(main_info_t& main_info)
+int menu(main_info_t& main_info, unsigned char* datafile_buffer)
 {
 	int c1;
 	int esc_pressed;
@@ -76,7 +77,7 @@ int menu(main_info_t& main_info)
 	char fade_pal[48];
 	int update_count;
 
-	if (menu_init(main_info) != 0)
+	if (menu_init(main_info, datafile_buffer) != 0)
 		return 1;
 
 	/* After a game, we have to release the keys, cause AI player
@@ -98,7 +99,7 @@ int menu(main_info_t& main_info)
 
 	mod_vol = 0;
 	mod_fade_direction = 1;
-	dj_ready_mod(main_info, MOD_MENU);
+	dj_ready_mod(main_info, MOD_MENU, datafile_buffer);
 	dj_set_mod_volume(main_info, (char)mod_vol);
 	dj_set_sfx_volume(main_info, 64);
 	dj_start_mod(main_info);
@@ -560,14 +561,14 @@ int menu(main_info_t& main_info)
 }
 
 
-int menu_init(main_info_t& main_info)
+int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
 {
 	unsigned char *handle;
 	int c1;
 
 	fillpalette(0, 0, 0);
 
-	if ((handle = dat_open("menu.pcx")) == 0) {
+	if ((handle = dat_open("menu.pcx", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
 		return 1;
 	}
@@ -575,7 +576,7 @@ int menu_init(main_info_t& main_info)
         main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
 		return 1;
 	}
-	if ((handle = dat_open("menumask.pcx")) == 0) {
+	if ((handle = dat_open("menumask.pcx", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'menumask.pcx', aborting...\n";
 		return 1;
 	}

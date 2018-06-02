@@ -15,6 +15,7 @@ add_executable(jumpnbump
         src/sdl/interrpt.cpp
         src/sdl/sound.cpp
 
+        src/ban_map.cpp
         src/draw.cpp
         src/data.cpp
         src/main_info.cpp

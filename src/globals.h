@@ -148,12 +148,6 @@ extern int ai[JNB_MAX_PLAYERS];
 #define SFX_SPRING_FREQ 15000
 #define SFX_SPLASH_FREQ 12000
 
-#define BAN_VOID	0
-#define BAN_SOLID	1
-#define BAN_WATER	2
-#define BAN_ICE		3
-#define BAN_SPRING	4
-
 #ifndef DATA_PATH
 #ifdef __APPLE__
 #define	DATA_PATH "data/jumpbump.dat"

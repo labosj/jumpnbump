@@ -44,6 +44,10 @@ const unsigned int& ban_map_t::get(std::pair<int, int> pos) const {
     return this->map[pos.second][pos.first];
 }
 
+unsigned int& ban_map_t::get(int x, int y) {
+    return this->map[y][x];
+}
+
 const unsigned int& ban_map_t::get_by_pixel(int x, int y) const {
     return this->map[(y) >> 4][(x) >> 4];
 }

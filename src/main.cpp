@@ -1121,6 +1121,8 @@ int init_program(int argc, char *argv[], char *pal) {
     unsigned char *handle = (unsigned char *) NULL;
     int c1 = 0, c2 = 0;
     int load_flag = 0;
+    main_info.music_no_sound =0;
+    main_info.no_sound = 0;
     int player_anim_data[] = {
             1, 0, 0, 0x7fff, 0, 0, 0, 0, 0, 0,
             4, 0, 0, 4, 1, 4, 2, 4, 3, 4,
@@ -1435,22 +1437,22 @@ int read_level() {
         return 1;
     }
 
-    for (c1 = 0; c1 < 16; c1++) {
-        for (c2 = 0; c2 < 22; c2++) {
-            while (1) {
+    for (int y  = 0; y < ban_map_t::HEIGHT - 1; y++) {
+        for (int x = 0; x < ban_map_t::WIDTH; x++) {
+            while (true) {
                 chr = (int) *(handle++);
                 if (chr >= '0' && chr <= '4')
                     break;
             }
             if (flip)
-                ban_map[c1][21 - c2] = chr - '0';
+                ban_map_new.get(ban_map_t::WIDTH - 1 - x, y) = chr - '0';
             else
-                ban_map[c1][c2] = chr - '0';
+                ban_map_new.get(x, y) = chr - '0';
         }
     }
 
-    for (c2 = 0; c2 < 22; c2++)
-        ban_map[16][c2] = BAN_SOLID;
+    for (int x = 0; x < ban_map_t::WIDTH; x++)
+        ban_map_new.get(x, ban_map_t::HEIGHT - 1) = BAN_SOLID;
 
     return 0;
 

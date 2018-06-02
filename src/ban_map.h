@@ -35,6 +35,7 @@ public:
     */
     unsigned int& get_by_pixel(int x, int y);
     unsigned int& get(std::pair<int, int> position);
+    unsigned int& get(int x, int y);
     const unsigned int& get(std::pair<int, int> position) const;
     const unsigned int& get_by_pixel(int x, int y) const;
     bool is_pixel_in_water(int x, int y) const;

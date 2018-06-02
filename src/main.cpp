@@ -851,6 +851,10 @@ void steer_players(void) {
 
                     s1 = (player[c1].x >> 16);
                     s2 = (player[c1].y >> 16);
+
+                    //TODO: log de steer
+                    if ( c1 == 0 )
+                        printf("Steer player %d => [%d, %d] => [%d, %d]\n", c1, player[c1].x, player[c1].y, s1, s2);
                     below_left = GET_BAN_MAP_XY(s1, s2 + 16);
                     below = GET_BAN_MAP_XY(s1 + 8, s2 + 16);
                     below_right = GET_BAN_MAP_XY(s1 + 15, s2 + 16);
@@ -1047,7 +1051,7 @@ void steer_players(void) {
                 if (GET_BAN_MAP_XY(s1, s2) == BAN_SOLID || GET_BAN_MAP_XY(s1, s2) == BAN_ICE ||
                     GET_BAN_MAP_XY(s1, s2) == BAN_SPRING || GET_BAN_MAP_XY((s1 + 15), s2) == BAN_SOLID ||
                     GET_BAN_MAP_XY((s1 + 15), s2) == BAN_ICE || GET_BAN_MAP_XY((s1 + 15), s2) == BAN_SPRING) {
-                    player[c1].y = (((s2 + 16) & 0xfff0)) << 16;
+                    player[c1].y = (((s2 + 16) & 0xfff0)) << 16; //TODO: MASK
                     player[c1].y_add = 0;
                     player[c1].anim = 0;
                     player[c1].frame = 0;
@@ -1196,6 +1200,10 @@ void position_player(int player_num) {
         if (c1 == JNB_MAX_PLAYERS) {
             player[player_num].x = (long) x << 20;
             player[player_num].y = (long) y << 20;
+
+            //TODO : valores
+                    printf("Valories misteriosos %d => [%d, %d] => [%d, %d]\n", player_num, x, y, player[player_num].x, player[player_num].y);
+
             player[player_num].x_add = player[player_num].y_add = 0;
             player[player_num].direction = 0;
             player[player_num].jump_ready = 1;

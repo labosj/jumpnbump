@@ -37,6 +37,7 @@
 #endif
 
 #include "src/globals.h"
+#include "src/sdl/gfx.h"
 
 char keyb[256];
 char last_keys[50];

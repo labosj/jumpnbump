@@ -38,6 +38,7 @@
 #include <string>
 #include <fcntl.h>
 #include <unistd.h>
+#include "sdl/gfx.h"
 
 #include <utility>
 #include <tuple>

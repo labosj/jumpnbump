@@ -30,6 +30,7 @@
 #include "data.h"
 #include "draw.h"
 #include "util.h"
+#include "sdl/gfx.h"
 
 char menu_pal[768];
 char menu_cur_pal[768];

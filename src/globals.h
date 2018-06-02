@@ -90,14 +90,7 @@ extern int scale_up;
 
 extern int ai[JNB_MAX_PLAYERS];
 
-#ifndef USE_SDL
-#define KEY_PL1_LEFT	0xcb
-#define KEY_PL1_RIGHT	0xcd
-#define KEY_PL1_JUMP	0xc8
-#define KEY_PL2_LEFT	0x1e
-#define KEY_PL2_RIGHT	0x20
-#define KEY_PL2_JUMP	0x11
-#else
+
 #define KEY_PL1_LEFT	SDL_SCANCODE_LEFT
 #define KEY_PL1_RIGHT	SDL_SCANCODE_RIGHT
 #define KEY_PL1_JUMP	SDL_SCANCODE_UP
@@ -110,7 +103,6 @@ extern int ai[JNB_MAX_PLAYERS];
 #define KEY_PL4_LEFT	SDL_SCANCODE_KP_4
 #define KEY_PL4_RIGHT	SDL_SCANCODE_KP_6
 #define KEY_PL4_JUMP	SDL_SCANCODE_KP_8
-#endif
 
 #define NUM_OBJECTS 200
 
@@ -249,14 +241,6 @@ void register_background(unsigned char *pixels);
 int register_gob(unsigned char *handle, gob_t *gob, int len);
 
 void register_mask(void *pixels);
-
-/* gfx.c */
-
-#ifdef USE_SDL
-/* long filelength(int handle); */
-void fs_toggle();
-int intr_sysupdate();
-#endif
 
 /* interrpt.c */
 

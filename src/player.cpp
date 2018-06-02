@@ -2,11 +2,11 @@
 // Created by edwin on 01-06-18.
 //
 
-#include <tuple>
 #include "globals.h"
 #include "player.h"
 #include "ban_map.h"
 #include "object_anim.h"
+#include "util.h"
 
 extern int jetpack;
 extern int bunnies_in_space;
@@ -15,15 +15,16 @@ extern int blood_is_thicker_than_water;
 extern main_info_t main_info;
 extern object_anim_t object_anims[8];
 
+
 void player_action_left(player_t& player) {
     int s1 = 0, s2 = 0;
     int below_left, below, below_right;
 
     s1 = (player.x >> 16);
     s2 = (player.y >> 16);
-    below_left = GET_BAN_MAP_XY(s1, s2 + 16);
-    below = GET_BAN_MAP_XY(s1 + 8, s2 + 16);
-    below_right = GET_BAN_MAP_XY(s1 + 15, s2 + 16);
+    below_left = ban_map_new.get_xy(s1, s2 + 16);
+    below = ban_map_new.get_xy(s1 + 8, s2 + 16);
+    below_right = ban_map_new.get_xy(s1 + 15, s2 + 16);
 
     if (below == BAN_ICE) {
         if (player.x_add > 0)
@@ -62,9 +63,9 @@ void player_action_right(player_t& player) {
 
     s1 = (player.x >> 16);
     s2 = (player.y >> 16);
-    below_left = GET_BAN_MAP_XY(s1, s2 + 16);
-    below = GET_BAN_MAP_XY(s1 + 8, s2 + 16);
-    below_right = GET_BAN_MAP_XY(s1 + 15, s2 + 16);
+    below_left = ban_map_new.get_xy(s1, s2 + 16);
+    below = ban_map_new.get_xy(s1 + 8, s2 + 16);
+    below_right = ban_map_new.get_xy(s1 + 15, s2 + 16);
 
     if (below == BAN_ICE) {
         if (player.x_add < 0)
@@ -107,7 +108,7 @@ void steer_players(void) {
 
         if (player[c1].enabled == 1) {
 
-            if (player[c1].dead_flag == 0) {
+            if (player[c1].is_alive()) {
 
                 if (player[c1].action_left && player[c1].action_right) {
                     if (player[c1].direction == 0) {
@@ -132,9 +133,9 @@ void steer_players(void) {
                     //TODO: log de steer
                     if ( c1 == 0 )
                         printf("Steer player %d => [%d, %d] => [%d, %d]\n", c1, player[c1].x, player[c1].y, s1, s2);
-                    below_left = GET_BAN_MAP_XY(s1, s2 + 16);
-                    below = GET_BAN_MAP_XY(s1 + 8, s2 + 16);
-                    below_right = GET_BAN_MAP_XY(s1 + 15, s2 + 16);
+                    below_left = ban_map_new.get_xy(s1, s2 + 16);
+                    below = ban_map_new.get_xy(s1 + 8, s2 + 16);
+                    below_right = ban_map_new.get_xy(s1 + 15, s2 + 16);
                     if (below == BAN_SOLID || below == BAN_SPRING ||
                         (((below_left == BAN_SOLID || below_left == BAN_SPRING) && below_right != BAN_ICE) ||
                          (below_left != BAN_ICE && (below_right == BAN_SOLID || below_right == BAN_SPRING)))) {
@@ -147,7 +148,7 @@ void steer_players(void) {
                             if (player[c1].x_add < 0)
                                 player[c1].x_add = 0;
                         }
-                        if (player[c1].x_add != 0 && GET_BAN_MAP_XY((s1 + 8), (s2 + 16)) == BAN_SOLID)
+                        if (player[c1].x_add != 0 && ban_map_new.get_xy((s1 + 8), (s2 + 16)) == BAN_SOLID)
                             add_object(OBJ_SMOKE, (player[c1].x >> 16) + 2 + rnd(9), (player[c1].y >> 16) + 13 + rnd(5),
                                        0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
                     }
@@ -167,9 +168,9 @@ void steer_players(void) {
                         if (s2 < -16)
                             s2 = -16;
                         /* jump */
-                        if (GET_BAN_MAP_XY(s1, (s2 + 16)) == BAN_SOLID || GET_BAN_MAP_XY(s1, (s2 + 16)) == BAN_ICE ||
-                            GET_BAN_MAP_XY((s1 + 15), (s2 + 16)) == BAN_SOLID ||
-                            GET_BAN_MAP_XY((s1 + 15), (s2 + 16)) == BAN_ICE) {
+                        if (ban_map_new.get_xy(s1, (s2 + 16)) == BAN_SOLID || ban_map_new.get_xy(s1, (s2 + 16)) == BAN_ICE ||
+                            ban_map_new.get_xy((s1 + 15), (s2 + 16)) == BAN_SOLID ||
+                            ban_map_new.get_xy((s1 + 15), (s2 + 16)) == BAN_ICE) {
                             player[c1].y_add = -280000L;
                             player[c1].anim = 2;
                             player[c1].frame = 0;
@@ -186,7 +187,7 @@ void steer_players(void) {
                                             (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
                         }
                         /* jump out of water */
-                        if (GET_BAN_MAP_IN_WATER(s1, s2)) {
+                        if (ban_map_new.is_water(s1, s2)) {
                             player[c1].y_add = -196608L;
                             player[c1].in_water = 0;
                             player[c1].anim = 2;
@@ -224,7 +225,7 @@ void steer_players(void) {
                         player[c1].y_add -= 16384;
                         if (player[c1].y_add < -400000L)
                             player[c1].y_add = -400000L;
-                        if (GET_BAN_MAP_IN_WATER(s1, s2))
+                        if (ban_map_new.is_water(s1, s2))
                             player[c1].in_water = 0;
                         if (rnd(100) < 50)
                             add_object(OBJ_SMOKE, (player[c1].x >> 16) + 6 + rnd(5), (player[c1].y >> 16) + 10 + rnd(5),
@@ -250,19 +251,19 @@ void steer_players(void) {
                     }
 
                     s1 = (player[c1].x >> 16);
-                    if (GET_BAN_MAP_XY(s1, s2) == BAN_SOLID || GET_BAN_MAP_XY(s1, s2) == BAN_ICE ||
-                        GET_BAN_MAP_XY(s1, s2) == BAN_SPRING || GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_SOLID ||
-                        GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_ICE || GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_SPRING) {
+                    if (ban_map_new.get_xy(s1, s2) == BAN_SOLID || ban_map_new.get_xy(s1, s2) == BAN_ICE ||
+                        ban_map_new.get_xy(s1, s2) == BAN_SPRING || ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SOLID ||
+                        ban_map_new.get_xy(s1, (s2 + 15)) == BAN_ICE || ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SPRING) {
                         player[c1].x = (((s1 + 16) & 0xfff0)) << 16;
                         player[c1].x_add = 0;
                     }
 
                     s1 = (player[c1].x >> 16);
-                    if (GET_BAN_MAP_XY((s1 + 15), s2) == BAN_SOLID || GET_BAN_MAP_XY((s1 + 15), s2) == BAN_ICE ||
-                        GET_BAN_MAP_XY((s1 + 15), s2) == BAN_SPRING ||
-                        GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_SOLID ||
-                        GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_ICE ||
-                        GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_SPRING) {
+                    if (ban_map_new.get_xy((s1 + 15), s2) == BAN_SOLID || ban_map_new.get_xy((s1 + 15), s2) == BAN_ICE ||
+                        ban_map_new.get_xy((s1 + 15), s2) == BAN_SPRING ||
+                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SOLID ||
+                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_ICE ||
+                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SPRING) {
                         player[c1].x = (((s1 + 16) & 0xfff0) - 16) << 16;
                         player[c1].x_add = 0;
                     }
@@ -274,11 +275,11 @@ void steer_players(void) {
                 s2 = (player[c1].y >> 16);
                 if (s2 < 0)
                     s2 = 0;
-                if (GET_BAN_MAP_XY((s1 + 8), (s2 + 15)) == BAN_SPRING ||
-                    ((GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_SPRING &&
-                      GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) != BAN_SOLID) ||
-                     (GET_BAN_MAP_XY(s1, (s2 + 15)) != BAN_SOLID &&
-                      GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_SPRING))) {
+                if (ban_map_new.get_xy((s1 + 8), (s2 + 15)) == BAN_SPRING ||
+                    ((ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SPRING &&
+                      ban_map_new.get_xy((s1 + 15), (s2 + 15)) != BAN_SOLID) ||
+                     (ban_map_new.get_xy(s1, (s2 + 15)) != BAN_SOLID &&
+                      ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SPRING))) {
                     player[c1].y = ((player[c1].y >> 16) & 0xfff0) << 16;
                     player[c1].y_add = -400000L;
                     player[c1].anim = 2;
@@ -290,7 +291,7 @@ void steer_players(void) {
                     player[c1].jump_abort = 0;
                     for (c2 = 0; c2 < NUM_OBJECTS; c2++) {
                         if (objects[c2].used == 1 && objects[c2].type == OBJ_SPRING) {
-                            if (GET_BAN_MAP_XY((s1 + 8), (s2 + 15)) == BAN_SPRING) {
+                            if (ban_map_new.get_xy((s1 + 8), (s2 + 15)) == BAN_SPRING) {
                                 if ((objects[c2].x >> 20) == ((s1 + 8) >> 4) &&
                                     (objects[c2].y >> 20) == ((s2 + 15) >> 4)) {
                                     objects[c2].frame = 0;
@@ -299,7 +300,7 @@ void steer_players(void) {
                                     break;
                                 }
                             } else {
-                                if (GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_SPRING) {
+                                if (ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SPRING) {
                                     if ((objects[c2].x >> 20) == (s1 >> 4) &&
                                         (objects[c2].y >> 20) == ((s2 + 15) >> 4)) {
                                         objects[c2].frame = 0;
@@ -307,7 +308,7 @@ void steer_players(void) {
                                         objects[c2].image = object_anims[objects[c2].anim].frame[objects[c2].frame].image;
                                         break;
                                     }
-                                } else if (GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_SPRING) {
+                                } else if (ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SPRING) {
                                     if ((objects[c2].x >> 20) == ((s1 + 15) >> 4) &&
                                         (objects[c2].y >> 20) == ((s2 + 15) >> 4)) {
                                         objects[c2].frame = 0;
@@ -325,9 +326,9 @@ void steer_players(void) {
                 s2 = (player[c1].y >> 16);
                 if (s2 < 0)
                     s2 = 0;
-                if (GET_BAN_MAP_XY(s1, s2) == BAN_SOLID || GET_BAN_MAP_XY(s1, s2) == BAN_ICE ||
-                    GET_BAN_MAP_XY(s1, s2) == BAN_SPRING || GET_BAN_MAP_XY((s1 + 15), s2) == BAN_SOLID ||
-                    GET_BAN_MAP_XY((s1 + 15), s2) == BAN_ICE || GET_BAN_MAP_XY((s1 + 15), s2) == BAN_SPRING) {
+                if (ban_map_new.get_xy(s1, s2) == BAN_SOLID || ban_map_new.get_xy(s1, s2) == BAN_ICE ||
+                    ban_map_new.get_xy(s1, s2) == BAN_SPRING || ban_map_new.get_xy((s1 + 15), s2) == BAN_SOLID ||
+                    ban_map_new.get_xy((s1 + 15), s2) == BAN_ICE || ban_map_new.get_xy((s1 + 15), s2) == BAN_SPRING) {
                     player[c1].y = (((s2 + 16) & 0xfff0)) << 16; //TODO: MASK
                     player[c1].y_add = 0;
                     player[c1].anim = 0;
@@ -340,7 +341,7 @@ void steer_players(void) {
                 s2 = (player[c1].y >> 16);
                 if (s2 < 0)
                     s2 = 0;
-                if (GET_BAN_MAP_XY((s1 + 8), (s2 + 8)) == BAN_WATER) {
+                if (ban_map_new.get_xy((s1 + 8), (s2 + 8)) == BAN_WATER) {
                     if (player[c1].in_water == 0) {
                         /* falling into water */
                         player[c1].in_water = 1;
@@ -373,17 +374,17 @@ void steer_players(void) {
                         player[c1].y_add = -65536L;
                     if (player[c1].y_add > 65535L)
                         player[c1].y_add = 65535L;
-                    if (GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_SOLID || GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_ICE ||
-                        GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_SOLID ||
-                        GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_ICE) {
+                    if (ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SOLID || ban_map_new.get_xy(s1, (s2 + 15)) == BAN_ICE ||
+                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SOLID ||
+                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_ICE) {
                         player[c1].y = (((s2 + 16) & 0xfff0) - 16) << 16;
                         player[c1].y_add = 0;
                     }
-                } else if (GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_SOLID || GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_ICE ||
-                           GET_BAN_MAP_XY(s1, (s2 + 15)) == BAN_SPRING ||
-                           GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_SOLID ||
-                           GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_ICE ||
-                           GET_BAN_MAP_XY((s1 + 15), (s2 + 15)) == BAN_SPRING) {
+                } else if (ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SOLID || ban_map_new.get_xy(s1, (s2 + 15)) == BAN_ICE ||
+                           ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SPRING ||
+                           ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SOLID ||
+                           ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_ICE ||
+                           ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SPRING) {
                     player[c1].in_water = 0;
                     player[c1].y = (((s2 + 16) & 0xfff0) - 16) << 16;
                     player[c1].y_add = 0;
@@ -437,32 +438,13 @@ void steer_players(void) {
 
 }
 
-std::pair<int, int> get_random_available_position() {
-    int x, y = 0;
-    while (true) {
-        x = rnd(22);
-        y = rnd(16);
-
-        if (
-                ban_map[y][x] == BAN_VOID            //si esta vacio
-                && (
-                        ban_map[y + 1][x] == BAN_SOLID ||     //y el de abajo es un solido, posiblemente un suelo
-                        ban_map[y + 1][y] == BAN_ICE  //o un hielo
-                   )
-            ) {
-            break;
-        }
-    }
-    return std::make_pair(x, y);
-}
-
 void position_player(int player_num) {
     int c1;
     int x, y;
 
     while (1) {
 
-        std::tie(x, y) = get_random_available_position();
+        std::tie(x, y) = ban_map_new.get_random_available_floor_position();
 
         //verifica que el conejo no este cerca de otros conejos
         for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {

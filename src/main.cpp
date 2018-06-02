@@ -220,6 +220,7 @@ int client_player_num = -1;
 
 
 #include "ban_map.h"
+#include "util.h"
 
 
 static void flip_pixels(unsigned char *pixels) {
@@ -1140,42 +1141,19 @@ int init_level(int level, char *pal) {
         }
     }
 
-    while (1) {
-        s1 = rnd(22);
-        s2 = rnd(16);
-        if (ban_map[s2][s1] == BAN_VOID) {
-            add_object(OBJ_YEL_BUTFLY, (s1 << 4) + 8, (s2 << 4) + 8, (rnd(65535) - 32768) * 2, (rnd(65535) - 32768) * 2,
-                       0, 0);
-            break;
-        }
+    for ( int i = 0 ; i < 2 ; i++ ) {
+        auto new_pos = ban_map_new.get_random_available_position();
+        add_object(OBJ_YEL_BUTFLY, (new_pos.first << 4) + 8, (new_pos.second << 4) + 8, (rnd(65535) - 32768) * 2,
+                   (rnd(65535) - 32768) * 2,
+                   0, 0);
     }
-    while (1) {
-        s1 = rnd(22);
-        s2 = rnd(16);
-        if (ban_map[s2][s1] == BAN_VOID) {
-            add_object(OBJ_YEL_BUTFLY, (s1 << 4) + 8, (s2 << 4) + 8, (rnd(65535) - 32768) * 2, (rnd(65535) - 32768) * 2,
-                       0, 0);
-            break;
-        }
+
+    for ( int i = 0 ; i < 2 ; i++ ) {
+        auto new_pos = ban_map_new.get_random_available_position();
+        add_object(OBJ_PINK_BUTFLY, (new_pos.first << 4) + 8, (new_pos.second << 4) + 8, (rnd(65535) - 32768) * 2,
+                   (rnd(65535) - 32768) * 2, 0, 0);
     }
-    while (1) {
-        s1 = rnd(22);
-        s2 = rnd(16);
-        if (ban_map[s2][s1] == BAN_VOID) {
-            add_object(OBJ_PINK_BUTFLY, (s1 << 4) + 8, (s2 << 4) + 8, (rnd(65535) - 32768) * 2,
-                       (rnd(65535) - 32768) * 2, 0, 0);
-            break;
-        }
-    }
-    while (1) {
-        s1 = rnd(22);
-        s2 = rnd(16);
-        if (ban_map[s2][s1] == BAN_VOID) {
-            add_object(OBJ_PINK_BUTFLY, (s1 << 4) + 8, (s2 << 4) + 8, (rnd(65535) - 32768) * 2,
-                       (rnd(65535) - 32768) * 2, 0, 0);
-            break;
-        }
-    }
+
 
     return 0;
 
@@ -1612,17 +1590,6 @@ void deinit_program() {
     } else
         exit(0);
 
-}
-
-
-unsigned short rnd(unsigned short max) {
-#if (RAND_MAX < 0x7fff)
-#error "rand returns too small values"
-#elif (RAND_MAX == 0x7fff)
-    return (unsigned short)((rand()*2) % (int)max);
-#else
-    return (unsigned short) (rand() % (int) max);
-#endif
 }
 
 

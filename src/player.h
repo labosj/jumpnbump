@@ -14,10 +14,14 @@ struct player_t {
 	int enabled, dead_flag;
 	int bumps;
 	int bumped[JNB_MAX_PLAYERS];
+
 	int x, y;
 	int x_add, y_add;
 	int direction, jump_ready, jump_abort, in_water;
 	int anim, frame, frame_tick, image;
+
+	constexpr bool is_alive() const { return this->dead_flag == 0; }
+
 };
 
 /* main.c */

@@ -212,7 +212,7 @@ int init_level(int level, char *pal);
 void deinit_level(void);
 int init_program(int argc, char *argv[], char *pal);
 void deinit_program(void);
-unsigned short rnd(unsigned short max);
+
 int read_level(void);
 
 

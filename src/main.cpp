@@ -383,67 +383,52 @@ static void collision_check(void) {
     int l1;
 
     /* collision check */
-    for (c3 = 0; c3 < 6; c3++) {
-        if (c3 == 0) {
-            c1 = 0;
-            c2 = 1;
-        } else if (c3 == 1) {
-            c1 = 0;
-            c2 = 2;
-        } else if (c3 == 2) {
-            c1 = 0;
-            c2 = 3;
-        } else if (c3 == 3) {
-            c1 = 1;
-            c2 = 2;
-        } else if (c3 == 4) {
-            c1 = 1;
-            c2 = 3;
-        } else if (c3 == 5) {
-            c1 = 2;
-            c2 = 3;
-        }
-        if (player[c1].enabled == 1 && player[c2].enabled == 1) {
-            if (labs(player[c1].x - player[c2].x) < (12L << 16) && labs(player[c1].y - player[c2].y) < (12L << 16)) {
-                if ((labs(player[c1].y - player[c2].y) >> 16) > 5) {
-                    if (player[c1].y < player[c2].y) {
-                        player_kill(c1, c2);
-                    } else {
-                        player_kill(c2, c1);
-                    }
-                } else {
-                    if (player[c1].x < player[c2].x) {
-                        if (player[c1].x_add > 0)
-                            player[c1].x = player[c2].x - (12L << 16);
-                        else if (player[c2].x_add < 0)
-                            player[c2].x = player[c1].x + (12L << 16);
-                        else {
-                            player[c1].x -= player[c1].x_add;
-                            player[c2].x -= player[c2].x_add;
+    for (c1 = 0; c1 < 4; c1++) {
+        for (c2 = c1 + 1; c2 < 4 ; c2++) {
+
+            if (player[c1].enabled == 1 && player[c2].enabled == 1) {
+                if (labs(player[c1].x - player[c2].x) < (12L << 16) &&
+                    labs(player[c1].y - player[c2].y) < (12L << 16)) {
+                    if ((labs(player[c1].y - player[c2].y) >> 16) > 5) {
+                        if (player[c1].y < player[c2].y) {
+                            player_kill(c1, c2);
+                        } else {
+                            player_kill(c2, c1);
                         }
-                        l1 = player[c2].x_add;
-                        player[c2].x_add = player[c1].x_add;
-                        player[c1].x_add = l1;
-                        if (player[c1].x_add > 0)
-                            player[c1].x_add = -player[c1].x_add;
-                        if (player[c2].x_add < 0)
-                            player[c2].x_add = -player[c2].x_add;
                     } else {
-                        if (player[c1].x_add > 0)
-                            player[c2].x = player[c1].x - (12L << 16);
-                        else if (player[c2].x_add < 0)
-                            player[c1].x = player[c2].x + (12L << 16);
-                        else {
-                            player[c1].x -= player[c1].x_add;
-                            player[c2].x -= player[c2].x_add;
+                        if (player[c1].x < player[c2].x) {
+                            if (player[c1].x_add > 0)
+                                player[c1].x = player[c2].x - (12L << 16);
+                            else if (player[c2].x_add < 0)
+                                player[c2].x = player[c1].x + (12L << 16);
+                            else {
+                                player[c1].x -= player[c1].x_add;
+                                player[c2].x -= player[c2].x_add;
+                            }
+                            l1 = player[c2].x_add;
+                            player[c2].x_add = player[c1].x_add;
+                            player[c1].x_add = l1;
+                            if (player[c1].x_add > 0)
+                                player[c1].x_add = -player[c1].x_add;
+                            if (player[c2].x_add < 0)
+                                player[c2].x_add = -player[c2].x_add;
+                        } else {
+                            if (player[c1].x_add > 0)
+                                player[c2].x = player[c1].x - (12L << 16);
+                            else if (player[c2].x_add < 0)
+                                player[c1].x = player[c2].x + (12L << 16);
+                            else {
+                                player[c1].x -= player[c1].x_add;
+                                player[c2].x -= player[c2].x_add;
+                            }
+                            l1 = player[c2].x_add;
+                            player[c2].x_add = player[c1].x_add;
+                            player[c1].x_add = l1;
+                            if (player[c1].x_add < 0)
+                                player[c1].x_add = -player[c1].x_add;
+                            if (player[c2].x_add > 0)
+                                player[c2].x_add = -player[c2].x_add;
                         }
-                        l1 = player[c2].x_add;
-                        player[c2].x_add = player[c1].x_add;
-                        player[c1].x_add = l1;
-                        if (player[c1].x_add < 0)
-                            player[c1].x_add = -player[c1].x_add;
-                        if (player[c2].x_add > 0)
-                            player[c2].x_add = -player[c2].x_add;
                     }
                 }
             }

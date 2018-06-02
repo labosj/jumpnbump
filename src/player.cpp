@@ -15,85 +15,85 @@ extern int blood_is_thicker_than_water;
 extern main_info_t main_info;
 extern object_anim_t object_anims[8];
 
-void player_action_left(int c1) {
+void player_action_left(player_t& player) {
     int s1 = 0, s2 = 0;
     int below_left, below, below_right;
 
-    s1 = (player[c1].x >> 16);
-    s2 = (player[c1].y >> 16);
+    s1 = (player.x >> 16);
+    s2 = (player.y >> 16);
     below_left = GET_BAN_MAP_XY(s1, s2 + 16);
     below = GET_BAN_MAP_XY(s1 + 8, s2 + 16);
     below_right = GET_BAN_MAP_XY(s1 + 15, s2 + 16);
 
     if (below == BAN_ICE) {
-        if (player[c1].x_add > 0)
-            player[c1].x_add -= 1024;
+        if (player.x_add > 0)
+            player.x_add -= 1024;
         else
-            player[c1].x_add -= 768;
+            player.x_add -= 768;
     } else if ((below_left != BAN_SOLID && below_right == BAN_ICE) ||
                (below_left == BAN_ICE && below_right != BAN_SOLID)) {
-        if (player[c1].x_add > 0)
-            player[c1].x_add -= 1024;
+        if (player.x_add > 0)
+            player.x_add -= 1024;
         else
-            player[c1].x_add -= 768;
+            player.x_add -= 768;
     } else {
-        if (player[c1].x_add > 0) {
-            player[c1].x_add -= 16384;
-            if (player[c1].x_add > -98304L && player[c1].in_water == 0 && below == BAN_SOLID)
-                add_object(OBJ_SMOKE, (player[c1].x >> 16) + 2 + rnd(9), (player[c1].y >> 16) + 13 + rnd(5), 0,
+        if (player.x_add > 0) {
+            player.x_add -= 16384;
+            if (player.x_add > -98304L && player.in_water == 0 && below == BAN_SOLID)
+                add_object(OBJ_SMOKE, (player.x >> 16) + 2 + rnd(9), (player.y >> 16) + 13 + rnd(5), 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
-            player[c1].x_add -= 12288;
+            player.x_add -= 12288;
     }
-    if (player[c1].x_add < -98304L)
-        player[c1].x_add = -98304L;
-    player[c1].direction = 1;
-    if (player[c1].anim == 0) {
-        player[c1].anim = 1;
-        player[c1].frame = 0;
-        player[c1].frame_tick = 0;
-        player[c1].image = player_anims[player[c1].anim].frame[player[c1].frame].image + player[c1].direction * 9;
+    if (player.x_add < -98304L)
+        player.x_add = -98304L;
+    player.direction = 1;
+    if (player.anim == 0) {
+        player.anim = 1;
+        player.frame = 0;
+        player.frame_tick = 0;
+        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
     }
 }
 
-void player_action_right(int c1) {
+void player_action_right(player_t& player) {
     int s1 = 0, s2 = 0;
     int below_left, below, below_right;
 
-    s1 = (player[c1].x >> 16);
-    s2 = (player[c1].y >> 16);
+    s1 = (player.x >> 16);
+    s2 = (player.y >> 16);
     below_left = GET_BAN_MAP_XY(s1, s2 + 16);
     below = GET_BAN_MAP_XY(s1 + 8, s2 + 16);
     below_right = GET_BAN_MAP_XY(s1 + 15, s2 + 16);
 
     if (below == BAN_ICE) {
-        if (player[c1].x_add < 0)
-            player[c1].x_add += 1024;
+        if (player.x_add < 0)
+            player.x_add += 1024;
         else
-            player[c1].x_add += 768;
+            player.x_add += 768;
     } else if ((below_left != BAN_SOLID && below_right == BAN_ICE) ||
                (below_left == BAN_ICE && below_right != BAN_SOLID)) {
-        if (player[c1].x_add > 0)
-            player[c1].x_add += 1024;
+        if (player.x_add > 0)
+            player.x_add += 1024;
         else
-            player[c1].x_add += 768;
+            player.x_add += 768;
     } else {
-        if (player[c1].x_add < 0) {
-            player[c1].x_add += 16384;
-            if (player[c1].x_add < 98304L && player[c1].in_water == 0 && below == BAN_SOLID)
-                add_object(OBJ_SMOKE, (player[c1].x >> 16) + 2 + rnd(9), (player[c1].y >> 16) + 13 + rnd(5), 0,
+        if (player.x_add < 0) {
+            player.x_add += 16384;
+            if (player.x_add < 98304L && player.in_water == 0 && below == BAN_SOLID)
+                add_object(OBJ_SMOKE, (player.x >> 16) + 2 + rnd(9), (player.y >> 16) + 13 + rnd(5), 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
-            player[c1].x_add += 12288;
+            player.x_add += 12288;
     }
-    if (player[c1].x_add > 98304L)
-        player[c1].x_add = 98304L;
-    player[c1].direction = 0;
-    if (player[c1].anim == 0) {
-        player[c1].anim = 1;
-        player[c1].frame = 0;
-        player[c1].frame_tick = 0;
-        player[c1].image = player_anims[player[c1].anim].frame[player[c1].frame].image + player[c1].direction * 9;
+    if (player.x_add > 98304L)
+        player.x_add = 98304L;
+    player.direction = 0;
+    if (player.anim == 0) {
+        player.anim = 1;
+        player.frame = 0;
+        player.frame_tick = 0;
+        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
     }
 }
 
@@ -112,17 +112,17 @@ void steer_players(void) {
                 if (player[c1].action_left && player[c1].action_right) {
                     if (player[c1].direction == 0) {
                         if (player[c1].action_right) {
-                            player_action_right(c1);
+                            player_action_right(player[c1]);
                         }
                     } else {
                         if (player[c1].action_left) {
-                            player_action_left(c1);
+                            player_action_left(player[c1]);
                         }
                     }
                 } else if (player[c1].action_left) {
-                    player_action_left(c1);
+                    player_action_left(player[c1]);
                 } else if (player[c1].action_right) {
-                    player_action_right(c1);
+                    player_action_right(player[c1]);
                 } else if ((!player[c1].action_left) && (!player[c1].action_right)) {
                     int below_left, below, below_right;
 

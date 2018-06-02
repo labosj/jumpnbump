@@ -232,9 +232,6 @@ void flippage(int page);
 void draw_begin(void);
 void draw_end(void);
 void clear_lines(int page, int y, int count, int color);
-int get_color(int color, char pal[768]);
-int get_pixel(int page, int x, int y);
-void set_pixel(int page, int x, int y, int color);
 void setpalette(int index, int count, char *palette);
 void fillpalette(int red, int green, int blue);
 

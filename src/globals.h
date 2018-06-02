@@ -113,7 +113,6 @@ extern int ai[JNB_MAX_PLAYERS];
 #endif
 
 #define NUM_OBJECTS 200
-#define NUM_LEFTOVERS 50
 
 #define OBJ_SPRING 0
 #define OBJ_SPLASH 1
@@ -218,10 +217,7 @@ void add_object(int type, int x, int y, int x_add, int y_add, int anim, int fram
 void update_objects(void);
 void update_player_actions();
 int add_pob(int page, int x, int y, int image, gob_t *pob_data);
-void draw_pobs(int page);
-void redraw_pob_backgrounds(int page);
-int add_leftovers(int page, int x, int y, int image, gob_t *pob_data);
-void draw_leftovers(int page);
+
 int init_level(int level, char *pal);
 void deinit_level(void);
 int init_program(int argc, char *argv[], char *pal);

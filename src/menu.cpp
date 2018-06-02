@@ -28,6 +28,7 @@
 #include "globals.h"
 #include "menu.h"
 #include "data.h"
+#include "draw.h"
 
 char menu_pal[768];
 char menu_cur_pal[768];
@@ -66,7 +67,7 @@ const char *message[] = {
 
 #define NUM_MESSAGES (sizeof(message)/sizeof(char *))
 
-int menu(main_info_t& main_info, unsigned char* datafile_buffer)
+int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& leftovers)
 {
 	int c1;
 	int esc_pressed;
@@ -452,7 +453,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer)
 
 			if (update_count == 1) {
 				draw_begin();
-				draw_pobs(main_info.draw_page);
+				draw_pobs(main_info.draw_page, main_info, leftovers);
 				draw_end();
 
 				if (mod_fade_direction == 1) {
@@ -544,7 +545,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer)
 				setpalette(240, 16, fade_pal);
 
 				draw_begin();
-				redraw_pob_backgrounds(main_info.draw_page);
+				redraw_pob_backgrounds(main_info.draw_page, main_info);
 				draw_end();
 			}
 

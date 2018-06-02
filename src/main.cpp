@@ -27,6 +27,8 @@
 
 #include "globals.h"
 #include "menu.h"
+#include "leftovers.h"
+#include "draw.h"
 #include <fcntl.h>
 #include <string>
 
@@ -59,6 +61,7 @@
 #endif
 int endscore_reached;
 
+
 const auto RABBIT_NAME_1 = "AMANDA";
 const auto RABBIT_NAME_2 = "EDWIN";
 unsigned char *datafile_buffer = nullptr;
@@ -83,28 +86,6 @@ char pal[768];
 char cur_pal[768];
 
 int ai[JNB_MAX_PLAYERS];
-
-unsigned int ban_map[17][22] = {
-        {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0},
-        {1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1},
-        {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
-        {1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
-        {2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 1, 3, 3, 3, 1, 1, 1},
-        {2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};
-
-#define GET_BAN_MAP_XY(x, y) ban_map[(y) >> 4][(x) >> 4]
 
 
 struct {
@@ -237,21 +218,14 @@ struct {
         }
 };
 
-struct {
-    struct {
-        short num_pobs;
-        struct {
-            int x, y;
-            int image;
-            gob_t *pob_data;
-        } pobs[NUM_LEFTOVERS];
-    } page[2];
-} leftovers;
+leftovers_t leftovers;
 
 int pogostick, bunnies_in_space, jetpack, blood_is_thicker_than_water;
 
 int client_player_num = -1;
 
+
+#include "ban_map.h"
 
 
 static void flip_pixels(unsigned char *pixels) {
@@ -311,10 +285,10 @@ void serverSendKillPacket(int killer, int victim) {
         }
         player[c1].bumped[c2]++;
         s1 = player[c1].bumps % 100;
-        add_leftovers(0, 360, 34 + c1 * 64, s1 / 10, &number_gobs);
-        add_leftovers(1, 360, 34 + c1 * 64, s1 / 10, &number_gobs);
-        add_leftovers(0, 376, 34 + c1 * 64, s1 - (s1 / 10) * 10, &number_gobs);
-        add_leftovers(1, 376, 34 + c1 * 64, s1 - (s1 / 10) * 10, &number_gobs);
+        add_leftovers(0, 360, 34 + c1 * 64, s1 / 10, &number_gobs, leftovers);
+        add_leftovers(1, 360, 34 + c1 * 64, s1 / 10, &number_gobs, leftovers);
+        add_leftovers(0, 376, 34 + c1 * 64, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
+        add_leftovers(1, 376, 34 + c1 * 64, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
     }
 }
 
@@ -489,7 +463,7 @@ static void game_loop(void) {
 
                 draw_begin();
 
-                draw_pobs(main_info.draw_page);
+                draw_pobs(main_info.draw_page, main_info, leftovers);
 
 
                 draw_end();
@@ -545,9 +519,9 @@ static void game_loop(void) {
 
                 draw_begin();
 
-                redraw_pob_backgrounds(main_info.draw_page);
+                redraw_pob_backgrounds(main_info.draw_page, main_info);
 
-                draw_leftovers(main_info.draw_page);
+                draw_leftovers(main_info.draw_page, leftovers);
 
                 draw_end();
             }
@@ -575,7 +549,7 @@ static int menu_loop(unsigned char* datafile_buffer) {
 
     while (1) {
 
-        if (menu(main_info, datafile_buffer) != 0)
+        if (menu(main_info, datafile_buffer, leftovers) != 0)
             deinit_program();
 
 
@@ -816,8 +790,6 @@ static void player_action_right(int c1) {
         player[c1].image = player_anims[player[c1].anim].frame[player[c1].frame].image + player[c1].direction * 9;
     }
 }
-
-#define GET_BAN_MAP_IN_WATER(s1, s2) (GET_BAN_MAP_XY((s1), ((s2) + 7)) == BAN_VOID || GET_BAN_MAP_XY(((s1) + 15), ((s2) + 7)) == BAN_VOID) && (GET_BAN_MAP_XY((s1), ((s2) + 8)) == BAN_WATER || GET_BAN_MAP_XY(((s1) + 15), ((s2) + 8)) == BAN_WATER)
 
 
 void steer_players(void) {
@@ -1549,9 +1521,9 @@ void update_objects(void) {
                                     if (rnd(100) < 10) {
                                         s1 = rnd(4) - 2;
                                         add_leftovers(0, objects[c1].x >> 16, (objects[c1].y >> 16) + s1,
-                                                      objects[c1].frame, &object_gobs);
+                                                      objects[c1].frame, &object_gobs, leftovers);
                                         add_leftovers(1, objects[c1].x >> 16, (objects[c1].y >> 16) + s1,
-                                                      objects[c1].frame, &object_gobs);
+                                                      objects[c1].frame, &object_gobs, leftovers);
                                     }
                                     objects[c1].used = 0;
                                 }
@@ -1610,80 +1582,6 @@ int add_pob(int page, int x, int y, int image, gob_t *pob_data) {
 }
 
 
-void draw_pobs(int page) {
-    int c1;
-    int back_buf_ofs;
-
-    back_buf_ofs = 0;
-
-    for (c1 = main_info.page_info[page].num_pobs - 1; c1 >= 0; c1--) {
-        main_info.page_info[page].pobs[c1].back_buf_ofs = back_buf_ofs;
-        get_block(page, main_info.page_info[page].pobs[c1].x -
-                        pob_hs_x(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  main_info.page_info[page].pobs[c1].y -
-                  pob_hs_y(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  pob_width(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  pob_height(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  (unsigned char *) main_info.pob_backbuf[page] + back_buf_ofs);
-        if (scale_up)
-            back_buf_ofs +=
-                    pob_width(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data) *
-                    pob_height(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data) *
-                    4;
-        else
-            back_buf_ofs +=
-                    pob_width(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data) *
-                    pob_height(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data);
-        put_pob(page, main_info.page_info[page].pobs[c1].x, main_info.page_info[page].pobs[c1].y,
-                main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data, 1);
-    }
-
-}
-
-
-void redraw_pob_backgrounds(int page) {
-    int c1;
-
-    for (c1 = 0; c1 < main_info.page_info[page].num_pobs; c1++)
-        put_block(page, main_info.page_info[page].pobs[c1].x -
-                        pob_hs_x(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  main_info.page_info[page].pobs[c1].y -
-                  pob_hs_y(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  pob_width(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  pob_height(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  (unsigned char *) main_info.pob_backbuf[page] + main_info.page_info[page].pobs[c1].back_buf_ofs);
-
-}
-
-
-int add_leftovers(int page, int x, int y, int image, gob_t *pob_data) {
-
-    if (leftovers.page[page].num_pobs >= NUM_LEFTOVERS)
-        return 1;
-
-    leftovers.page[page].pobs[leftovers.page[page].num_pobs].x = x;
-    leftovers.page[page].pobs[leftovers.page[page].num_pobs].y = y;
-    leftovers.page[page].pobs[leftovers.page[page].num_pobs].image = image;
-    leftovers.page[page].pobs[leftovers.page[page].num_pobs].pob_data = pob_data;
-    leftovers.page[page].num_pobs++;
-
-    return 0;
-
-}
-
-
-void draw_leftovers(int page) {
-    int c1;
-
-    for (c1 = leftovers.page[page].num_pobs - 1; c1 >= 0; c1--)
-        put_pob(page, leftovers.page[page].pobs[c1].x, leftovers.page[page].pobs[c1].y,
-                leftovers.page[page].pobs[c1].image, leftovers.page[page].pobs[c1].pob_data, 1);
-
-    leftovers.page[page].num_pobs = 0;
-
-}
-
-
 int init_level(int level, char *pal) {
     unsigned char *handle;
     int c1, c2;
@@ -1717,10 +1615,10 @@ int init_level(int level, char *pal) {
             for (c2 = 0; c2 < JNB_MAX_PLAYERS; c2++)
                 player[c1].bumped[c2] = 0;
             position_player(c1);
-            add_leftovers(0, 360, 34 + c1 * 64, 0, &number_gobs);
-            add_leftovers(1, 360, 34 + c1 * 64, 0, &number_gobs);
-            add_leftovers(0, 376, 34 + c1 * 64, 0, &number_gobs);
-            add_leftovers(1, 376, 34 + c1 * 64, 0, &number_gobs);
+            add_leftovers(0, 360, 34 + c1 * 64, 0, &number_gobs, leftovers);
+            add_leftovers(1, 360, 34 + c1 * 64, 0, &number_gobs, leftovers);
+            add_leftovers(0, 376, 34 + c1 * 64, 0, &number_gobs, leftovers);
+            add_leftovers(1, 376, 34 + c1 * 64, 0, &number_gobs, leftovers);
         }
     }
 

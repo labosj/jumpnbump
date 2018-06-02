@@ -26,11 +26,11 @@ public:
     * @param y
     * @return
     */
-    unsigned int& get_xy(int x, int y);
+    unsigned int& get_by_pixel(int x, int y);
     unsigned int& get(std::pair<int, int> position);
     const unsigned int& get(std::pair<int, int> position) const;
-    const unsigned int& get_xy(int x, int y) const;
-    bool is_water(int x, int y) const;
+    const unsigned int& get_by_pixel(int x, int y) const;
+    bool is_pixel_in_water(int x, int y) const;
     std::pair<int, int> get_random_position() const;
 
     /**

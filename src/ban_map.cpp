@@ -32,7 +32,7 @@ unsigned int (&ban_map)[17][22] = ban_map_new.map;
 };*/
 
 
-unsigned int& ban_map_t::get_xy(int x, int y) {
+unsigned int& ban_map_t::get_by_pixel(int x, int y) {
     return this->map[(y) >> 4][(x) >> 4];
 }
 
@@ -44,13 +44,13 @@ const unsigned int& ban_map_t::get(std::pair<int, int> pos) const {
     return this->map[pos.second][pos.first];
 }
 
-const unsigned int& ban_map_t::get_xy(int x, int y) const {
+const unsigned int& ban_map_t::get_by_pixel(int x, int y) const {
     return this->map[(y) >> 4][(x) >> 4];
 }
 
-bool ban_map_t::is_water(int x, int y) const {
-    return (this->get_xy((x), ((y) + 7)) == BAN_VOID || this->get_xy(((x) + 15), ((y) + 7)) == BAN_VOID)
-           && (this->get_xy((x), ((y) + 8)) == BAN_WATER || this->get_xy(((x) + 15), ((y) + 8)) == BAN_WATER);
+bool ban_map_t::is_pixel_in_water(int x, int y) const {
+    return (this->get_by_pixel((x), ((y) + 7)) == BAN_VOID || this->get_by_pixel(((x) + 15), ((y) + 7)) == BAN_VOID)
+           && (this->get_by_pixel((x), ((y) + 8)) == BAN_WATER || this->get_by_pixel(((x) + 15), ((y) + 8)) == BAN_WATER);
 }
 
 

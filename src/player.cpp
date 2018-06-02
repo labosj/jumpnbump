@@ -22,9 +22,9 @@ void player_action_left(player_t& player) {
 
     s1 = (player.x >> 16);
     s2 = (player.y >> 16);
-    below_left = ban_map_new.get_xy(s1, s2 + 16);
-    below = ban_map_new.get_xy(s1 + 8, s2 + 16);
-    below_right = ban_map_new.get_xy(s1 + 15, s2 + 16);
+    below_left = ban_map_new.get_by_pixel(s1, s2 + 16);
+    below = ban_map_new.get_by_pixel(s1 + 8, s2 + 16);
+    below_right = ban_map_new.get_by_pixel(s1 + 15, s2 + 16);
 
     if (below == BAN_ICE) {
         if (player.x_add > 0)
@@ -63,9 +63,9 @@ void player_action_right(player_t& player) {
 
     s1 = (player.x >> 16);
     s2 = (player.y >> 16);
-    below_left = ban_map_new.get_xy(s1, s2 + 16);
-    below = ban_map_new.get_xy(s1 + 8, s2 + 16);
-    below_right = ban_map_new.get_xy(s1 + 15, s2 + 16);
+    below_left = ban_map_new.get_by_pixel(s1, s2 + 16);
+    below = ban_map_new.get_by_pixel(s1 + 8, s2 + 16);
+    below_right = ban_map_new.get_by_pixel(s1 + 15, s2 + 16);
 
     if (below == BAN_ICE) {
         if (player.x_add < 0)
@@ -133,9 +133,9 @@ void steer_players(void) {
                     //TODO: log de steer
                     if ( c1 == 0 )
                         printf("Steer player %d => [%d, %d] => [%d, %d]\n", c1, player[c1].x, player[c1].y, s1, s2);
-                    below_left = ban_map_new.get_xy(s1, s2 + 16);
-                    below = ban_map_new.get_xy(s1 + 8, s2 + 16);
-                    below_right = ban_map_new.get_xy(s1 + 15, s2 + 16);
+                    below_left = ban_map_new.get_by_pixel(s1, s2 + 16);
+                    below = ban_map_new.get_by_pixel(s1 + 8, s2 + 16);
+                    below_right = ban_map_new.get_by_pixel(s1 + 15, s2 + 16);
                     if (below == BAN_SOLID || below == BAN_SPRING ||
                         (((below_left == BAN_SOLID || below_left == BAN_SPRING) && below_right != BAN_ICE) ||
                          (below_left != BAN_ICE && (below_right == BAN_SOLID || below_right == BAN_SPRING)))) {
@@ -148,7 +148,7 @@ void steer_players(void) {
                             if (player[c1].x_add < 0)
                                 player[c1].x_add = 0;
                         }
-                        if (player[c1].x_add != 0 && ban_map_new.get_xy((s1 + 8), (s2 + 16)) == BAN_SOLID)
+                        if (player[c1].x_add != 0 && ban_map_new.get_by_pixel((s1 + 8), (s2 + 16)) == BAN_SOLID)
                             add_object(OBJ_SMOKE, (player[c1].x >> 16) + 2 + rnd(9), (player[c1].y >> 16) + 13 + rnd(5),
                                        0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
                     }
@@ -168,9 +168,10 @@ void steer_players(void) {
                         if (s2 < -16)
                             s2 = -16;
                         /* jump */
-                        if (ban_map_new.get_xy(s1, (s2 + 16)) == BAN_SOLID || ban_map_new.get_xy(s1, (s2 + 16)) == BAN_ICE ||
-                            ban_map_new.get_xy((s1 + 15), (s2 + 16)) == BAN_SOLID ||
-                            ban_map_new.get_xy((s1 + 15), (s2 + 16)) == BAN_ICE) {
+                        if (ban_map_new.get_by_pixel(s1, (s2 + 16)) == BAN_SOLID ||
+                                ban_map_new.get_by_pixel(s1, (s2 + 16)) == BAN_ICE ||
+                                ban_map_new.get_by_pixel((s1 + 15), (s2 + 16)) == BAN_SOLID ||
+                                ban_map_new.get_by_pixel((s1 + 15), (s2 + 16)) == BAN_ICE) {
                             player[c1].y_add = -280000L;
                             player[c1].anim = 2;
                             player[c1].frame = 0;
@@ -187,7 +188,7 @@ void steer_players(void) {
                                             (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
                         }
                         /* jump out of water */
-                        if (ban_map_new.is_water(s1, s2)) {
+                        if (ban_map_new.is_pixel_in_water(s1, s2)) {
                             player[c1].y_add = -196608L;
                             player[c1].in_water = 0;
                             player[c1].anim = 2;
@@ -225,7 +226,7 @@ void steer_players(void) {
                         player[c1].y_add -= 16384;
                         if (player[c1].y_add < -400000L)
                             player[c1].y_add = -400000L;
-                        if (ban_map_new.is_water(s1, s2))
+                        if (ban_map_new.is_pixel_in_water(s1, s2))
                             player[c1].in_water = 0;
                         if (rnd(100) < 50)
                             add_object(OBJ_SMOKE, (player[c1].x >> 16) + 6 + rnd(5), (player[c1].y >> 16) + 10 + rnd(5),
@@ -251,19 +252,21 @@ void steer_players(void) {
                     }
 
                     s1 = (player[c1].x >> 16);
-                    if (ban_map_new.get_xy(s1, s2) == BAN_SOLID || ban_map_new.get_xy(s1, s2) == BAN_ICE ||
-                        ban_map_new.get_xy(s1, s2) == BAN_SPRING || ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SOLID ||
-                        ban_map_new.get_xy(s1, (s2 + 15)) == BAN_ICE || ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SPRING) {
+                    if (ban_map_new.get_by_pixel(s1, s2) == BAN_SOLID || ban_map_new.get_by_pixel(s1, s2) == BAN_ICE ||
+                            ban_map_new.get_by_pixel(s1, s2) == BAN_SPRING || ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_SOLID ||
+                            ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_ICE ||
+                            ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_SPRING) {
                         player[c1].x = (((s1 + 16) & 0xfff0)) << 16;
                         player[c1].x_add = 0;
                     }
 
                     s1 = (player[c1].x >> 16);
-                    if (ban_map_new.get_xy((s1 + 15), s2) == BAN_SOLID || ban_map_new.get_xy((s1 + 15), s2) == BAN_ICE ||
-                        ban_map_new.get_xy((s1 + 15), s2) == BAN_SPRING ||
-                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SOLID ||
-                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_ICE ||
-                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SPRING) {
+                    if (ban_map_new.get_by_pixel((s1 + 15), s2) == BAN_SOLID ||
+                            ban_map_new.get_by_pixel((s1 + 15), s2) == BAN_ICE ||
+                            ban_map_new.get_by_pixel((s1 + 15), s2) == BAN_SPRING ||
+                            ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_SOLID ||
+                            ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_ICE ||
+                            ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_SPRING) {
                         player[c1].x = (((s1 + 16) & 0xfff0) - 16) << 16;
                         player[c1].x_add = 0;
                     }
@@ -275,11 +278,11 @@ void steer_players(void) {
                 s2 = (player[c1].y >> 16);
                 if (s2 < 0)
                     s2 = 0;
-                if (ban_map_new.get_xy((s1 + 8), (s2 + 15)) == BAN_SPRING ||
-                    ((ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SPRING &&
-                      ban_map_new.get_xy((s1 + 15), (s2 + 15)) != BAN_SOLID) ||
-                     (ban_map_new.get_xy(s1, (s2 + 15)) != BAN_SOLID &&
-                      ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SPRING))) {
+                if (ban_map_new.get_by_pixel((s1 + 8), (s2 + 15)) == BAN_SPRING ||
+                    ((ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_SPRING &&
+                            ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) != BAN_SOLID) ||
+                     (ban_map_new.get_by_pixel(s1, (s2 + 15)) != BAN_SOLID &&
+                             ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_SPRING))) {
                     player[c1].y = ((player[c1].y >> 16) & 0xfff0) << 16;
                     player[c1].y_add = -400000L;
                     player[c1].anim = 2;
@@ -291,7 +294,7 @@ void steer_players(void) {
                     player[c1].jump_abort = 0;
                     for (c2 = 0; c2 < NUM_OBJECTS; c2++) {
                         if (objects[c2].used == 1 && objects[c2].type == OBJ_SPRING) {
-                            if (ban_map_new.get_xy((s1 + 8), (s2 + 15)) == BAN_SPRING) {
+                            if (ban_map_new.get_by_pixel((s1 + 8), (s2 + 15)) == BAN_SPRING) {
                                 if ((objects[c2].x >> 20) == ((s1 + 8) >> 4) &&
                                     (objects[c2].y >> 20) == ((s2 + 15) >> 4)) {
                                     objects[c2].frame = 0;
@@ -300,7 +303,7 @@ void steer_players(void) {
                                     break;
                                 }
                             } else {
-                                if (ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SPRING) {
+                                if (ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_SPRING) {
                                     if ((objects[c2].x >> 20) == (s1 >> 4) &&
                                         (objects[c2].y >> 20) == ((s2 + 15) >> 4)) {
                                         objects[c2].frame = 0;
@@ -308,7 +311,7 @@ void steer_players(void) {
                                         objects[c2].image = object_anims[objects[c2].anim].frame[objects[c2].frame].image;
                                         break;
                                     }
-                                } else if (ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SPRING) {
+                                } else if (ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_SPRING) {
                                     if ((objects[c2].x >> 20) == ((s1 + 15) >> 4) &&
                                         (objects[c2].y >> 20) == ((s2 + 15) >> 4)) {
                                         objects[c2].frame = 0;
@@ -326,9 +329,10 @@ void steer_players(void) {
                 s2 = (player[c1].y >> 16);
                 if (s2 < 0)
                     s2 = 0;
-                if (ban_map_new.get_xy(s1, s2) == BAN_SOLID || ban_map_new.get_xy(s1, s2) == BAN_ICE ||
-                    ban_map_new.get_xy(s1, s2) == BAN_SPRING || ban_map_new.get_xy((s1 + 15), s2) == BAN_SOLID ||
-                    ban_map_new.get_xy((s1 + 15), s2) == BAN_ICE || ban_map_new.get_xy((s1 + 15), s2) == BAN_SPRING) {
+                if (ban_map_new.get_by_pixel(s1, s2) == BAN_SOLID || ban_map_new.get_by_pixel(s1, s2) == BAN_ICE ||
+                        ban_map_new.get_by_pixel(s1, s2) == BAN_SPRING || ban_map_new.get_by_pixel((s1 + 15), s2) == BAN_SOLID ||
+                        ban_map_new.get_by_pixel((s1 + 15), s2) == BAN_ICE ||
+                        ban_map_new.get_by_pixel((s1 + 15), s2) == BAN_SPRING) {
                     player[c1].y = (((s2 + 16) & 0xfff0)) << 16; //TODO: MASK
                     player[c1].y_add = 0;
                     player[c1].anim = 0;
@@ -341,7 +345,7 @@ void steer_players(void) {
                 s2 = (player[c1].y >> 16);
                 if (s2 < 0)
                     s2 = 0;
-                if (ban_map_new.get_xy((s1 + 8), (s2 + 8)) == BAN_WATER) {
+                if (ban_map_new.get_by_pixel((s1 + 8), (s2 + 8)) == BAN_WATER) {
                     if (player[c1].in_water == 0) {
                         /* falling into water */
                         player[c1].in_water = 1;
@@ -374,17 +378,19 @@ void steer_players(void) {
                         player[c1].y_add = -65536L;
                     if (player[c1].y_add > 65535L)
                         player[c1].y_add = 65535L;
-                    if (ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SOLID || ban_map_new.get_xy(s1, (s2 + 15)) == BAN_ICE ||
-                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SOLID ||
-                        ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_ICE) {
+                    if (ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_SOLID ||
+                            ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_ICE ||
+                            ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_SOLID ||
+                            ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_ICE) {
                         player[c1].y = (((s2 + 16) & 0xfff0) - 16) << 16;
                         player[c1].y_add = 0;
                     }
-                } else if (ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SOLID || ban_map_new.get_xy(s1, (s2 + 15)) == BAN_ICE ||
-                           ban_map_new.get_xy(s1, (s2 + 15)) == BAN_SPRING ||
-                           ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SOLID ||
-                           ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_ICE ||
-                           ban_map_new.get_xy((s1 + 15), (s2 + 15)) == BAN_SPRING) {
+                } else if (ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_SOLID ||
+                        ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_ICE ||
+                        ban_map_new.get_by_pixel(s1, (s2 + 15)) == BAN_SPRING ||
+                        ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_SOLID ||
+                        ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_ICE ||
+                        ban_map_new.get_by_pixel((s1 + 15), (s2 + 15)) == BAN_SPRING) {
                     player[c1].in_water = 0;
                     player[c1].y = (((s2 + 16) & 0xfff0) - 16) << 16;
                     player[c1].y_add = 0;

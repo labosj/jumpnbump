@@ -455,7 +455,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 
 			if (update_count == 1) {
 				draw_begin();
-				draw_pobs(main_info.draw_page, main_info, leftovers);
+				draw_pobs(main_info.draw_page, main_info);
 				draw_end();
 
 				if (mod_fade_direction == 1) {

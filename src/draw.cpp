@@ -10,7 +10,7 @@
 #include "main_info.h"
 #include "leftovers.h"
 
-void draw_pobs(int page, main_info_t& main_info, leftovers_t& leftovers) {
+void draw_pobs(int page, main_info_t& main_info) {
     int c1;
     int back_buf_ofs;
 

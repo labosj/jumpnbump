@@ -10,7 +10,7 @@ struct gob_t;
 struct main_info_t;
 struct leftovers_t;
 
-void draw_pobs(int page, main_info_t& main_info, leftovers_t& leftovers);
+void draw_pobs(int page, main_info_t& main_info);
 void redraw_pob_backgrounds(int page, main_info_t& main_info);
 int add_leftovers(int page, int x, int y, int image, gob_t *pob_data, leftovers_t& leftovers);
 void draw_leftovers(int page, leftovers_t& leftovers);

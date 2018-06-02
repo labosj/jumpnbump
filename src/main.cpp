@@ -26,36 +26,22 @@
  */
 
 #include "globals.h"
-#include "menu.h"
-#include "leftovers.h"
-#include "draw.h"
-#include <fcntl.h>
-#include <string>
+#include "gob.h"
 #include "object_anim.h"
-
-#ifndef _WIN32
-
+#include "leftovers.h"
+#include "util.h"
+#include "draw.h"
+#include "player.h"
+#include "menu.h"
+#include "data.h"
+#include "ban_map.h"
+#include <string>
+#include <fcntl.h>
 #include <unistd.h>
+
 #include <utility>
 #include <tuple>
 
-#endif
-
-#ifdef BZLIB_SUPPORT
-
-#include "bzlib.h"
-
-#endif
-
-#ifdef ZLIB_SUPPORT
-
-#include "zlib.h"
-#include "main_info.h"
-#include "gob.h"
-#include "player.h"
-#include "data.h"
-
-#endif
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
@@ -219,10 +205,6 @@ int pogostick, bunnies_in_space, jetpack, blood_is_thicker_than_water;
 int client_player_num = -1;
 
 
-#include "ban_map.h"
-#include "util.h"
-
-
 static void flip_pixels(unsigned char *pixels) {
     int x, y;
     unsigned char temp;
@@ -287,16 +269,6 @@ void serverSendKillPacket(int killer, int victim) {
     }
 }
 
-static void player_kill(int c1, int c2) {
-    if (player[c1].y_add >= 0) {
-
-        serverSendKillPacket(c1, c2);
-    } else {
-        if (player[c2].y_add < 0)
-            player[c2].y_add = 0;
-    }
-}
-
 static void check_cheats(void) {
     if (strncmp(last_keys, "kcitsogop", strlen("kcitsogop")) == 0) {
         pogostick ^= 1;
@@ -336,65 +308,6 @@ static void check_cheats(void) {
     }
 }
 
-void check_collision(int c1, int c2) {
-    if (player[c1].enabled == 1 && player[c2].enabled == 1) {
-        if (labs(player[c1].x - player[c2].x) < (12L << 16) &&
-            labs(player[c1].y - player[c2].y) < (12L << 16)) {
-            if ((labs(player[c1].y - player[c2].y) >> 16) > 5) {
-                if (player[c1].y < player[c2].y) {
-                    player_kill(c1, c2);
-                } else {
-                    player_kill(c2, c1);
-                }
-            } else {
-                if (player[c1].x < player[c2].x) {
-                    if (player[c1].x_add > 0)
-                        player[c1].x = player[c2].x - (12L << 16);
-                    else if (player[c2].x_add < 0)
-                        player[c2].x = player[c1].x + (12L << 16);
-                    else {
-                        player[c1].x -= player[c1].x_add;
-                        player[c2].x -= player[c2].x_add;
-                    }
-                    int l1 = player[c2].x_add;
-                    player[c2].x_add = player[c1].x_add;
-                    player[c1].x_add = l1;
-                    if (player[c1].x_add > 0)
-                        player[c1].x_add = -player[c1].x_add;
-                    if (player[c2].x_add < 0)
-                        player[c2].x_add = -player[c2].x_add;
-                } else {
-                    if (player[c1].x_add > 0)
-                        player[c2].x = player[c1].x - (12L << 16);
-                    else if (player[c2].x_add < 0)
-                        player[c1].x = player[c2].x + (12L << 16);
-                    else {
-                        player[c1].x -= player[c1].x_add;
-                        player[c2].x -= player[c2].x_add;
-                    }
-                    int l1 = player[c2].x_add;
-                    player[c2].x_add = player[c1].x_add;
-                    player[c1].x_add = l1;
-                    if (player[c1].x_add < 0)
-                        player[c1].x_add = -player[c1].x_add;
-                    if (player[c2].x_add > 0)
-                        player[c2].x_add = -player[c2].x_add;
-                }
-            }
-        }
-    }
-}
-
-
-static void collision_check(void) {
-    /* collision check */
-    for (int c1 = 0; c1 < 4; c1++) {
-        for (int c2 = c1 + 1; c2 < 4 ; c2++) {
-            check_collision(c1, c2);
-
-        }
-    }
-}
 
 static void game_loop(void) {
     int mod_vol, sfx_vol;
@@ -1177,88 +1090,6 @@ static void preread_datafile(const char *fname) {
     int fd = 0;
     int len;
 
-
-#ifdef BZLIB_SUPPORT
-    auto bzfilename = std::string(fname) + ".bz2";
-    BZFILE *bzf = BZ2_bzopen(bzfilename.c_str(), "rb");
-
-    if (bzf != NULL) {
-        int bufsize = 0;
-        int bufpos = 0;
-        int br;
-        unsigned char *ptr;
-        do {
-            if (bufpos >= bufsize) {
-                bufsize += 1024 * 1024;
-                datafile_buffer = (unsigned char *) realloc(datafile_buffer, bufsize);
-                if (datafile_buffer == NULL) {
-                    perror("realloc()");
-                    exit(42);
-                }
-            }
-
-            br = BZ2_bzread(bzf, datafile_buffer + bufpos, bufsize - bufpos);
-            if (br == -1) {
-                fprintf(stderr, "gzread failed.\n");
-                exit(42);
-            }
-
-            bufpos += br;
-        } while (br > 0);
-
-        /* try to shrink buffer... */
-        ptr = (unsigned char *) realloc(datafile_buffer, bufpos);
-        if (ptr != NULL)
-            datafile_buffer = ptr;
-
-        BZ2_bzclose(bzf);
-        return;
-    }
-
-    /* drop through and try for an gzip compressed or uncompressed datafile... */
-#endif
-
-#ifdef ZLIB_SUPPORT
-
-
-    auto gzfilename = std::string(fname) + ".gz";
-    gzFile gzf = gzopen(gzfilename.c_str(), "rb");
-
-    if (gzf != NULL) {
-        int bufsize = 0;
-        int bufpos = 0;
-        unsigned char *ptr;
-        do {
-            int br;
-            if (bufpos >= bufsize) {
-                bufsize += 1024 * 1024;
-                datafile_buffer = (unsigned char *) realloc(datafile_buffer, bufsize);
-                if (datafile_buffer == NULL) {
-                    perror("realloc()");
-                    exit(42);
-                }
-            }
-
-            br = gzread(gzf, datafile_buffer + bufpos, bufsize - bufpos);
-            if (br == -1) {
-                fprintf(stderr, "gzread failed.\n");
-                exit(42);
-            }
-
-            bufpos += br;
-        } while (!gzeof(gzf));
-
-        /* try to shrink buffer... */
-        ptr = (unsigned char *) realloc(datafile_buffer, bufpos);
-        if (ptr != NULL)
-            datafile_buffer = ptr;
-
-        gzclose(gzf);
-        return;
-    }
-
-    /* drop through and try for an uncompressed datafile... */
-#endif
 
     fd = open(fname, O_RDONLY | O_BINARY);
     if (fd == -1) {

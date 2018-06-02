@@ -5,7 +5,6 @@
 #ifndef JUMPNBUMP_PLAYER_H
 #define JUMPNBUMP_PLAYER_H
 
-#include <src/globals.h>
 
 const unsigned int JNB_MAX_PLAYERS = 4;
 
@@ -24,10 +23,10 @@ struct player_t {
 
 };
 
-/* main.c */
-
-void steer_players(void);
+void steer_players();
 
 void position_player(int player_num);
+
+void collision_check();
 
 #endif //JUMPNBUMP_PLAYER_H

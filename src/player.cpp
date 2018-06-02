@@ -15,6 +15,7 @@ extern int blood_is_thicker_than_water;
 extern main_info_t main_info;
 extern object_anim_t object_anims[8];
 
+void serverSendKillPacket(int c1, int c2);
 
 void player_action_left(player_t& player) {
     int s1 = 0, s2 = 0;
@@ -483,4 +484,73 @@ void position_player(int player_num) {
         }
     }
 
+}
+
+void player_kill(int c1, int c2) {
+    if (player[c1].y_add >= 0) {
+
+        serverSendKillPacket(c1, c2);
+    } else {
+        if (player[c2].y_add < 0)
+            player[c2].y_add = 0;
+    }
+}
+
+void check_collision(int c1, int c2) {
+    if (player[c1].enabled == 1 && player[c2].enabled == 1) {
+        if (labs(player[c1].x - player[c2].x) < (12L << 16) &&
+            labs(player[c1].y - player[c2].y) < (12L << 16)) {
+            if ((labs(player[c1].y - player[c2].y) >> 16) > 5) {
+                if (player[c1].y < player[c2].y) {
+                    player_kill(c1, c2);
+                } else {
+                    player_kill(c2, c1);
+                }
+            } else {
+                if (player[c1].x < player[c2].x) {
+                    if (player[c1].x_add > 0)
+                        player[c1].x = player[c2].x - (12L << 16);
+                    else if (player[c2].x_add < 0)
+                        player[c2].x = player[c1].x + (12L << 16);
+                    else {
+                        player[c1].x -= player[c1].x_add;
+                        player[c2].x -= player[c2].x_add;
+                    }
+                    int l1 = player[c2].x_add;
+                    player[c2].x_add = player[c1].x_add;
+                    player[c1].x_add = l1;
+                    if (player[c1].x_add > 0)
+                        player[c1].x_add = -player[c1].x_add;
+                    if (player[c2].x_add < 0)
+                        player[c2].x_add = -player[c2].x_add;
+                } else {
+                    if (player[c1].x_add > 0)
+                        player[c2].x = player[c1].x - (12L << 16);
+                    else if (player[c2].x_add < 0)
+                        player[c1].x = player[c2].x + (12L << 16);
+                    else {
+                        player[c1].x -= player[c1].x_add;
+                        player[c2].x -= player[c2].x_add;
+                    }
+                    int l1 = player[c2].x_add;
+                    player[c2].x_add = player[c1].x_add;
+                    player[c1].x_add = l1;
+                    if (player[c1].x_add < 0)
+                        player[c1].x_add = -player[c1].x_add;
+                    if (player[c2].x_add > 0)
+                        player[c2].x_add = -player[c2].x_add;
+                }
+            }
+        }
+    }
+}
+
+void collision_check() {
+    /* collision check */
+    for (int c1 = 0; c1 < 4; c1++) {
+        for (int c2 = c1 + 1; c2 < 4 ; c2++) {
+            check_collision(c1, c2);
+
+        }
+    }
 }

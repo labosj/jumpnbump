@@ -13,6 +13,13 @@ const unsigned int BAN_WATER = 2;
 const unsigned int BAN_ICE = 3;
 const unsigned int BAN_SPRING =	4;
 
+/**
+ * The ban map is a two dimensional map of blocks.
+ * A map in the game as 22x17 blocks. A block is about the size of a bunny.
+ * It seems that the ban map has information about objects on the map to calculate valid positions of bunnies.
+ * For example to not respawn a death bunny in a position where is already something, like a floor block, water or someything else.
+ * If you want to get a ban map pos from pizel use {@see ban_map_t::get_by_pixel()}
+ */
 class ban_map_t {
 
 public:
@@ -21,7 +28,7 @@ public:
 
 public:
     /**
-    * This is used for objects
+    * Get the value of a ban map coord using pixel
     * @param x
     * @param y
     * @return

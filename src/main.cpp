@@ -62,7 +62,7 @@ gob_t number_gobs = {0};
 main_info_t main_info;
 player_t player[JNB_MAX_PLAYERS];
 player_anim_t player_anims[7];
-object_t objects[NUM_OBJECTS];
+std::vector<object_t> objects;
 joy_t joy;
 
 char datfile_name[2048];
@@ -618,9 +618,8 @@ int main(int argc, char *argv[]) {
 
 
 void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame) {
-    int c1;
 
-    for (c1 = 0; c1 < NUM_OBJECTS; c1++) {
+    for (int c1 = 0; c1 < objects.size(); c1++) {
         if (objects[c1].used == 0) {
             objects[c1].used = 1;
             objects[c1].type = type;
@@ -634,9 +633,24 @@ void add_object(int type, int x, int y, int x_add, int y_add, int anim, int fram
             objects[c1].frame = frame;
             objects[c1].ticks = object_anims[anim].frame[frame].ticks;
             objects[c1].image = object_anims[anim].frame[frame].image;
-            break;
+            return;
         }
     }
+
+    objects.emplace_back();
+    auto object = objects.back();
+    object.used = 1;
+    object.type = type;
+    object.x = (long) x << 16;
+    object.y = (long) y << 16;
+    object.x_add = x_add;
+    object.y_add = y_add;
+    object.x_acc = 0;
+    object.y_acc = 0;
+    object.anim = anim;
+    object.frame = frame;
+    object.ticks = object_anims[anim].frame[frame].ticks;
+    object.image = object_anims[anim].frame[frame].image;
 
 }
 
@@ -645,7 +659,7 @@ void update_objects(void) {
     int c1;
     int s1 = 0;
 
-    for (c1 = 0; c1 < NUM_OBJECTS; c1++) {
+    for (c1 = 0; c1 < objects.size(); c1++) {
         if (objects[c1].used == 1) {
             switch (objects[c1].type) {
                 case OBJ_SPRING:
@@ -1045,7 +1059,7 @@ int init_level(int level, char *pal) {
         }
     }
 
-    for (c1 = 0; c1 < NUM_OBJECTS; c1++)
+    for (c1 = 0; c1 < objects.size(); c1++)
         objects[c1].used = 0;
 
     for (c1 = 0; c1 < 16; c1++) {

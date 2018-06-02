@@ -293,7 +293,7 @@ void steer_players(void) {
                             player_anims[player[c1].anim].frame[player[c1].frame].image + player[c1].direction * 9;
                     player[c1].jump_ready = 0;
                     player[c1].jump_abort = 0;
-                    for (c2 = 0; c2 < NUM_OBJECTS; c2++) {
+                    for (c2 = 0; c2 < objects.size(); c2++) {
                         if (objects[c2].used == 1 && objects[c2].type == OBJ_SPRING) {
                             if (ban_map_new.get_by_pixel((s1 + 8), (s2 + 15)) == BAN_SPRING) {
                                 if ((objects[c2].x >> 20) == ((s1 + 8) >> 4) &&

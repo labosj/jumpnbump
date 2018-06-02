@@ -104,8 +104,6 @@ extern int ai[JNB_MAX_PLAYERS];
 #define KEY_PL4_RIGHT	SDL_SCANCODE_KP_6
 #define KEY_PL4_JUMP	SDL_SCANCODE_KP_8
 
-#define NUM_OBJECTS 200
-
 #define OBJ_SPRING 0
 #define OBJ_SPLASH 1
 #define OBJ_SMOKE 2
@@ -150,6 +148,8 @@ extern int ai[JNB_MAX_PLAYERS];
 #endif
 #endif
 
+#include <vector>
+
 typedef struct {
 	int num_frames;
 	int restart_frame;
@@ -181,7 +181,7 @@ typedef struct {
 
 extern player_t player[JNB_MAX_PLAYERS];
 extern player_anim_t player_anims[7];
-extern object_t objects[NUM_OBJECTS];
+extern std::vector<object_t> objects;
 extern joy_t joy;
 
 extern char datfile_name[2048];

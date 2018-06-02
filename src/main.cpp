@@ -33,6 +33,8 @@
 #ifndef _WIN32
 
 #include <unistd.h>
+#include <utility>
+#include <tuple>
 
 #endif
 
@@ -1155,26 +1157,45 @@ void steer_players(void) {
 }
 
 
+std::pair<int, int> get_random_available_position() {
+    int x, y = 0;
+    while (true) {
+        x = rnd(22);
+        y = rnd(16);
+
+        if (
+                ban_map[y][x] == BAN_VOID            //si esta vacio
+                && (
+                        ban_map[y + 1][x] == BAN_SOLID ||     //y el de abajo es un solido, posiblemente un suelo
+                        ban_map[y + 1][y] == BAN_ICE  //o un hielo
+                   )
+            ) {
+            break;
+        }
+    }
+    return std::make_pair(x,y);
+}
+
 void position_player(int player_num) {
     int c1;
-    int s1, s2;
+    int x, y;
 
     while (1) {
-        while (1) {
-            s1 = rnd(22);
-            s2 = rnd(16);
-            if (ban_map[s2][s1] == BAN_VOID && (ban_map[s2 + 1][s1] == BAN_SOLID || ban_map[s2 + 1][s1] == BAN_ICE))
-                break;
-        }
+
+        std::tie(x, y) = get_random_available_position();
+
+        //verifica que el conejo no este cerca de otros conejos
         for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
             if (c1 != player_num && player[c1].enabled == 1) {
-                if (abs((s1 << 4) - (player[c1].x >> 16)) < 32 && abs((s2 << 4) - (player[c1].y >> 16)) < 32)
+                if (abs((x << 4) - (player[c1].x >> 16)) < 32 && abs((y << 4) - (player[c1].y >> 16)) < 32)
                     break;
             }
         }
+
+
         if (c1 == JNB_MAX_PLAYERS) {
-            player[player_num].x = (long) s1 << 20;
-            player[player_num].y = (long) s2 << 20;
+            player[player_num].x = (long) x << 20;
+            player[player_num].y = (long) y << 20;
             player[player_num].x_add = player[player_num].y_add = 0;
             player[player_num].direction = 0;
             player[player_num].jump_ready = 1;

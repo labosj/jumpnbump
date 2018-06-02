@@ -15,6 +15,7 @@ add_executable(jumpnbump
         src/sdl/interrpt.cpp
         src/sdl/sound.cpp
 
+        src/player.cpp
         src/ban_map.cpp
         src/draw.cpp
         src/data.cpp
@@ -22,7 +23,7 @@ add_executable(jumpnbump
         src/gob.cpp
         src/menu.cpp
         src/main.cpp
-        src/menu.h)
+        src/menu.h src/object_anim.h)
 
 target_compile_features(jumpnbump PRIVATE cxx_std_11)
 target_compile_definitions(jumpnbump PRIVATE -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DNDEBUG -DUSE_SDL -DZLIB_SUPPORT -DBZLIB_SUPPORT)

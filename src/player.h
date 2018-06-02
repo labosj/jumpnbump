@@ -9,7 +9,7 @@
 
 const unsigned int JNB_MAX_PLAYERS = 4;
 
-typedef struct {
+struct player_t {
 	int action_left,action_up,action_right;
 	int enabled, dead_flag;
 	int bumps;
@@ -18,5 +18,12 @@ typedef struct {
 	int x_add, y_add;
 	int direction, jump_ready, jump_abort, in_water;
 	int anim, frame, frame_tick, image;
-} player_t;
+};
+
+/* main.c */
+
+void steer_players(void);
+
+void position_player(int player_num);
+
 #endif //JUMPNBUMP_PLAYER_H

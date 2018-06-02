@@ -203,10 +203,6 @@ extern gob_t object_gobs;
 extern gob_t number_gobs;
 
 
-/* main.c */
-
-void steer_players(void);
-void position_player(int player_num);
 void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame);
 void update_objects(void);
 void update_player_actions();

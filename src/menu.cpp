@@ -124,8 +124,6 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 
 	update_count = 1;
 	while (1) {
-		for(c1 = 0; c1 < JNB_MAX_PLAYERS; c1++)		// set AI to false
-			ai[c1] = 0;
 
 		while (update_count) {
 

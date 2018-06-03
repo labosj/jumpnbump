@@ -73,8 +73,6 @@ int flip = 0;
 char pal[768];
 char cur_pal[768];
 
-int ai[JNB_MAX_PLAYERS];
-
 
 object_anim_t object_anims[8] = {
         {
@@ -450,11 +448,6 @@ static int menu_loop(unsigned char* datafile_buffer) {
     unsigned char *handle;
     int mod_vol;
     int c1, c2;
-
-    for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++)        // reset players values
-    {
-        ai[c1] = 0;
-    }
 
     while (1) {
 

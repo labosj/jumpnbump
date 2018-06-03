@@ -7,16 +7,6 @@
 *.dll
 *.exe
 *.o
-data/*.gob
-data/jumpbump.dat
-menu/jumpnbump_menu.py
-menu/po/*.mo
-gobpack
-jnbmenu.tcl
-jnbpack
-jnbunpack
-jumpnbump
-sdl.a
 
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm

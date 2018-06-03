@@ -637,8 +637,8 @@ void update_objects(void) {
 
     for (c1 = 0; c1 < objects.size(); c1++) {
         auto& object = objects[c1];
-        if (objects[c1].used == 1) {
-            switch (objects[c1].type) {
+        if (object.is_used()) {
+            switch (object.type) {
                 case OBJ_SPRING:
                     object.update_spring();
                     if (object.is_used() )
@@ -659,173 +659,13 @@ void update_objects(void) {
                     break;
                 case OBJ_YEL_BUTFLY:
                 case OBJ_PINK_BUTFLY:
-                    objects[c1].x_acc += rnd(128) - 64;
-                    if (objects[c1].x_acc < -1024)
-                        objects[c1].x_acc = -1024;
-                    if (objects[c1].x_acc > 1024)
-                        objects[c1].x_acc = 1024;
-                    objects[c1].x_add += objects[c1].x_acc;
-                    if (objects[c1].x_add < -32768)
-                        objects[c1].x_add = -32768;
-                    if (objects[c1].x_add > 32768)
-                        objects[c1].x_add = 32768;
-                    objects[c1].x += objects[c1].x_add;
-                    if ((objects[c1].x >> 16) < 16) {
-                        objects[c1].x = 16 << 16;
-                        objects[c1].x_add = -objects[c1].x_add >> 2;
-                        objects[c1].x_acc = 0;
-                    } else if ((objects[c1].x >> 16) > 350) {
-                        objects[c1].x = 350 << 16;
-                        objects[c1].x_add = -objects[c1].x_add >> 2;
-                        objects[c1].x_acc = 0;
-                    }
-                    if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] != 0) {
-                        if (objects[c1].x_add < 0) {
-                            objects[c1].x = (((objects[c1].x >> 16) + 16) & 0xfff0) << 16;
-                        } else {
-                            objects[c1].x = ((((objects[c1].x >> 16) - 16) & 0xfff0) + 15) << 16;
-                        }
-                        objects[c1].x_add = -objects[c1].x_add >> 2;
-                        objects[c1].x_acc = 0;
-                    }
-                    objects[c1].y_acc += rnd(64) - 32;
-                    if (objects[c1].y_acc < -1024)
-                        objects[c1].y_acc = -1024;
-                    if (objects[c1].y_acc > 1024)
-                        objects[c1].y_acc = 1024;
-                    objects[c1].y_add += objects[c1].y_acc;
-                    if (objects[c1].y_add < -32768)
-                        objects[c1].y_add = -32768;
-                    if (objects[c1].y_add > 32768)
-                        objects[c1].y_add = 32768;
-                    objects[c1].y += objects[c1].y_add;
-                    if ((objects[c1].y >> 16) < 0) {
-                        objects[c1].y = 0;
-                        objects[c1].y_add = -objects[c1].y_add >> 2;
-                        objects[c1].y_acc = 0;
-                    } else if ((objects[c1].y >> 16) > 255) {
-                        objects[c1].y = 255 << 16;
-                        objects[c1].y_add = -objects[c1].y_add >> 2;
-                        objects[c1].y_acc = 0;
-                    }
-                    if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] != 0) {
-                        if (objects[c1].y_add < 0) {
-                            objects[c1].y = (((objects[c1].y >> 16) + 16) & 0xfff0) << 16;
-                        } else {
-                            objects[c1].y = ((((objects[c1].y >> 16) - 16) & 0xfff0) + 15) << 16;
-                        }
-                        objects[c1].y_add = -objects[c1].y_add >> 2;
-                        objects[c1].y_acc = 0;
-                    }
-                    if (objects[c1].type == OBJ_YEL_BUTFLY) {
-                        if (objects[c1].x_add < 0 && objects[c1].anim != OBJ_ANIM_YEL_BUTFLY_LEFT) {
-                            objects[c1].anim = OBJ_ANIM_YEL_BUTFLY_LEFT;
-                            objects[c1].frame = 0;
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                            objects[c1].image = object_anims[objects[c1].anim].frame[objects[c1].frame].image;
-                        } else if (objects[c1].x_add > 0 && objects[c1].anim != OBJ_ANIM_YEL_BUTFLY_RIGHT) {
-                            objects[c1].anim = OBJ_ANIM_YEL_BUTFLY_RIGHT;
-                            objects[c1].frame = 0;
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                            objects[c1].image = object_anims[objects[c1].anim].frame[objects[c1].frame].image;
-                        }
-                    } else {
-                        if (objects[c1].x_add < 0 && objects[c1].anim != OBJ_ANIM_PINK_BUTFLY_LEFT) {
-                            objects[c1].anim = OBJ_ANIM_PINK_BUTFLY_LEFT;
-                            objects[c1].frame = 0;
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                            objects[c1].image = object_anims[objects[c1].anim].frame[objects[c1].frame].image;
-                        } else if (objects[c1].x_add > 0 && objects[c1].anim != OBJ_ANIM_PINK_BUTFLY_RIGHT) {
-                            objects[c1].anim = OBJ_ANIM_PINK_BUTFLY_RIGHT;
-                            objects[c1].frame = 0;
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                            objects[c1].image = object_anims[objects[c1].anim].frame[objects[c1].frame].image;
-                        }
-                    }
-                    objects[c1].ticks--;
-                    if (objects[c1].ticks <= 0) {
-                        objects[c1].frame++;
-                        if (objects[c1].frame >= object_anims[objects[c1].anim].num_frames)
-                            objects[c1].frame = object_anims[objects[c1].anim].restart_frame;
-                        else {
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                            objects[c1].image = object_anims[objects[c1].anim].frame[objects[c1].frame].image;
-                        }
-                    }
-                    if (objects[c1].used == 1)
-                        add_pob(main_info.draw_page, objects[c1].x >> 16, objects[c1].y >> 16, objects[c1].image,
+                    object.update_butterfly();
+                    if (object.is_used() )
+                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
                                 &object_gobs);
                     break;
                 case OBJ_FUR:
-                    if (rnd(100) < 30)
-                        add_object(OBJ_FLESH_TRACE, objects[c1].x >> 16, objects[c1].y >> 16, 0, 0,
-                                   OBJ_ANIM_FLESH_TRACE, 0);
-                    if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 0) {
-                        objects[c1].y_add += 3072;
-                        if (objects[c1].y_add > 196608L)
-                            objects[c1].y_add = 196608L;
-                    } else if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 2) {
-                        if (objects[c1].x_add < 0) {
-                            if (objects[c1].x_add < -65536L)
-                                objects[c1].x_add = -65536L;
-                            objects[c1].x_add += 1024;
-                            if (objects[c1].x_add > 0)
-                                objects[c1].x_add = 0;
-                        } else {
-                            if (objects[c1].x_add > 65536L)
-                                objects[c1].x_add = 65536L;
-                            objects[c1].x_add -= 1024;
-                            if (objects[c1].x_add < 0)
-                                objects[c1].x_add = 0;
-                        }
-                        objects[c1].y_add += 1024;
-                        if (objects[c1].y_add < -65536L)
-                            objects[c1].y_add = -65536L;
-                        if (objects[c1].y_add > 65536L)
-                            objects[c1].y_add = 65536L;
-                    }
-                    objects[c1].x += objects[c1].x_add;
-                    if ((objects[c1].y >> 16) > 0 && (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 1 ||
-                                                      ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 3)) {
-                        if (objects[c1].x_add < 0) {
-                            objects[c1].x = (((objects[c1].x >> 16) + 16) & 0xfff0) << 16;
-                            objects[c1].x_add = -objects[c1].x_add >> 2;
-                        } else {
-                            objects[c1].x = ((((objects[c1].x >> 16) - 16) & 0xfff0) + 15) << 16;
-                            objects[c1].x_add = -objects[c1].x_add >> 2;
-                        }
-                    }
-                    objects[c1].y += objects[c1].y_add;
-                    if ((objects[c1].x >> 16) < -5 || (objects[c1].x >> 16) > 405 || (objects[c1].y >> 16) > 260)
-                        objects[c1].used = 0;
-                    if ((objects[c1].y >> 16) > 0 && (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] != 0)) {
-                        if (objects[c1].y_add < 0) {
-                            if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] != 2) {
-                                objects[c1].y = (((objects[c1].y >> 16) + 16) & 0xfff0) << 16;
-                                objects[c1].x_add >>= 2;
-                                objects[c1].y_add = -objects[c1].y_add >> 2;
-                            }
-                        } else {
-                            if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 1) {
-                                if (objects[c1].y_add > 131072L) {
-                                    objects[c1].y = ((((objects[c1].y >> 16) - 16) & 0xfff0) + 15) << 16;
-                                    objects[c1].x_add >>= 2;
-                                    objects[c1].y_add = -objects[c1].y_add >> 2;
-                                } else
-                                    objects[c1].used = 0;
-                            } else if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 3) {
-                                objects[c1].y = ((((objects[c1].y >> 16) - 16) & 0xfff0) + 15) << 16;
-                                if (objects[c1].y_add > 131072L)
-                                    objects[c1].y_add = -objects[c1].y_add >> 2;
-                                else
-                                    objects[c1].y_add = 0;
-                            }
-                        }
-                    }
-                    if (objects[c1].x_add < 0 && objects[c1].x_add > -16384)
-                        objects[c1].x_add = -16384;
-                    if (objects[c1].x_add > 0 && objects[c1].x_add < 16384)
-                        objects[c1].x_add = 16384;
+                    object.update_fur();
                     if (objects[c1].used == 1) {
                         s1 = (int) (atan2(objects[c1].y_add, objects[c1].x_add) * 4 / M_PI);
                         if (s1 < 0)
@@ -834,98 +674,14 @@ void update_objects(void) {
                             s1 = 0;
                         if (s1 > 7)
                             s1 = 7;
-                        add_pob(main_info.draw_page, objects[c1].x >> 16, objects[c1].y >> 16, objects[c1].frame + s1,
+                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.frame + s1,
                                 &object_gobs);
                     }
                     break;
                 case OBJ_FLESH:
-                    if (rnd(100) < 30) {
-                        if (objects[c1].frame == 76)
-                            add_object(OBJ_FLESH_TRACE, objects[c1].x >> 16, objects[c1].y >> 16, 0, 0,
-                                       OBJ_ANIM_FLESH_TRACE, 1);
-                        else if (objects[c1].frame == 77)
-                            add_object(OBJ_FLESH_TRACE, objects[c1].x >> 16, objects[c1].y >> 16, 0, 0,
-                                       OBJ_ANIM_FLESH_TRACE, 2);
-                        else if (objects[c1].frame == 78)
-                            add_object(OBJ_FLESH_TRACE, objects[c1].x >> 16, objects[c1].y >> 16, 0, 0,
-                                       OBJ_ANIM_FLESH_TRACE, 3);
-                    }
-                    if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 0) {
-                        objects[c1].y_add += 3072;
-                        if (objects[c1].y_add > 196608L)
-                            objects[c1].y_add = 196608L;
-                    } else if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 2) {
-                        if (objects[c1].x_add < 0) {
-                            if (objects[c1].x_add < -65536L)
-                                objects[c1].x_add = -65536L;
-                            objects[c1].x_add += 1024;
-                            if (objects[c1].x_add > 0)
-                                objects[c1].x_add = 0;
-                        } else {
-                            if (objects[c1].x_add > 65536L)
-                                objects[c1].x_add = 65536L;
-                            objects[c1].x_add -= 1024;
-                            if (objects[c1].x_add < 0)
-                                objects[c1].x_add = 0;
-                        }
-                        objects[c1].y_add += 1024;
-                        if (objects[c1].y_add < -65536L)
-                            objects[c1].y_add = -65536L;
-                        if (objects[c1].y_add > 65536L)
-                            objects[c1].y_add = 65536L;
-                    }
-                    objects[c1].x += objects[c1].x_add;
-                    if ((objects[c1].y >> 16) > 0 && (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 1 ||
-                                                      ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 3)) {
-                        if (objects[c1].x_add < 0) {
-                            objects[c1].x = (((objects[c1].x >> 16) + 16) & 0xfff0) << 16;
-                            objects[c1].x_add = -objects[c1].x_add >> 2;
-                        } else {
-                            objects[c1].x = ((((objects[c1].x >> 16) - 16) & 0xfff0) + 15) << 16;
-                            objects[c1].x_add = -objects[c1].x_add >> 2;
-                        }
-                    }
-                    objects[c1].y += objects[c1].y_add;
-                    if ((objects[c1].x >> 16) < -5 || (objects[c1].x >> 16) > 405 || (objects[c1].y >> 16) > 260)
-                        objects[c1].used = 0;
-                    if ((objects[c1].y >> 16) > 0 && (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] != 0)) {
-                        if (objects[c1].y_add < 0) {
-                            if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] != 2) {
-                                objects[c1].y = (((objects[c1].y >> 16) + 16) & 0xfff0) << 16;
-                                objects[c1].x_add >>= 2;
-                                objects[c1].y_add = -objects[c1].y_add >> 2;
-                            }
-                        } else {
-                            if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 1) {
-                                if (objects[c1].y_add > 131072L) {
-                                    objects[c1].y = ((((objects[c1].y >> 16) - 16) & 0xfff0) + 15) << 16;
-                                    objects[c1].x_add >>= 2;
-                                    objects[c1].y_add = -objects[c1].y_add >> 2;
-                                } else {
-                                    if (rnd(100) < 10) {
-                                        s1 = rnd(4) - 2;
-                                        add_leftovers(0, objects[c1].x >> 16, (objects[c1].y >> 16) + s1,
-                                                      objects[c1].frame, &object_gobs, leftovers);
-                                        add_leftovers(1, objects[c1].x >> 16, (objects[c1].y >> 16) + s1,
-                                                      objects[c1].frame, &object_gobs, leftovers);
-                                    }
-                                    objects[c1].used = 0;
-                                }
-                            } else if (ban_map[objects[c1].y >> 20][objects[c1].x >> 20] == 3) {
-                                objects[c1].y = ((((objects[c1].y >> 16) - 16) & 0xfff0) + 15) << 16;
-                                if (objects[c1].y_add > 131072L)
-                                    objects[c1].y_add = -objects[c1].y_add >> 2;
-                                else
-                                    objects[c1].y_add = 0;
-                            }
-                        }
-                    }
-                    if (objects[c1].x_add < 0 && objects[c1].x_add > -16384)
-                        objects[c1].x_add = -16384;
-                    if (objects[c1].x_add > 0 && objects[c1].x_add < 16384)
-                        objects[c1].x_add = 16384;
+                    object.update_flesh();
                     if (objects[c1].used == 1)
-                        add_pob(main_info.draw_page, objects[c1].x >> 16, objects[c1].y >> 16, objects[c1].frame,
+                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.frame,
                                 &object_gobs);
                     break;
                 case OBJ_FLESH_TRACE:

@@ -20,6 +20,9 @@ struct object_t{
 	void update_smoke();
 	void update_spring();
 	void update_splash();
+	void update_butterfly();
+	void update_flesh();
+	void update_fur();
 
 	bool is_used() const { return this->used == 1; }
 };

@@ -39,7 +39,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "sdl/gfx.h"
-#include "object.h"
+#include "object_t.h"
 
 #include <utility>
 
@@ -62,7 +62,7 @@ gob_t number_gobs = {0};
 main_info_t main_info;
 player_t player[JNB_MAX_PLAYERS];
 player_anim_t player_anims[7];
-std::vector<object> objects;
+std::vector<object_t> objects;
 joy_t joy;
 
 char datfile_name[2048];
@@ -619,20 +619,9 @@ int main(int argc, char *argv[]) {
 
 void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame) {
 
-    for (int c1 = 0; c1 < objects.size(); c1++) {
-        if (objects[c1].used == 0) {
-            objects[c1].used = 1;
-            objects[c1].type = type;
-            objects[c1].x = (long) x << 16;
-            objects[c1].y = (long) y << 16;
-            objects[c1].x_add = x_add;
-            objects[c1].y_add = y_add;
-            objects[c1].x_acc = 0;
-            objects[c1].y_acc = 0;
-            objects[c1].anim = anim;
-            objects[c1].frame = frame;
-            objects[c1].ticks = object_anims[anim].frame[frame].ticks;
-            objects[c1].image = object_anims[anim].frame[frame].image;
+    for ( auto& object : objects ) {
+        if (object.used == 0) {
+            object = object_t{type, x, y, x_add, y_add, anim, frame};
             return;
         }
     }
@@ -647,54 +636,25 @@ void update_objects(void) {
     int s1 = 0;
 
     for (c1 = 0; c1 < objects.size(); c1++) {
+        auto& object = objects[c1];
         if (objects[c1].used == 1) {
             switch (objects[c1].type) {
                 case OBJ_SPRING:
-                    objects[c1].ticks--;
-                    if (objects[c1].ticks <= 0) {
-                        objects[c1].frame++;
-                        if (objects[c1].frame >= object_anims[objects[c1].anim].num_frames) {
-                            objects[c1].frame--;
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                        } else {
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                            objects[c1].image = object_anims[objects[c1].anim].frame[objects[c1].frame].image;
-                        }
-                    }
-                    if (objects[c1].used == 1)
-                        add_pob(main_info.draw_page, objects[c1].x >> 16, objects[c1].y >> 16, objects[c1].image,
+                    object.update_spring();
+                    if (object.is_used() )
+                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
                                 &object_gobs);
                     break;
                 case OBJ_SPLASH:
-                    objects[c1].ticks--;
-                    if (objects[c1].ticks <= 0) {
-                        objects[c1].frame++;
-                        if (objects[c1].frame >= object_anims[objects[c1].anim].num_frames)
-                            objects[c1].used = 0;
-                        else {
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                            objects[c1].image = object_anims[objects[c1].anim].frame[objects[c1].frame].image;
-                        }
-                    }
-                    if (objects[c1].used == 1)
-                        add_pob(main_info.draw_page, objects[c1].x >> 16, objects[c1].y >> 16, objects[c1].image,
+                    object.update_splash();
+                    if (object.is_used() )
+                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
                                 &object_gobs);
                     break;
                 case OBJ_SMOKE:
-                    objects[c1].x += objects[c1].x_add;
-                    objects[c1].y += objects[c1].y_add;
-                    objects[c1].ticks--;
-                    if (objects[c1].ticks <= 0) {
-                        objects[c1].frame++;
-                        if (objects[c1].frame >= object_anims[objects[c1].anim].num_frames)
-                            objects[c1].used = 0;
-                        else {
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                            objects[c1].image = object_anims[objects[c1].anim].frame[objects[c1].frame].image;
-                        }
-                    }
-                    if (objects[c1].used == 1)
-                        add_pob(main_info.draw_page, objects[c1].x >> 16, objects[c1].y >> 16, objects[c1].image,
+                    object.update_smoke();
+                    if (object.is_used() )
+                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
                                 &object_gobs);
                     break;
                 case OBJ_YEL_BUTFLY:
@@ -969,18 +929,10 @@ void update_objects(void) {
                                 &object_gobs);
                     break;
                 case OBJ_FLESH_TRACE:
-                    objects[c1].ticks--;
-                    if (objects[c1].ticks <= 0) {
-                        objects[c1].frame++;
-                        if (objects[c1].frame >= object_anims[objects[c1].anim].num_frames)
-                            objects[c1].used = 0;
-                        else {
-                            objects[c1].ticks = object_anims[objects[c1].anim].frame[objects[c1].frame].ticks;
-                            objects[c1].image = object_anims[objects[c1].anim].frame[objects[c1].frame].image;
-                        }
-                    }
-                    if (objects[c1].used == 1)
-                        add_pob(main_info.draw_page, objects[c1].x >> 16, objects[c1].y >> 16, objects[c1].image,
+                    object.update_flesh_trace();
+
+                    if (object.is_used() )
+                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
                                 &object_gobs);
                     break;
             }

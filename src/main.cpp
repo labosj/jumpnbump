@@ -632,11 +632,9 @@ void add_object(int type, int x, int y, int x_add, int y_add, int anim, int fram
 
 
 void update_objects(void) {
-    int c1;
-    int s1 = 0;
 
-    for (c1 = 0; c1 < objects.size(); c1++) {
-        auto& object = objects[c1];
+    for (auto& object : objects) {
+
         if (object.is_used()) {
             switch (object.type) {
                 case OBJ_SPRING:
@@ -666,8 +664,8 @@ void update_objects(void) {
                     break;
                 case OBJ_FUR:
                     object.update_fur();
-                    if (objects[c1].used == 1) {
-                        s1 = (int) (atan2(objects[c1].y_add, objects[c1].x_add) * 4 / M_PI);
+                    if (object.is_used() ) {
+                        int s1 = (int) (atan2(object.y_add, object.x_add) * 4 / M_PI);
                         if (s1 < 0)
                             s1 += 8;
                         if (s1 < 0)
@@ -680,7 +678,7 @@ void update_objects(void) {
                     break;
                 case OBJ_FLESH:
                     object.update_flesh();
-                    if (objects[c1].used == 1)
+                    if (object.is_used())
                         add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.frame,
                                 &object_gobs);
                     break;

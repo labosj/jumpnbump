@@ -39,9 +39,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "sdl/gfx.h"
+#include "object.h"
 
 #include <utility>
-#include <tuple>
 
 
 #ifndef M_PI
@@ -62,7 +62,7 @@ gob_t number_gobs = {0};
 main_info_t main_info;
 player_t player[JNB_MAX_PLAYERS];
 player_anim_t player_anims[7];
-std::vector<object_t> objects;
+std::vector<object> objects;
 joy_t joy;
 
 char datfile_name[2048];
@@ -637,20 +637,7 @@ void add_object(int type, int x, int y, int x_add, int y_add, int anim, int fram
         }
     }
 
-    objects.emplace_back();
-    auto object = objects.back();
-    object.used = 1;
-    object.type = type;
-    object.x = (long) x << 16;
-    object.y = (long) y << 16;
-    object.x_add = x_add;
-    object.y_add = y_add;
-    object.x_acc = 0;
-    object.y_acc = 0;
-    object.anim = anim;
-    object.frame = frame;
-    object.ticks = object_anims[anim].frame[frame].ticks;
-    object.image = object_anims[anim].frame[frame].image;
+    objects.emplace_back(type, x, y, x_add, y_add, anim, frame);
 
 }
 

@@ -63,6 +63,7 @@
 # ifdef USE_SDL
 #  include <sys/stat.h>
 #include "player.h"
+#include "object.h"
 
 #  if USE_SDL_MIXER
 #   include "SDL_mixer.h"
@@ -160,16 +161,6 @@ typedef struct {
 } player_anim_t;
 
 typedef struct {
-	int used, type;
-	int x, y;
-	int x_add, y_add;
-	int x_acc, y_acc;
-	int anim;
-	int frame, ticks;
-	int image;
-} object_t;
-
-typedef struct {
 	int x, y;
 	int raw_x, raw_y;
 	int but1, but2;
@@ -181,7 +172,7 @@ typedef struct {
 
 extern player_t player[JNB_MAX_PLAYERS];
 extern player_anim_t player_anims[7];
-extern std::vector<object_t> objects;
+extern std::vector<object> objects;
 extern joy_t joy;
 
 extern char datfile_name[2048];

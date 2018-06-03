@@ -11,7 +11,7 @@ Changes so far.
 This is a game for the whole family. You play cute fluffy little bunnies and
 hop on each other's heads.
 
-At the beginning you are in the menu, where you have to let each active player
+At the beginning you are in the menu, where you have to let each active players
 jump over the tree trunk to enter the play area, and then walk to the right.
 You will then enter the arena. The aim is to jump on the other bunnies' heads…
 
@@ -53,7 +53,7 @@ Player 2: `jumpnbump -port 7777 -net 1 <ip_or_hostname_of_player1> <port_of_play
 
 You have to make sure that the port udp/7777 is open in your firewall.
 
-You can add -net 2 and -net 3 for 3rd and 4th player, and make sure that all
+You can add -net 2 and -net 3 for 3rd and 4th players, and make sure that all
 the players are using the same `-dat level.dat`, if any.
 
 ## Compilation

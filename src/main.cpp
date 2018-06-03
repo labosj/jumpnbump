@@ -60,7 +60,7 @@ gob_t object_gobs = {0};
 gob_t number_gobs = {0};
 
 main_info_t main_info;
-player_t player[JNB_MAX_PLAYERS];
+player_t players[JNB_MAX_PLAYERS];
 player_anim_t player_anims[7];
 std::vector<object_t> objects;
 joy_t joy;
@@ -224,21 +224,21 @@ static void flip_pixels(unsigned char *pixels) {
 void serverSendKillPacket(int killer, int victim) {
     int c1 = killer;
     int c2 = victim;
-    int x = player[victim].x;
-    int y = player[victim].y;
+    int x = players[victim].x;
+    int y = players[victim].y;
     int c4 = 0;
     int s1 = 0;
 
-    player[c1].y_add = -player[c1].y_add;
-    if (player[c1].y_add > -262144L)
-        player[c1].y_add = -262144L;
-    player[c1].jump_abort = 1;
-    player[c2].dead_flag = 1;
-    if (player[c2].anim != 6) {
-        player[c2].anim = 6;
-        player[c2].frame = 0;
-        player[c2].frame_tick = 0;
-        player[c2].image = player_anims[player[c2].anim].frame[player[c2].frame].image + player[c2].direction * 9;
+    players[c1].y_add = -players[c1].y_add;
+    if (players[c1].y_add > -262144L)
+        players[c1].y_add = -262144L;
+    players[c1].jump_abort = 1;
+    players[c2].dead_flag = 1;
+    if (players[c2].anim != 6) {
+        players[c2].anim = 6;
+        players[c2].frame = 0;
+        players[c2].frame_tick = 0;
+        players[c2].image = player_anims[players[c2].anim].frame[players[c2].frame].image + players[c2].direction * 9;
         if (main_info.no_gore == 0) {
             for (c4 = 0; c4 < 6; c4++)
                 add_object(OBJ_FUR, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3,
@@ -257,12 +257,12 @@ void serverSendKillPacket(int killer, int victim) {
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
         dj_play_sfx(main_info, SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
-        player[c1].bumps++;
-        if (player[c1].bumps >= JNB_END_SCORE) {
+        players[c1].bumps++;
+        if (players[c1].bumps >= JNB_END_SCORE) {
             endscore_reached = 1;
         }
-        player[c1].bumped[c2]++;
-        s1 = player[c1].bumps % 100;
+        players[c1].bumped[c2]++;
+        s1 = players[c1].bumps % 100;
         add_leftovers(0, 360, 34 + c1 * 64, s1 / 10, &number_gobs, leftovers);
         add_leftovers(1, 360, 34 + c1 * 64, s1 / 10, &number_gobs, leftovers);
         add_leftovers(0, 376, 34 + c1 * 64, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
@@ -350,7 +350,7 @@ static void game_loop(void) {
 
             main_info.page_info[main_info.draw_page].num_pobs = 0;
             for (i = 0; i < JNB_MAX_PLAYERS; i++) {
-                if (player[i].enabled == 1)
+                if (players[i].enabled == 1)
                     main_info.page_info[main_info.draw_page].num_pobs++;
             }
 
@@ -361,10 +361,10 @@ static void game_loop(void) {
                 int c2;
 
                 for (i = 0, c2 = 0; i < JNB_MAX_PLAYERS; i++) {
-                    if (player[i].enabled == 1) {
-                        main_info.page_info[main_info.draw_page].pobs[c2].x = player[i].x >> 16;
-                        main_info.page_info[main_info.draw_page].pobs[c2].y = player[i].y >> 16;
-                        main_info.page_info[main_info.draw_page].pobs[c2].image = player[i].image + i * 18;
+                    if (players[i].enabled == 1) {
+                        main_info.page_info[main_info.draw_page].pobs[c2].x = players[i].x >> 16;
+                        main_info.page_info[main_info.draw_page].pobs[c2].y = players[i].y >> 16;
+                        main_info.page_info[main_info.draw_page].pobs[c2].image = players[i].image + i * 18;
                         main_info.page_info[main_info.draw_page].pobs[c2].pob_data = &rabbit_gobs;
                         c2++;
                     }
@@ -451,7 +451,7 @@ static int menu_loop(unsigned char* datafile_buffer) {
     int mod_vol;
     int c1, c2;
 
-    for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++)        // reset player values
+    for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++)        // reset players values
     {
         ai[c1] = 0;
     }
@@ -511,22 +511,22 @@ static int menu_loop(unsigned char* datafile_buffer) {
         put_text(main_info.view_page, 40, 170, "MIJJI", 2);
 
         for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
-            if (!player[c1].enabled) {
+            if (!players[c1].enabled) {
                 continue;
             }
             char str1[100];
 
             for (c2 = 0; c2 < JNB_MAX_PLAYERS; c2++) {
-                if (!player[c2].enabled) {
+                if (!players[c2].enabled) {
                     continue;
                 }
                 if (c2 != c1) {
-                    sprintf(str1, "%d", player[c1].bumped[c2]);
+                    sprintf(str1, "%d", players[c1].bumped[c2]);
                     put_text(main_info.view_page, 100 + c2 * 60, 80 + c1 * 30, str1, 2);
                 } else
                     put_text(main_info.view_page, 100 + c2 * 60, 80 + c1 * 30, "-", 2);
             }
-            sprintf(str1, "%d", player[c1].bumps);
+            sprintf(str1, "%d", players[c1].bumps);
             put_text(main_info.view_page, 350, 80 + c1 * 30, str1, 2);
         }
 
@@ -740,10 +740,10 @@ int init_level(int level, char *pal) {
     register_mask(mask_pic);
 
     for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
-        if (player[c1].enabled == 1) {
-            player[c1].bumps = 0;
+        if (players[c1].enabled == 1) {
+            players[c1].bumps = 0;
             for (c2 = 0; c2 < JNB_MAX_PLAYERS; c2++)
-                player[c1].bumped[c2] = 0;
+                players[c1].bumped[c2] = 0;
             position_player(c1);
             add_leftovers(0, 360, 34 + c1 * 64, 0, &number_gobs, leftovers);
             add_leftovers(1, 360, 34 + c1 * 64, 0, &number_gobs, leftovers);
@@ -875,7 +875,7 @@ int init_program(int argc, char *argv[], char *pal) {
                         strcpy(datfile_name, argv[c1 + 1]);
                     }
                 }
-            } else if (stricmp(argv[c1], "-player") == 0) {
+            } else if (stricmp(argv[c1], "-players") == 0) {
                 if (c1 < (argc - 1)) {
                     if (client_player_num < 0)
                         client_player_num = atoi(argv[c1 + 1]);
@@ -893,7 +893,7 @@ int init_program(int argc, char *argv[], char *pal) {
                 printf("  -h                       this help\n");
                 printf("  -v                       print version\n");
                 printf("  -dat level.dat           play a different level\n");
-                printf("  -player num              set main player to num (0-3). Needed for networking\n");
+                printf("  -players num              set main players to num (0-3). Needed for networking\n");
                 printf("  -fullscreen              run in fullscreen mode\n");
                 printf("  -nosound                 play without sound\n");
                 printf("  -nogore                  play without blood\n");

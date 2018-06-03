@@ -170,7 +170,7 @@ typedef struct {
 	} calib_data;
 } joy_t;
 
-extern player_t player[JNB_MAX_PLAYERS];
+extern player_t players[JNB_MAX_PLAYERS];
 extern player_anim_t player_anims[7];
 extern std::vector<object_t> objects;
 extern joy_t joy;

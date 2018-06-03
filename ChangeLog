@@ -88,7 +88,7 @@ This is the changelog of the linux version from which this port is derived.
 
 03 Mar 2001 - 0.70
    fixing fps (longislandman)
-   changing player input: 4 player at one keyboard (tarzeau)
+   changing players input: 4 players at one keyboard (tarzeau)
    pack/unpack which packs/unpacks the leveldata (timecop)
 
 ?? Mar 2001 - 0.70

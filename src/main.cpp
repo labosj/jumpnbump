@@ -255,11 +255,12 @@ void serverSendKillPacket(int killer, int victim) {
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
         dj_play_sfx(main_info, SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
-        players[c1].bumps++;
+
+
+        players[c1].count_kill(c2);
         if (players[c1].bumps >= JNB_END_SCORE) {
             endscore_reached = 1;
         }
-        players[c1].bumped[c2]++;
         s1 = players[c1].bumps % 100;
         add_leftovers(0, 360, 34 + c1 * 64, s1 / 10, &number_gobs, leftovers);
         add_leftovers(1, 360, 34 + c1 * 64, s1 / 10, &number_gobs, leftovers);
@@ -734,9 +735,7 @@ int init_level(int level, char *pal) {
 
     for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
         if (players[c1].enabled == 1) {
-            players[c1].bumps = 0;
-            for (c2 = 0; c2 < JNB_MAX_PLAYERS; c2++)
-                players[c1].bumped[c2] = 0;
+            players[c1].reset_kills();
             position_player(c1);
             add_leftovers(0, 360, 34 + c1 * 64, 0, &number_gobs, leftovers);
             add_leftovers(1, 360, 34 + c1 * 64, 0, &number_gobs, leftovers);

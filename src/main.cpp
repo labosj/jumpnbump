@@ -40,8 +40,7 @@
 #include <unistd.h>
 #include "sdl/gfx.h"
 #include "object_t.h"
-
-#include <utility>
+#include "player_anim_t.h"
 
 
 #ifndef M_PI
@@ -61,7 +60,7 @@ gob_t number_gobs = {0};
 
 main_info_t main_info;
 std::vector<player_t> players{JNB_MAX_PLAYERS};
-player_anim_t player_anims[7];
+std::vector<player_anim_t> player_anims{7};
 std::vector<object_t> objects;
 joy_t joy;
 
@@ -1128,7 +1127,6 @@ void deinit_program() {
 
 int read_level() {
     unsigned char *handle;
-    int c1, c2;
     int chr;
 
     if ((handle = dat_open("levelmap.txt", datafile_buffer)) == 0) {

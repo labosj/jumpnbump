@@ -64,6 +64,7 @@
 #  include <sys/stat.h>
 #include "player.h"
 #include "object_t.h"
+#include "player_anim_t.h"
 
 #  if USE_SDL_MIXER
 #   include "SDL_mixer.h"
@@ -146,17 +147,6 @@ extern int scale_up;
 #endif
 #endif
 
-#include <vector>
-
-typedef struct {
-	int num_frames;
-	int restart_frame;
-	struct {
-		int image;
-		int ticks;
-	} frame[4];
-} player_anim_t;
-
 typedef struct {
 	int x, y;
 	int raw_x, raw_y;
@@ -168,7 +158,7 @@ typedef struct {
 } joy_t;
 
 extern std::vector<player_t> players;
-extern player_anim_t player_anims[7];
+extern std::vector<player_anim_t> player_anims;
 extern std::vector<object_t> objects;
 extern joy_t joy;
 
@@ -238,12 +228,6 @@ int hook_keyb_handler(void);
 
 int key_pressed(int key);
 int addkey(unsigned int key);
-
-/* sound-linux.c */
-#ifdef LINUX
-
-
-#endif
 
 
 #endif

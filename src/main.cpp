@@ -749,20 +749,20 @@ int init_level(int level, char *pal) {
 
     for (c1 = 0; c1 < 16; c1++) {
         for (c2 = 0; c2 < 22; c2++) {
-            if (ban_map[c1][c2] == BAN_SPRING)
+            if (ban_map.get(c2, c1) == BAN_SPRING)
                 add_object(OBJ_SPRING, c2 << 4, c1 << 4, 0, 0, OBJ_ANIM_SPRING, 5);
         }
     }
 
     for ( int i = 0 ; i < 2 ; i++ ) {
-        auto new_pos = ban_map_new.get_random_available_position();
+        auto new_pos = ban_map.get_random_available_position();
         add_object(OBJ_YEL_BUTFLY, (new_pos.first << 4) + 8, (new_pos.second << 4) + 8, (rnd(65535) - 32768) * 2,
                    (rnd(65535) - 32768) * 2,
                    0, 0);
     }
 
     for ( int i = 0 ; i < 2 ; i++ ) {
-        auto new_pos = ban_map_new.get_random_available_position();
+        auto new_pos = ban_map.get_random_available_position();
         add_object(OBJ_PINK_BUTFLY, (new_pos.first << 4) + 8, (new_pos.second << 4) + 8, (rnd(65535) - 32768) * 2,
                    (rnd(65535) - 32768) * 2, 0, 0);
     }
@@ -1144,14 +1144,14 @@ int read_level() {
                     break;
             }
             if (flip)
-                ban_map_new.get(ban_map_t::WIDTH - 1 - x, y) = chr - '0';
+                ban_map.get(ban_map_t::WIDTH - 1 - x, y) = chr - '0';
             else
-                ban_map_new.get(x, y) = chr - '0';
+                ban_map.get(x, y) = chr - '0';
         }
     }
 
     for (int x = 0; x < ban_map_t::WIDTH; x++)
-        ban_map_new.get(x, ban_map_t::HEIGHT - 1) = BAN_SOLID;
+        ban_map.get(x, ban_map_t::HEIGHT - 1) = BAN_SOLID;
 
     return 0;
 

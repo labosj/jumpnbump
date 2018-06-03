@@ -75,16 +75,10 @@ public:
 };
 
 /**
- * para llamar a x e y usar ban_map[y][x], notar el cambio de order de x e y
- */
-[[deprecated]]
-extern unsigned int (&ban_map)[ban_map_t::HEIGHT][ban_map_t::WIDTH];
-
-/**
  * This must replace completely ban_map.
  * Just keep for migration propuses
  */
-extern ban_map_t ban_map_new;
+extern ban_map_t ban_map;
 
 
 #endif //JUMPNBUMP_BAN_MAP_H

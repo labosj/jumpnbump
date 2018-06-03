@@ -89,9 +89,6 @@ extern int screen_height;
 extern int screen_pitch;
 extern int scale_up;
 
-extern int ai[JNB_MAX_PLAYERS];
-
-
 #define KEY_PL1_LEFT	SDL_SCANCODE_LEFT
 #define KEY_PL1_RIGHT	SDL_SCANCODE_RIGHT
 #define KEY_PL1_JUMP	SDL_SCANCODE_UP

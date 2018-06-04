@@ -105,7 +105,7 @@ void steer_players(void) {
 
     update_player_actions();
 
-    for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
+    for (c1 = 0; c1 < players.size(); c1++) {
 
         if (players[c1].enabled == 1) {
 
@@ -454,7 +454,7 @@ void position_player(int player_num) {
         std::tie(x, y) = ban_map.get_random_available_floor_position();
 
         //verifica que el conejo no este cerca de otros conejos
-        for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
+        for (c1 = 0; c1 < players.size(); c1++) {
             if (c1 != player_num && players[c1].enabled == 1) {
                 if (abs((x << 4) - (players[c1].x >> 16)) < 32 && abs((y << 4) - (players[c1].y >> 16)) < 32)
                     break;
@@ -462,7 +462,7 @@ void position_player(int player_num) {
         }
 
 
-        if (c1 == JNB_MAX_PLAYERS) {
+        if (c1 == players.size()) {
             players[player_num].x = (long) x << 20;
             players[player_num].y = (long) y << 20;
 

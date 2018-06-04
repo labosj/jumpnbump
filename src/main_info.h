@@ -21,10 +21,12 @@ struct main_info_t {
 	int no_gore;
 	std::string error_str;
 	int draw_page, view_page;
+
 	struct {
 		int num_pobs;
 		std::vector<pob_t> pobs{NUM_POBS};
 	} page_info[2];
+
 	void *pob_backbuf[2];
 };
 #endif //JUMPNBUMP_MAIN_INFO_H

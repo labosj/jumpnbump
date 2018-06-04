@@ -136,7 +136,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 				esc_pressed = 0;
 
 			update_player_actions();
-			for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
+			for (c1 = 0; c1 < players.size(); c1++) {
 				if (end_loop_flag == 1 && new_game_flag == 1) {
 					if ((players[c1].x >> 16) > (165 + c1 * 2)) {
 						if (players[c1].x_add < 0)
@@ -597,7 +597,7 @@ int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
 	register_background(background_pic);
 	register_mask(mask_pic);
 
-	for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
+	for (c1 = 0; c1 < players.size(); c1++) {
 		players[c1].enabled = 0;
 		players[c1].x = (long) rnd(150) << 16;
 		players[c1].y = (160L + c1 * 2) << 16;

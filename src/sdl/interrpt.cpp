@@ -47,16 +47,12 @@ int addkey(unsigned int key) {
 
     if (!(key & 0x8000)) {
         keyb[key & 0x7fff] = 1;
-        for (c1 = 48; c1 > 0; c1--)
-            last_keys[c1] = last_keys[c1 - 1];
-        last_keys[0] = key & 0x7fff;
     } else
         keyb[key & 0x7fff] = 0;
     return 0;
 }
 
 int hook_keyb_handler() {
-    memset((void *) last_keys, 0, sizeof(last_keys));
 
     return 0;
 }

@@ -197,8 +197,6 @@ void register_mask(void *pixels);
 
 /* interrpt.c */
 
-extern char last_keys[50];
-
 int hook_keyb_handler(void);
 
 int key_pressed(int key);

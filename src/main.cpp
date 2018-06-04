@@ -269,43 +269,28 @@ void serverSendKillPacket(int killer, int victim) {
     }
 }
 
-static void check_cheats(void) {
-    if (strncmp(last_keys, "kcitsogop", strlen("kcitsogop")) == 0) {
-        pogostick ^= 1;
-        last_keys[0] = 0;
-    }
-    if (strncmp(last_keys, "ecapsniseinnub", strlen("ecapsniseinnub")) == 0) {
-        bunnies_in_space ^= 1;
-        last_keys[0] = 0;
-    }
-    if (strncmp(last_keys, "kcaptej", strlen("kcaptej")) == 0) {
-        jetpack ^= 1;
-        last_keys[0] = 0;
-    }
-    if (strncmp(last_keys, "retawnahtrekcihtsidoolb", strlen("retawnahtrekcihtsidoolb")) == 0) {
-        char blood[32] = {
-                63, 32, 32, 53, 17, 17, 42, 7,
-                7, 28, 0, 0, 24, 0, 0, 19,
-                0, 0, 12, 0, 0, 7, 0, 0
-        };
-        char water[32] = {
-                63, 63, 63, 40, 53, 62, 19, 42,
-                60, 0, 33, 60, 3, 32, 46, 3,
-                26, 33, 3, 19, 21, 1, 8, 8
-        };
-        int i;
+void set_blood_is_thicker_than_water() {
+    char blood[32] = {
+            63, 32, 32, 53, 17, 17, 42, 7,
+            7, 28, 0, 0, 24, 0, 0, 19,
+            0, 0, 12, 0, 0, 7, 0, 0
+    };
+    char water[32] = {
+            63, 63, 63, 40, 53, 62, 19, 42,
+            60, 0, 33, 60, 3, 32, 46, 3,
+            26, 33, 3, 19, 21, 1, 8, 8
+    };
+    int i;
 
-        blood_is_thicker_than_water ^= 1;
-        if (blood_is_thicker_than_water == 1) {
-            for (i = 0; i < 32; i++)
-                pal[432 + i] = blood[i];
-        } else {
-            for (i = 0; i < 32; i++)
-                pal[432 + i] = water[i];
-        }
-        register_background(background_pic);
-        last_keys[0] = 0;
+    blood_is_thicker_than_water ^= 1;
+    if (blood_is_thicker_than_water == 1) {
+        for (i = 0; i < 32; i++)
+            pal[432 + i] = blood[i];
+    } else {
+        for (i = 0; i < 32; i++)
+            pal[432 + i] = water[i];
     }
+    register_background(background_pic);
 }
 
 
@@ -328,6 +313,8 @@ static void game_loop(void) {
     intr_sysupdate();
 
     endscore_reached = 0;
+
+    //set_blood_is_thicker_than_water();
     while (1) {
         while (update_count) {
 
@@ -338,10 +325,9 @@ static void game_loop(void) {
                 mod_fade_direction = 0;
             }
 
-            check_cheats();
-
 
             steer_players();
+
 
 
             collision_check();

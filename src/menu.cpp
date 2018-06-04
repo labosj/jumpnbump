@@ -114,8 +114,8 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 	fade_count = 0;
 	cur_message = NUM_MESSAGES - 1;
 
-	main_info.page_info[0].num_pobs = 0;
-	main_info.page_info[1].num_pobs = 0;
+	main_info.page_info[0].pobs.clear();
+	main_info.page_info[1].pobs.clear();
 	main_info.view_page = 0;
 	main_info.draw_page = 1;
 
@@ -444,7 +444,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 			}
 
 
-			main_info.page_info[main_info.draw_page].num_pobs = 0;
+			main_info.page_info[main_info.draw_page].pobs.clear();
 
 			for (c1 = 3; c1 >= 0; c1--)
 				add_pob(main_info.draw_page, players[c1].x >> 16, players[c1].y >> 16, players[c1].image + c1 * 18, &rabbit_gobs);
@@ -614,8 +614,8 @@ int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
 	for (c1 = 0; c1 < objects.size(); c1++)
 		objects[c1].used = 0;
 
-	main_info.page_info[0].num_pobs = 0;
-	main_info.page_info[1].num_pobs = 0;
+	main_info.page_info[0].pobs.clear();
+	main_info.page_info[1].pobs.clear();
 
 	return 0;
 

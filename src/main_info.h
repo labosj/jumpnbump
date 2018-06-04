@@ -13,8 +13,6 @@ struct gob_t;
 
 struct main_info_t {
 
-	static const int NUM_POBS = 200;
-
 	int joy_enabled;
 	int no_sound = 0;
 	int music_no_sound = 0;
@@ -23,8 +21,7 @@ struct main_info_t {
 	int draw_page, view_page;
 
 	struct {
-		int num_pobs;
-		std::vector<pob_t> pobs{NUM_POBS};
+		std::vector<pob_t> pobs;
 	} page_info[2];
 
 	void *pob_backbuf[2];

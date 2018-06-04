@@ -332,11 +332,7 @@ static void game_loop(void) {
             collision_check();
 
 
-            main_info.page_info[main_info.draw_page].num_pobs = 0;
-            for (i = 0; i < players.size(); i++) {
-                if (players[i].enabled == 1)
-                    main_info.page_info[main_info.draw_page].num_pobs++;
-            }
+            main_info.page_info[main_info.draw_page].pobs.clear();
 
             update_objects();
 
@@ -346,10 +342,7 @@ static void game_loop(void) {
 
                 for (i = 0, c2 = 0; i < players.size(); i++) {
                     if (players[i].enabled == 1) {
-                        main_info.page_info[main_info.draw_page].pobs[c2].x = players[i].x >> 16;
-                        main_info.page_info[main_info.draw_page].pobs[c2].y = players[i].y >> 16;
-                        main_info.page_info[main_info.draw_page].pobs[c2].image = players[i].image + i * 18;
-                        main_info.page_info[main_info.draw_page].pobs[c2].pob_data = &rabbit_gobs;
+                        add_pob(main_info.draw_page, players[i].x >> 16, players[i].y >> 16,  players[i].image + i * 18,  &rabbit_gobs);
                         c2++;
                     }
                 }
@@ -459,8 +452,8 @@ static int menu_loop(unsigned char* datafile_buffer) {
 
         bunnies_in_space = jetpack = pogostick = blood_is_thicker_than_water = 0;
         //blood_is_thicker_than_water = 1; HERE IS TO MOD THE CHEATS
-        main_info.page_info[0].num_pobs = 0;
-        main_info.page_info[1].num_pobs = 0;
+        main_info.page_info[0].pobs.clear();
+        main_info.page_info[1].pobs.clear();
         main_info.view_page = 0;
         main_info.draw_page = 1;
 
@@ -676,15 +669,7 @@ void update_objects() {
 
 
 int add_pob(int page, int x, int y, int image, gob_t *pob_data) {
-
-    if (main_info.page_info[page].num_pobs >= main_info_t::NUM_POBS)
-        return 1;
-
-    main_info.page_info[page].pobs[main_info.page_info[page].num_pobs].x = x;
-    main_info.page_info[page].pobs[main_info.page_info[page].num_pobs].y = y;
-    main_info.page_info[page].pobs[main_info.page_info[page].num_pobs].image = image;
-    main_info.page_info[page].pobs[main_info.page_info[page].num_pobs].pob_data = pob_data;
-    main_info.page_info[page].num_pobs++;
+    main_info.page_info[page].pobs.emplace_back(x, y, image, pob_data);
 
     return 0;
 

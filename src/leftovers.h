@@ -10,13 +10,10 @@
 struct gob_t;
 struct pob_t;
 
-const int NUM_LEFTOVERS = 50;
-
 struct leftovers_t {
 
     struct {
-        short num_pobs;
-        std::vector<pob_t> pobs{NUM_LEFTOVERS};
+        std::vector<pob_t> pobs;
     } page[2];
 };
 #endif //JUMPNBUMP_LEFTOVERS_H

@@ -43,12 +43,6 @@
 #include <math.h>
 #include <src/dj.h>
 
-#ifdef DOS
-# include <conio.h>
-# include <dpmi.h>
-# include <sys/nearptr.h>
-# include <pc.h>
-#endif
 
 #ifdef _WIN32
 # define WIN32_LEAN_AND_MEAN
@@ -136,16 +130,6 @@ extern int scale_up;
 #define SFX_DEATH_FREQ 20000
 #define SFX_SPRING_FREQ 15000
 #define SFX_SPLASH_FREQ 12000
-
-#ifndef DATA_PATH
-#ifdef __APPLE__
-#define	DATA_PATH "data/jumpbump.dat"
-#elif _WIN32
-#define	DATA_PATH "data/jumpbump.dat"
-#else
-#define	DATA_PATH "/home/edwin/Projects/jumpnbump/data/jumpbump.dat"
-#endif
-#endif
 
 typedef struct {
 	int x, y;

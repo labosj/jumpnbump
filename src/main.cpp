@@ -785,12 +785,12 @@ void deinit_level(void) {
 #define O_BINARY 0
 #endif
 
-static void preread_datafile(const char *fname) {
+static void preread_datafile(const std::string& fname) {
     int fd = 0;
     int len;
 
 
-    fd = open(fname, O_RDONLY | O_BINARY);
+    fd = open(fname.c_str(), O_RDONLY | O_BINARY);
     if (fd == -1) {
         fprintf(stderr, "can't open %s:", fname);
         perror("");
@@ -799,7 +799,7 @@ static void preread_datafile(const char *fname) {
 
     len = filelength(fd);
     datafile_buffer = (unsigned char *) malloc(len);
-    if (datafile_buffer == NULL) {
+    if (datafile_buffer == nullptr) {
         perror("malloc()");
         close(fd);
         exit(42);
@@ -838,7 +838,7 @@ int init_program(int argc, char *argv[], char *pal) {
 
     //memset(&main_info, 0, sizeof(main_info));
 
-    strcpy(datfile_name, DATA_PATH);
+    std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
 
     if (argc > 1) {
         for (c1 = 1; c1 < argc; c1++) {
@@ -857,16 +857,7 @@ int init_program(int argc, char *argv[], char *pal) {
                 set_scaling(1);
             else if (stricmp(argv[c1], "-mirror") == 0)
                 flip = 1;
-            else if (stricmp(argv[c1], "-dat") == 0) {
-                if (c1 < (argc - 1)) {
-                    FILE *f;
-
-                    if ((f = fopen(argv[c1 + 1], "rb")) != NULL) {
-                        fclose(f);
-                        strcpy(datfile_name, argv[c1 + 1]);
-                    }
-                }
-            } else if (stricmp(argv[c1], "-players") == 0) {
+             else if (stricmp(argv[c1], "-players") == 0) {
                 if (c1 < (argc - 1)) {
                     if (client_player_num < 0)
                         client_player_num = atoi(argv[c1 + 1]);

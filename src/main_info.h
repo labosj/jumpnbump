@@ -16,7 +16,7 @@ struct main_info_t {
 	int joy_enabled;
 	int no_sound = 0;
 	int music_no_sound = 0;
-	int no_gore;
+	bool gore = true;
 	std::string error_str;
 	int draw_page, view_page;
 

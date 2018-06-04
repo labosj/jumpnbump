@@ -236,7 +236,7 @@ void serverSendKillPacket(int killer, int victim) {
         players[c2].frame = 0;
         players[c2].frame_tick = 0;
         players[c2].image = player_anims[players[c2].anim].frame[players[c2].frame].image + players[c2].direction * 9;
-        if (main_info.no_gore == 0) {
+        if (main_info.gore ) {
             for (c4 = 0; c4 < 6; c4++)
                 add_object(OBJ_FUR, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
@@ -818,7 +818,7 @@ int init_program(int argc, char *argv[], char *pal) {
                 main_info.music_no_sound = 1;
             else if (stricmp(argv[c1], "-nomusic") == 0);
             else if (stricmp(argv[c1], "-nogore") == 0)
-                main_info.no_gore = 1;
+                main_info.gore = false;
             else if (stricmp(argv[c1], "-nojoy") == 0)
                 main_info.joy_enabled = 0;
             else if (stricmp(argv[c1], "-fullscreen") == 0)

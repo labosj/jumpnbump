@@ -466,9 +466,6 @@ void position_player(int player_num) {
             players[player_num].x = (long) x << 20;
             players[player_num].y = (long) y << 20;
 
-            //TODO : valores
-                    printf("Valories misteriosos %d => [%d, %d] => [%d, %d]\n", player_num, x, y, players[player_num].x, players[player_num].y);
-
             players[player_num].x_add = players[player_num].y_add = 0;
             players[player_num].direction = 0;
             players[player_num].jump_ready = 1;

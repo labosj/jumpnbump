@@ -610,7 +610,7 @@ void add_object(int type, int x, int y, int x_add, int y_add, int anim, int fram
 }
 
 
-void update_objects(void) {
+void update_objects() {
 
     for (auto& object : objects) {
 
@@ -694,7 +694,6 @@ int add_pob(int page, int x, int y, int image, gob_t *pob_data) {
 int init_level(int level, char *pal) {
     unsigned char *handle;
     int c1, c2;
-    int s1, s2;
 
     if ((handle = dat_open("level.pcx", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'level.pcx', aborting...\n";
@@ -1011,7 +1010,7 @@ int init_program(int argc, char *argv[], char *pal) {
         if (calib_joy() != 0)
             load_flag = 1;
         else {
-            register_background(NULL);
+            register_background(nullptr);
 
             main_info.view_page = 1;
             flippage(1);
@@ -1027,7 +1026,7 @@ int init_program(int argc, char *argv[], char *pal) {
             if (calib_joy() != 0)
                 load_flag = 1;
             else {
-                register_background(NULL);
+                register_background(nullptr);
                 flippage(0);
 
                 wait_vrt();

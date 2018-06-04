@@ -7,8 +7,6 @@
 
 struct joy_t {
 	int x, y;
-	int raw_x, raw_y;
-	int but1, but2;
 	struct {
 		int x1, x2, x3;
 		int y1, y2, y3;

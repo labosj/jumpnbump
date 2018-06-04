@@ -203,7 +203,6 @@ int pogostick, bunnies_in_space, jetpack, blood_is_thicker_than_water;
 
 int client_player_num = -1;
 
-
 static void flip_pixels(unsigned char *pixels) {
     int x, y;
     unsigned char temp;

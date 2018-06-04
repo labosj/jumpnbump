@@ -6,6 +6,8 @@
 #define JUMPNBUMP_MAIN_INFO_H
 
 #include <string>
+#include <vector>
+#include "pob_t.h"
 
 struct gob_t;
 
@@ -21,12 +23,7 @@ struct main_info_t {
 	int draw_page, view_page;
 	struct {
 		int num_pobs;
-		struct {
-			int x, y;
-			int image;
-			gob_t *pob_data;
-			int back_buf_ofs;
-		} pobs[NUM_POBS];
+		std::vector<pob_t> pobs{NUM_POBS};
 	} page_info[2];
 	void *pob_backbuf[2];
 };

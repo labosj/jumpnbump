@@ -449,7 +449,7 @@ static int menu_loop(unsigned char* datafile_buffer) {
     int mod_vol;
     int c1, c2;
 
-    while (1) {
+    while (true) {
 
         if (menu(main_info, datafile_buffer, leftovers) != 0)
             deinit_program();

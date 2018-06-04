@@ -347,7 +347,7 @@ static void game_loop(void) {
 
 
             main_info.page_info[main_info.draw_page].num_pobs = 0;
-            for (i = 0; i < JNB_MAX_PLAYERS; i++) {
+            for (i = 0; i < players.size(); i++) {
                 if (players[i].enabled == 1)
                     main_info.page_info[main_info.draw_page].num_pobs++;
             }
@@ -358,7 +358,7 @@ static void game_loop(void) {
             if (update_count == 1) {
                 int c2;
 
-                for (i = 0, c2 = 0; i < JNB_MAX_PLAYERS; i++) {
+                for (i = 0, c2 = 0; i < players.size(); i++) {
                     if (players[i].enabled == 1) {
                         main_info.page_info[main_info.draw_page].pobs[c2].x = players[i].x >> 16;
                         main_info.page_info[main_info.draw_page].pobs[c2].y = players[i].y >> 16;
@@ -503,13 +503,13 @@ static int menu_loop(unsigned char* datafile_buffer) {
         put_text(main_info.view_page, 40, 140, "FIZZ", 2);
         put_text(main_info.view_page, 40, 170, "MIJJI", 2);
 
-        for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
+        for (c1 = 0; c1 < players.size(); c1++) {
             if (!players[c1].enabled) {
                 continue;
             }
             char str1[100];
 
-            for (c2 = 0; c2 < JNB_MAX_PLAYERS; c2++) {
+            for (c2 = 0; c2 < players.size(); c2++) {
                 if (!players[c2].enabled) {
                     continue;
                 }
@@ -732,7 +732,7 @@ int init_level(int level, char *pal) {
         flip_pixels(mask_pic);
     register_mask(mask_pic);
 
-    for (c1 = 0; c1 < JNB_MAX_PLAYERS; c1++) {
+    for (c1 = 0; c1 < players.size(); c1++) {
         if (players[c1].enabled == 1) {
             players[c1].reset_kills();
             position_player(c1);

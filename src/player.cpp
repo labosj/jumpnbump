@@ -99,7 +99,7 @@ void player_action_right(player_t& player) {
     }
 }
 
-void steer_players(void) {
+void steer_players() {
     int c1, c2;
     int s1 = 0, s2 = 0;
 

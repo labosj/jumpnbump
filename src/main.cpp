@@ -864,9 +864,6 @@ int init_program(int argc, char *argv[], char *pal) {
                 }
             } else if (strstr(argv[1], "-v")) {
                 printf("jumpnbump %s compiled with", JNB_VERSION);
-#ifndef USE_NET
-                printf("out");
-#endif
                 printf(" network support.\n");
                 return 1;
             } else if (strstr(argv[1], "-h")) {

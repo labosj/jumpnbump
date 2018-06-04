@@ -12,7 +12,7 @@ unsigned char *dat_open(const std::string &file_name, unsigned char *datafile_bu
     int ofs;
     unsigned char *ptr;
 
-    if (datafile_buffer == NULL)
+    if (datafile_buffer == nullptr)
         return 0;
 
     memset(name, 0, sizeof(name));

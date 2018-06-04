@@ -41,6 +41,7 @@
 #include "sdl/gfx.h"
 #include "object_t.h"
 #include "player_anim_t.h"
+#include "joy_t.h"
 
 
 #ifndef M_PI

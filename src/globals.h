@@ -59,6 +59,7 @@
 #include "player.h"
 #include "object_t.h"
 #include "player_anim_t.h"
+#include "joy_t.h"
 
 #  if USE_SDL_MIXER
 #   include "SDL_mixer.h"
@@ -130,16 +131,6 @@ extern int scale_up;
 #define SFX_DEATH_FREQ 20000
 #define SFX_SPRING_FREQ 15000
 #define SFX_SPLASH_FREQ 12000
-
-typedef struct {
-	int x, y;
-	int raw_x, raw_y;
-	int but1, but2;
-	struct {
-		int x1, x2, x3;
-		int y1, y2, y3;
-	} calib_data;
-} joy_t;
 
 extern std::vector<player_t> players;
 extern std::vector<player_anim_t> player_anims;

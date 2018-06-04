@@ -315,7 +315,7 @@ static void game_loop(void) {
     endscore_reached = 0;
 
     //set_blood_is_thicker_than_water();
-    while (1) {
+    while (true) {
         while (update_count) {
 
             if (endscore_reached || (key_pressed(1) == 1)) {
@@ -779,7 +779,7 @@ static void preread_datafile(const std::string& fname) {
 
     fd = open(fname.c_str(), O_RDONLY | O_BINARY);
     if (fd == -1) {
-        fprintf(stderr, "can't open %s:", fname);
+        fprintf(stderr, "can't open %s:", fname.c_str());
         perror("");
         exit(42);
     }

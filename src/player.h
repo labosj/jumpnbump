@@ -6,6 +6,7 @@
 #define JUMPNBUMP_PLAYER_H
 
 #include <vector>
+#include "position_t.h"
 
 const unsigned int JNB_MAX_PLAYERS = 4;
 
@@ -16,7 +17,13 @@ struct player_t {
 	//vector that stores the kill to other players
 	std::vector<int> bumped;
 
-	int x, y;
+	position_t position;
+
+	[[deprecated]]
+	int& x = position.x;
+
+	[[deprecated]]
+	int& y = position.y;
 	int x_add, y_add;
 	int direction, jump_ready, jump_abort, in_water;
 	int anim, frame, frame_tick, image;

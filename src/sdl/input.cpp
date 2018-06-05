@@ -53,7 +53,7 @@ void init_inputs(main_info_t& main_info)
 	main_info.joy_enabled = 0;
 }
 
-void update_player_actions(void)
+void update_player_actions()
 {
 	int tmp;
 

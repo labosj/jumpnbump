@@ -106,7 +106,7 @@ void steer_players() {
     update_player_actions();
 
     for (c1 = 0; c1 < players.size(); c1++) {
-
+        auto& player = players[c1];
         if (players[c1].enabled == 1) {
 
             if (players[c1].is_alive()) {
@@ -456,7 +456,7 @@ void position_player(int player_num) {
         //verifica que el conejo no este cerca de otros conejos
         for (c1 = 0; c1 < players.size(); c1++) {
             if (c1 != player_num && players[c1].enabled == 1) {
-                if (abs((x << 4) - (players[c1].x >> 16)) < 32 && abs((y << 4) - (players[c1].y >> 16)) < 32)
+                if (abs((x << 4) - (players[c1].position.to_pixels().x)) < 32 && abs((y << 4) - (players[c1].position.to_pixels().y)) < 32)
                     break;
             }
         }
@@ -484,18 +484,23 @@ void position_player(int player_num) {
 }
 
 void player_kill(int c1, int c2) {
-    if (players[c1].y_add >= 0) {
+    auto& player_1 = players[c1];
+    auto& player_2 = players[c2];
+
+    if (player_1.y_add >= 0) {
 
         serverSendKillPacket(c1, c2);
     } else {
-        if (players[c2].y_add < 0)
-            players[c2].y_add = 0;
+        if (player_2.y_add < 0)
+            player_2.y_add = 0;
     }
 }
 
 void check_collision(int c1, int c2) {
+    auto& player_1 = players[c1];
+    auto& player_2 = players[c2];
     if (players[c1].enabled == 1 && players[c2].enabled == 1) {
-        if (labs(players[c1].x - players[c2].x) < (12L << 16) &&
+        if (labs(player_1.position.x - players[c2].x) < (12L << 16) &&
             labs(players[c1].y - players[c2].y) < (12L << 16)) {
             if ((labs(players[c1].y - players[c2].y) >> 16) > 5) {
                 if (players[c1].y < players[c2].y) {
@@ -504,13 +509,13 @@ void check_collision(int c1, int c2) {
                     player_kill(c2, c1);
                 }
             } else {
-                if (players[c1].x < players[c2].x) {
+                if (player_1.position.x < players[c2].x) {
                     if (players[c1].x_add > 0)
-                        players[c1].x = players[c2].x - (12L << 16);
+                        player_1.position.x = players[c2].x - (12L << 16);
                     else if (players[c2].x_add < 0)
-                        players[c2].x = players[c1].x + (12L << 16);
+                        players[c2].x = player_1.position.x + (12L << 16);
                     else {
-                        players[c1].x -= players[c1].x_add;
+                        player_1.position.x -= players[c1].x_add;
                         players[c2].x -= players[c2].x_add;
                     }
                     int l1 = players[c2].x_add;
@@ -522,11 +527,11 @@ void check_collision(int c1, int c2) {
                         players[c2].x_add = -players[c2].x_add;
                 } else {
                     if (players[c1].x_add > 0)
-                        players[c2].x = players[c1].x - (12L << 16);
+                        players[c2].x = player_1.position.x - (12L << 16);
                     else if (players[c2].x_add < 0)
-                        players[c1].x = players[c2].x + (12L << 16);
+                        player_1.position.x = players[c2].x + (12L << 16);
                     else {
-                        players[c1].x -= players[c1].x_add;
+                        player_1.position.x -= players[c1].x_add;
                         players[c2].x -= players[c2].x_add;
                     }
                     int l1 = players[c2].x_add;

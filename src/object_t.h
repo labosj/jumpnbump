@@ -5,9 +5,15 @@
 #ifndef JUMPNBUMP_OBJECT_T_H
 #define JUMPNBUMP_OBJECT_T_H
 
+#include "position_t.h"
+
 struct object_t{
 	int used, type;
-	int x, y;
+
+	int x;
+
+	int y;
+
 	int x_add, y_add;
 	int x_acc, y_acc;
 	int anim;

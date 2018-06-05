@@ -588,17 +588,21 @@ int main(int argc, char *argv[]) {
     return result;
 }
 
+[[deprecated]]
+void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame ) {
+    add_object(type, position_t{x, y}, x_add, y_add, anim, frame);
+}
 
-void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame) {
+void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame) {
 
     for ( auto& object : objects ) {
         if (object.used == 0) {
-            object = object_t{type, x, y, x_add, y_add, anim, frame};
+            object = object_t{type, position, x_add, y_add, anim, frame};
             return;
         }
     }
 
-    objects.emplace_back(type, x, y, x_add, y_add, anim, frame);
+    objects.emplace_back(type, position, x_add, y_add, anim, frame);
 
 }
 

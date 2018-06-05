@@ -12,12 +12,12 @@
 extern leftovers_t leftovers;
 extern object_anim_t object_anims[8];
 
-object_t::object_t(int type, int x, int y, int x_add, int y_add, int anim, int frame) {
+object_t::object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame) {
     this->used = 1;
     this->type = type;
 
-    this->x = (long) x << 16;
-    this->y = (long) y << 16;
+    this->x = (long) position.x << 16;
+    this->y = (long) position.y << 16;
     this->x_add = x_add;
     this->y_add = y_add;
     this->x_acc = 0;
@@ -185,13 +185,13 @@ void object_t::update_butterfly() {
 void object_t::update_flesh() {
     if (rnd(100) < 30) {
         if (this->frame == 76)
-            add_object(OBJ_FLESH_TRACE, this->x >> 16, this->y >> 16, 0, 0,
+            add_object(OBJ_FLESH_TRACE, position_t{this->x >> 16, this->y >> 16}, 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 1);
         else if (this->frame == 77)
-            add_object(OBJ_FLESH_TRACE, this->x >> 16, this->y >> 16, 0, 0,
+            add_object(OBJ_FLESH_TRACE, position_t{this->x >> 16, this->y >> 16}, 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 2);
         else if (this->frame == 78)
-            add_object(OBJ_FLESH_TRACE, this->x >> 16, this->y >> 16, 0, 0,
+            add_object(OBJ_FLESH_TRACE, position_t{this->x >> 16, this->y >> 16}, 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 3);
     }
     if (ban_map.get(this->x >> 20, this->y >> 20) == 0) {
@@ -272,7 +272,7 @@ void object_t::update_flesh() {
 
 void object_t::update_fur() {
     if (rnd(100) < 30)
-        add_object(OBJ_FLESH_TRACE, this->x >> 16, this->y >> 16, 0, 0,
+        add_object(OBJ_FLESH_TRACE, position_t{this->x >> 16, this->y >> 16}, 0, 0,
                    OBJ_ANIM_FLESH_TRACE, 0);
     if (ban_map.get(this->x >> 20, this->y >> 20) == 0) {
         this->y_add += 3072;

@@ -20,7 +20,7 @@ struct object_t{
 	int frame, ticks;
 	int image;
 
-	object_t(int type, int x, int y, int x_add, int y_add, int anim, int frame);
+	object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
 
 	void update_flesh_trace();
 	void update_smoke();

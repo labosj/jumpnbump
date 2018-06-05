@@ -149,6 +149,7 @@ extern gob_t number_gobs;
 
 
 void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame);
+void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
 void update_objects(void);
 void update_player_actions();
 int add_pob(int page, int x, int y, int image, gob_t *pob_data);

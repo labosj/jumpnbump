@@ -21,6 +21,13 @@ public:
         return pixels;
     }
 
+    position_t operator+(const position_t& position) {
+        return position_t{
+            this->x + position.x,
+            this->y + position.y
+        };
+    }
+
 };
 
 

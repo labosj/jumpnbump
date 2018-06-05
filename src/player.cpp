@@ -18,14 +18,12 @@ extern object_anim_t object_anims[8];
 void serverSendKillPacket(int c1, int c2);
 
 void player_action_left(player_t& player) {
-    int s1 = 0, s2 = 0;
     int below_left, below, below_right;
 
-    s1 = (player.x >> 16);
-    s2 = (player.y >> 16);
-    below_left = ban_map.get_by_pixel(s1, s2 + 16);
-    below = ban_map.get_by_pixel(s1 + 8, s2 + 16);
-    below_right = ban_map.get_by_pixel(s1 + 15, s2 + 16);
+    auto pixel_pos = player.position.to_pixels();
+    below_left = ban_map.get_by_pixel(pixel_pos.x, pixel_pos.y + 16);
+    below = ban_map.get_by_pixel(pixel_pos.x + 8, pixel_pos.y + 16);
+    below_right = ban_map.get_by_pixel(pixel_pos.x + 15, pixel_pos.y + 16);
 
     if (below == BAN_ICE) {
         if (player.x_add > 0)
@@ -42,7 +40,7 @@ void player_action_left(player_t& player) {
         if (player.x_add > 0) {
             player.x_add -= 16384;
             if (player.x_add > -98304L && player.in_water == 0 && below == BAN_SOLID)
-                add_object(OBJ_SMOKE, (player.x >> 16) + 2 + rnd(9), (player.y >> 16) + 13 + rnd(5), 0,
+                add_object(OBJ_SMOKE, (player.position.to_pixels().x) + 2 + rnd(9), (player.position.to_pixels().y) + 13 + rnd(5), 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
             player.x_add -= 12288;
@@ -342,8 +340,8 @@ void steer_players() {
                     player.image =
                             player_anims[player.anim].frame[player.frame].image + player.direction * 9;
                 }
-                s1 = (player.x >> 16);
-                s2 = (player.y >> 16);
+                s1 = (player.position.x >> 16);
+                s2 = (player.position.y >> 16);
                 if (s2 < 0)
                     s2 = 0;
                 if (ban_map.get_by_pixel((s1 + 8), (s2 + 8)) == BAN_WATER) {

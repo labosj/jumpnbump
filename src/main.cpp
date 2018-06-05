@@ -690,13 +690,22 @@ int init_level(int level, char *pal) {
     unsigned char *handle;
     int c1, c2;
 
-    if ((handle = dat_open("level.pcx", datafile_buffer)) == 0) {
-        main_info.error_str = "Error loading 'level.pcx', aborting...\n";
-        return 1;
+    if ( false ) {
+        if ((handle = dat_open("level.pcx", datafile_buffer)) == 0) {
+            main_info.error_str = "Error loading 'level.pcx', aborting...\n";
+            return 1;
+        }
+        if (read_pcx(handle, background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
+            main_info.error_str = "Error loading 'level.pcx', aborting...\n";
+            return 1;
+        }
+
     }
-    if (read_pcx(handle, background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
-        main_info.error_str = "Error loading 'level.pcx', aborting...\n";
-        return 1;
+    else {
+        if (read_pcx("/home/edwin/Projects/jumpnbump/data/level.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
+            main_info.error_str = "Error loading 'level.pcx', aborting...\n";
+            return 1;
+        }
     }
     if (flip)
         flip_pixels(background_pic);

@@ -8,8 +8,11 @@
 
 int filelength(int handle);
 
+
+[[deprecated]]
 unsigned char *dat_open(const std::string &file_name, unsigned char *datafile_buffer);
 
+[[deprecated]]
 int dat_filelen(const std::string & file_name, unsigned char *datafile_buffer);
 
 void write_calib_data(void);

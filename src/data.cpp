@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "data.h"
 
+[[deprecated]]
 unsigned char *dat_open(const std::string &file_name, unsigned char *datafile_buffer) {
     int num;
     int c1;

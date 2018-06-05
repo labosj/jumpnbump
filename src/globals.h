@@ -193,6 +193,10 @@ int pob_width(int image, gob_t *gob);
 int pob_height(int image, gob_t *gob);
 int pob_hs_x(int image, gob_t *gob);
 int pob_hs_y(int image, gob_t *gob);
+
+
+int read_pcx(const std::string& filename, unsigned char *buffer, int buf_len, char *pal);
+[[deprecated]]
 int read_pcx(unsigned char * handle, unsigned char *buffer, int buf_len, char *pal);
 void register_background(unsigned char *pixels);
 int register_gob(unsigned char *handle, gob_t *gob, int len);

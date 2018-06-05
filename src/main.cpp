@@ -338,7 +338,7 @@ static void game_loop(void) {
 
 
             if (update_count == 1) {
-                int c2;
+                int c2 = 0;
 
                 for (i = 0, c2 = 0; i < players.size(); i++) {
                     if (players[i].enabled == 1) {

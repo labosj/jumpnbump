@@ -449,7 +449,7 @@ void position_player(int player_num) {
     int c1;
     int x, y;
 
-    while (1) {
+    while (true) {
 
         std::tie(x, y) = ban_map.get_random_available_floor_position();
 
@@ -544,8 +544,8 @@ void check_collision(int c1, int c2) {
 
 void collision_check() {
     /* collision check */
-    for (int c1 = 0; c1 < 4; c1++) {
-        for (int c2 = c1 + 1; c2 < 4 ; c2++) {
+    for (int c1 = 0; c1 < players.size(); c1++) {
+        for (int c2 = c1 + 1; c2 < players.size() ; c2++) {
             check_collision(c1, c2);
 
         }

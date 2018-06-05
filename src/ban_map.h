@@ -23,6 +23,9 @@ const unsigned int BAN_SPRING =	4;
 class ban_map_t {
 
 public:
+    /**
+     * These should be dynamic not harcoded
+     */
     static const int WIDTH = 22;
     static const int HEIGHT = 17;
 
@@ -54,6 +57,9 @@ public:
     std::pair<int, int> get_random_available_floor_position() const;
 
     unsigned int map[ban_map_t::HEIGHT][ban_map_t::WIDTH];
+
+    int get_width() const { return WIDTH; }
+    int get_height() const { return HEIGHT; }
 };
 
 /**

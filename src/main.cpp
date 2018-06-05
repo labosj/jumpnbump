@@ -616,26 +616,26 @@ void update_objects() {
                 case OBJ_SPRING:
                     object.update_spring();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
+                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
                                 &object_gobs);
                     break;
                 case OBJ_SPLASH:
                     object.update_splash();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
+                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
                                 &object_gobs);
                     break;
                 case OBJ_SMOKE:
                     object.update_smoke();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
+                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
                                 &object_gobs);
                     break;
                 case OBJ_YEL_BUTFLY:
                 case OBJ_PINK_BUTFLY:
                     object.update_butterfly();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
+                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
                                 &object_gobs);
                     break;
                 case OBJ_FUR:
@@ -648,21 +648,21 @@ void update_objects() {
                             s1 = 0;
                         if (s1 > 7)
                             s1 = 7;
-                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.frame + s1,
+                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.frame + s1,
                                 &object_gobs);
                     }
                     break;
                 case OBJ_FLESH:
                     object.update_flesh();
                     if (object.is_used())
-                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.frame,
+                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.frame,
                                 &object_gobs);
                     break;
                 case OBJ_FLESH_TRACE:
                     object.update_flesh_trace();
 
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.x >> 16, object.y >> 16, object.image,
+                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
                                 &object_gobs);
                     break;
             }
@@ -726,10 +726,10 @@ int init_level(int level, char *pal) {
     for (c1 = 0; c1 < objects.size(); c1++)
         objects[c1].used = 0;
 
-    for (c1 = 0; c1 < 16; c1++) {
-        for (c2 = 0; c2 < 22; c2++) {
+    for (c1 = 0; c1 < ban_map.get_height(); c1++) {
+        for (c2 = 0; c2 < ban_map.get_width() ; c2++) {
             if (ban_map.get(c2, c1) == BAN_SPRING)
-                add_object(OBJ_SPRING, c2 << 4, c1 << 4, 0, 0, OBJ_ANIM_SPRING, 5);
+                add_object(OBJ_SPRING, position_t{c2 << 4, c1 << 4}, 0, 0, OBJ_ANIM_SPRING, 5);
         }
     }
 

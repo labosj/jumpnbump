@@ -22,6 +22,14 @@ struct object_t{
 
 	object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
 
+	/**
+	 * Read only
+	 * @return
+	 */
+	position_t get_position() const {
+		return position_t{this->x, this->y};
+	}
+
 	void update_flesh_trace();
 	void update_smoke();
 	void update_spring();

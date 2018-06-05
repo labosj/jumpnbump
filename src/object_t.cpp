@@ -185,13 +185,13 @@ void object_t::update_butterfly() {
 void object_t::update_flesh() {
     if (rnd(100) < 30) {
         if (this->frame == 76)
-            add_object(OBJ_FLESH_TRACE, position_t{this->x >> 16, this->y >> 16}, 0, 0,
+            add_object(OBJ_FLESH_TRACE, this->get_position().to_pixels(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 1);
         else if (this->frame == 77)
-            add_object(OBJ_FLESH_TRACE, position_t{this->x >> 16, this->y >> 16}, 0, 0,
+            add_object(OBJ_FLESH_TRACE, this->get_position().to_pixels(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 2);
         else if (this->frame == 78)
-            add_object(OBJ_FLESH_TRACE, position_t{this->x >> 16, this->y >> 16}, 0, 0,
+            add_object(OBJ_FLESH_TRACE, this->get_position().to_pixels(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 3);
     }
     if (ban_map.get(this->x >> 20, this->y >> 20) == 0) {

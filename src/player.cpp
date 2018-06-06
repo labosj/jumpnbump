@@ -16,8 +16,7 @@ extern main_info_t main_info;
 extern object_anim_t object_anims[8];
 
 void player_t::set_position(const position_t& position) {
-    this->position.x = position.x;
-    this->position.y = position.y;
+    this->position = position;
 }
 
 void serverSendKillPacket(int c1, int c2);
@@ -176,13 +175,9 @@ void steer_players() {
                 if (jetpack == 0) {
                     /* no jetpack */
                     if (pogostick == 1 || (player.jump_ready == 1 && player.action_up)) {
-                        s1 = (player.position.x >> 16);
-                        s2 = (player.position.y >> 16);
 
-                        screen_position_t screen_position = player.get_position();
-                        auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
-                        auto below = ban_map.get(screen_position + screen_position_t{8, 16});
-                        auto below_right = ban_map.get(screen_position + screen_position_t{15, 16});
+                        auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
+                        auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
 
                         /* jump */
                         if (below_left == ban_map_t::Type::SOLID ||
@@ -284,11 +279,11 @@ void steer_players() {
                 s2 = (player.position.y >> 16);
                 if (s2 < 0)
                     s2 = 0;
-                if (ban_map.get(screen_position_t{(s1 + 8), (s2 + 15)}) == ban_map_t::Type::SPRING ||
-                    ((ban_map.get(screen_position_t{s1, (s2 + 15)}) == ban_map_t::Type::SPRING &&
-                            ban_map.get(screen_position_t{(s1 + 15), (s2 + 15)}) != ban_map_t::Type::SOLID) ||
-                     (ban_map.get(screen_position_t{s1, (s2 + 15)}) != ban_map_t::Type::SOLID &&
-                             ban_map.get(screen_position_t{(s1 + 15), (s2 + 15)}) == ban_map_t::Type::SPRING))) {
+                if (ban_map.get(player.get_position() + screen_position_t{8, 15}) == ban_map_t::Type::SPRING ||
+                    ((ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING &&
+                            ban_map.get(player.get_position() + screen_position_t{15, 15}) != ban_map_t::Type::SOLID) ||
+                     (ban_map.get(player.get_position() + screen_position_t{0, 15}) != ban_map_t::Type::SOLID &&
+                             ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING))) {
                     player.position.y = ((player.position.y >> 16) & 0xfff0) << 16;
                     player.y_add = -400000L;
                     player.anim = 2;
@@ -300,7 +295,7 @@ void steer_players() {
                     player.jump_abort = 0;
                     for (auto& object : objects) {
                         if (object.used == 1 && object.type == OBJ_SPRING) {
-                            if (ban_map.get(screen_position_t{(s1 + 8), (s2 + 15)}) == ban_map_t::Type::SPRING) {
+                            if (ban_map.get(player.get_position() + screen_position_t{8, 15}) == ban_map_t::Type::SPRING) {
                                 if ((object.position.x >> 20) == ((s1 + 8) >> 4) &&
                                     (object.position.y >> 20) == ((s2 + 15) >> 4)) {
                                     object.frame = 0;
@@ -309,7 +304,7 @@ void steer_players() {
                                     break;
                                 }
                             } else {
-                                if (ban_map.get(screen_position_t{s1, (s2 + 15)}) == ban_map_t::Type::SPRING) {
+                                if (ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING) {
                                     if ((object.position.x >> 20) == (s1 >> 4) &&
                                         (object.position.y >> 20) == ((s2 + 15) >> 4)) {
                                         object.frame = 0;
@@ -317,7 +312,7 @@ void steer_players() {
                                         object.image = object_anims[object.anim].frame[object.frame].image;
                                         break;
                                     }
-                                } else if (ban_map.get(screen_position_t{(s1 + 15), (s2 + 15)}) == ban_map_t::Type::SPRING) {
+                                } else if (ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
                                     if ((object.position.x >> 20) == ((s1 + 15) >> 4) &&
                                         (object.position.y >> 20) == ((s2 + 15) >> 4)) {
                                         object.frame = 0;
@@ -331,14 +326,13 @@ void steer_players() {
                     }
                     dj_play_sfx(main_info, SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
                 }
-                s1 = (player.position.x >> 16);
                 s2 = (player.position.y >> 16);
                 if (s2 < 0)
                     s2 = 0;
-                if (ban_map.get_by_pixel(s1, s2) == ban_map_t::Type::SOLID || ban_map.get_by_pixel(s1, s2) == ban_map_t::Type::ICE ||
-                        ban_map.get_by_pixel(s1, s2) == ban_map_t::Type::SPRING || ban_map.get_by_pixel((s1 + 15), s2) == ban_map_t::Type::SOLID ||
-                        ban_map.get_by_pixel((s1 + 15), s2) == ban_map_t::Type::ICE ||
-                        ban_map.get_by_pixel((s1 + 15), s2) == ban_map_t::Type::SPRING) {
+                if (ban_map.get(player.get_position()) == ban_map_t::Type::SOLID || ban_map.get(player.get_position()) == ban_map_t::Type::ICE ||
+                        ban_map.get(player.get_position()) == ban_map_t::Type::SPRING || ban_map.get(player.get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SOLID ||
+                        ban_map.get(player.get_position() + screen_position_t{15, 0}) == ban_map_t::Type::ICE ||
+                        ban_map.get(player.get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SPRING) {
                     player.position.y = (((s2 + 16) & 0xfff0)) << 16; //TODO: MASK
                     player.y_add = 0;
                     player.anim = 0;

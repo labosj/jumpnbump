@@ -221,8 +221,6 @@ static void flip_pixels(unsigned char *pixels) {
 void serverSendKillPacket(int killer, int victim) {
     int c1 = killer;
     int c2 = victim;
-    int x = players[victim].x;
-    int y = players[victim].y;
     int c4 = 0;
     int s1 = 0;
 
@@ -237,20 +235,21 @@ void serverSendKillPacket(int killer, int victim) {
         players[c2].frame_tick = 0;
         players[c2].image = player_anims[players[c2].anim].frame[players[c2].frame].image + players[c2].direction * 9;
         if (main_info.gore ) {
+            auto screen_position = screen_position_t{players[victim].get_position()} + screen_position_t{6 + rnd(5), 6 + rnd(5)};
             for (c4 = 0; c4 < 6; c4++)
-                add_object(OBJ_FUR, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FUR, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
             for (c4 = 0; c4 < 6; c4++)
-                add_object(OBJ_FLESH, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 76);
             for (c4 = 0; c4 < 6; c4++)
-                add_object(OBJ_FLESH, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 77);
             for (c4 = 0; c4 < 8; c4++)
-                add_object(OBJ_FLESH, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 78);
             for (c4 = 0; c4 < 10; c4++)
-                add_object(OBJ_FLESH, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
         dj_play_sfx(main_info, SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);

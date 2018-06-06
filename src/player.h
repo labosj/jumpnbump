@@ -28,6 +28,8 @@ struct player_t {
 	int direction, jump_ready, jump_abort, in_water;
 	int anim, frame, frame_tick, image;
 
+	position_t get_position() const;
+
 	bool is_alive() const { return this->dead_flag == 0; }
 
 	void set_position(const position_t& position);

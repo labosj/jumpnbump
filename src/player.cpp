@@ -22,6 +22,10 @@ void player_t::set_position(const position_t& position) {
 
 void serverSendKillPacket(int c1, int c2);
 
+position_t player_t::get_position() const {
+    return this->position;
+}
+
 void player_action_left(player_t& player) {
     int below_left, below, below_right;
 
@@ -360,7 +364,7 @@ void steer_players() {
                                 player_anims[player.anim].frame[player.frame].image + player.direction * 9;
                         if (player.y_add >= 32768) {
                             add_object(OBJ_SPLASH,
-                                       position_t{
+                                       screen_position_t{
                                            player.position.to_pixels().x + 8,
                                           (player.position.to_pixels().y & 0xfff0) + 15
                                        }, 0, 0,

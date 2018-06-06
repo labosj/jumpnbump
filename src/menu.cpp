@@ -212,7 +212,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								if (players[c1].x_add > 0) {
 									players[c1].x_add -= 16384;
 									if ((players[c1].y >> 16) >= (160 + c1 * 2))
-										add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+										add_smoke(players[c1]);;
 								} else
 									players[c1].x_add -= 12288;
 							}
@@ -220,7 +220,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								if (players[c1].x_add > 0) {
 									players[c1].x_add -= 16384;
 									if ((players[c1].y >> 16) >= (138 + c1 * 2))
-										add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+										add_smoke(players[c1]);;
 								} else
 									players[c1].x_add -= 12288;
 							}
@@ -265,7 +265,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 							if (players[c1].x_add > 0) {
 								players[c1].x_add -= 16384;
 								if ((players[c1].y >> 16) >= (160 + c1 * 2))
-									add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+									add_smoke(players[c1]);;
 							} else
 								players[c1].x_add -= 12288;
 						}
@@ -273,7 +273,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 							if (players[c1].x_add > 0) {
 								players[c1].x_add -= 16384;
 								if ((players[c1].y >> 16) >= (138 + c1 * 2))
-									add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+									add_smoke(players[c1]);;
 							} else
 								players[c1].x_add -= 12288;
 						}
@@ -291,7 +291,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 							if (players[c1].x_add < 0) {
 								players[c1].x_add += 16384;
 								if ((players[c1].y >> 16) >= (160 + c1 * 2))
-									add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+									add_smoke(players[c1]);;
 							} else
 								players[c1].x_add += 12288;
 						}
@@ -299,7 +299,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 							if (players[c1].x_add < 0) {
 								players[c1].x_add += 16384;
 								if ((players[c1].y >> 16) >= (138 + c1 * 2))
-									add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+									add_smoke(players[c1]);;
 							} else
 								players[c1].x_add += 12288;
 						}
@@ -318,12 +318,12 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								players[c1].x_add += 16384;
 								if (players[c1].x_add > 0)
 									players[c1].x_add = 0;
-								add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+								add_object(OBJ_SMOKE, screen_position_t{(players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 							} else if (players[c1].x_add > 0) {
 								players[c1].x_add -= 16384;
 								if (players[c1].x_add < 0)
 									players[c1].x_add = 0;
-								add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+								add_object(OBJ_SMOKE, screen_position_t{(players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 							}
 						}
 						if ((((players[c1].x >> 16) > (165 + c1 * 2) && (players[c1].x >> 16) < (208 + c1 * 2)) && (players[c1].y >> 16) >= (138 + c1 * 2))) {
@@ -331,12 +331,12 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								players[c1].x_add += 16384;
 								if (players[c1].x_add > 0)
 									players[c1].x_add = 0;
-								add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+								add_object(OBJ_SMOKE, screen_position_t{(players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 							} else if (players[c1].x_add > 0) {
 								players[c1].x_add -= 16384;
 								if (players[c1].x_add < 0)
 									players[c1].x_add = 0;
-								add_object(OBJ_SMOKE, (players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5), 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+								add_object(OBJ_SMOKE, screen_position_t{(players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 							}
 						}
 						if (players[c1].anim == 1) {
@@ -447,7 +447,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 			main_info.page_info[main_info.draw_page].pobs.clear();
 
 			for (c1 = 3; c1 >= 0; c1--)
-				add_pob(main_info.draw_page, players[c1].x >> 16, players[c1].y >> 16, players[c1].image + c1 * 18, &rabbit_gobs);
+				add_pob(main_info.draw_page, players[c1].get_position(), players[c1].image + c1 * 18, &rabbit_gobs);
 
 			update_objects();
 

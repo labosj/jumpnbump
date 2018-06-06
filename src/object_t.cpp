@@ -272,7 +272,7 @@ void object_t::update_flesh() {
 
 void object_t::update_fur() {
     if (rnd(100) < 30)
-        add_object(OBJ_FLESH_TRACE, position_t{this->x >> 16, this->y >> 16}, 0, 0,
+        add_object(OBJ_FLESH_TRACE, screen_position_t{this->x >> 16, this->y >> 16}, 0, 0,
                    OBJ_ANIM_FLESH_TRACE, 0);
     if (ban_map.get(this->x >> 20, this->y >> 20) == 0) {
         this->y_add += 3072;
@@ -342,14 +342,12 @@ void object_t::update_fur() {
         this->x_add = 16384;
 }
 
-[[deprecated]]
-void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame ) {
-    add_object(type, screen_position_t{x, y}, x_add, y_add, anim, frame);
-}
-
-[[deprecated]]
-void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame) {
-    add_object(type, screen_position_t{position.x, position.y}, x_add, y_add, anim, frame);
+void add_smoke(const player_t& player) {
+    add_object(OBJ_SMOKE,
+               screen_position_t{player.get_position()} +
+               screen_position_t{2 + rnd(9), 13 + rnd(5)}
+               , 0,
+               -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 }
 
 void add_object(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame) {

@@ -238,19 +238,19 @@ void serverSendKillPacket(int killer, int victim) {
         players[c2].image = player_anims[players[c2].anim].frame[players[c2].frame].image + players[c2].direction * 9;
         if (main_info.gore ) {
             for (c4 = 0; c4 < 6; c4++)
-                add_object(OBJ_FUR, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FUR, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
             for (c4 = 0; c4 < 6; c4++)
-                add_object(OBJ_FLESH, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FLESH, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 76);
             for (c4 = 0; c4 < 6; c4++)
-                add_object(OBJ_FLESH, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FLESH, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 77);
             for (c4 = 0; c4 < 8; c4++)
-                add_object(OBJ_FLESH, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FLESH, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 78);
             for (c4 = 0; c4 < 10; c4++)
-                add_object(OBJ_FLESH, (x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5), (rnd(65535) - 32768) * 3,
+                add_object(OBJ_FLESH, screen_position_t{(x >> 16) + 6 + rnd(5), (y >> 16) + 6 + rnd(5)}, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
         dj_play_sfx(main_info, SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
@@ -342,7 +342,7 @@ static void game_loop(void) {
 
                 for (i = 0, c2 = 0; i < players.size(); i++) {
                     if (players[i].enabled == 1) {
-                        add_pob(main_info.draw_page, players[i].x >> 16, players[i].y >> 16,  players[i].image + i * 18,  &rabbit_gobs);
+                        add_pob(main_info.draw_page, players[i].get_position(),  players[i].image + i * 18,  &rabbit_gobs);
                         c2++;
                     }
                 }

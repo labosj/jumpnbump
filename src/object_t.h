@@ -5,13 +5,12 @@
 #ifndef JUMPNBUMP_OBJECT_T_H
 #define JUMPNBUMP_OBJECT_T_H
 
+class player_t;
+
 #include "screen_position_t.h"
 #include "position_t.h"
 
-[[deprecated]]
-void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame);
-[[deprecated]]
-void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
+void add_smoke(const player_t& player);
 void add_object(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame);
 
 struct object_t{

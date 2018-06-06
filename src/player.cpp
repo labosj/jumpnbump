@@ -66,15 +66,11 @@ void player_action_left(player_t& player) {
 }
 
 void player_action_right(player_t& player) {
-    int s1 = 0, s2 = 0;
-    int below_left, below, below_right;
 
     auto screen_position = screen_position_t{player.get_position()};
-    s1 = screen_position.x;
-    s2 = screen_position.y;
-    below_left = ban_map.get_by_pixel(s1, s2 + 16);
-    below = ban_map.get_by_pixel(s1 + 8, s2 + 16);
-    below_right = ban_map.get_by_pixel(s1 + 15, s2 + 16);
+    auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
+    auto below = ban_map.get(screen_position + screen_position_t{8, 16});
+    auto below_right = ban_map.get(screen_position + screen_position_t{15, 16});
 
     if (below == BAN_ICE) {
         if (player.x_add < 0)
@@ -134,15 +130,14 @@ void steer_players() {
                 } else if (player.action_right) {
                     player_action_right(player);
                 } else if ((!player.action_left) && (!player.action_right)) {
-                    int below_left, below, below_right;
 
                     s1 = (player.x >> 16);
                     s2 = (player.y >> 16);
 
                     screen_position_t screen_position = player.get_position();
-                    below_left = ban_map.get(screen_position + screen_position_t{0, 16});
-                    below = ban_map.get(screen_position + screen_position_t{8, 16});
-                    below_right = ban_map.get(screen_position + screen_position_t{15, 16});
+                    auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
+                    auto below = ban_map.get(screen_position + screen_position_t{8, 16});
+                    auto below_right = ban_map.get(screen_position + screen_position_t{15, 16});
                     if (below == BAN_SOLID || below == BAN_SPRING ||
                         (((below_left == BAN_SOLID || below_left == BAN_SPRING) && below_right != BAN_ICE) ||
                          (below_left != BAN_ICE && (below_right == BAN_SOLID || below_right == BAN_SPRING)))) {
@@ -155,7 +150,7 @@ void steer_players() {
                             if (player.x_add < 0)
                                 player.x_add = 0;
                         }
-                        if (player.x_add != 0 && ban_map.get_by_pixel((s1 + 8), (s2 + 16)) == BAN_SOLID)
+                        if (player.x_add != 0 && below == BAN_SOLID)
                             add_object(OBJ_SMOKE, player.position.to_pixels() + screen_position_t{2 + rnd(9), 13 + rnd(5)},
                                        0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
                     }
@@ -172,13 +167,17 @@ void steer_players() {
                     if (pogostick == 1 || (player.jump_ready == 1 && player.action_up)) {
                         s1 = (player.x >> 16);
                         s2 = (player.y >> 16);
-                        if (s2 < -16)
-                            s2 = -16;
+
+                        screen_position_t screen_position = player.get_position();
+                        auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
+                        auto below = ban_map.get(screen_position + screen_position_t{8, 16});
+                        auto below_right = ban_map.get(screen_position + screen_position_t{15, 16});
+
                         /* jump */
-                        if (ban_map.get_by_pixel(s1, (s2 + 16)) == BAN_SOLID ||
-                                ban_map.get_by_pixel(s1, (s2 + 16)) == BAN_ICE ||
-                                ban_map.get_by_pixel((s1 + 15), (s2 + 16)) == BAN_SOLID ||
-                                ban_map.get_by_pixel((s1 + 15), (s2 + 16)) == BAN_ICE) {
+                        if (below_left == BAN_SOLID ||
+                                below_left == BAN_ICE ||
+                                below_right == BAN_SOLID ||
+                                below_right == BAN_ICE) {
                             player.y_add = -280000L;
                             player.anim = 2;
                             player.frame = 0;
@@ -243,11 +242,11 @@ void steer_players() {
 
                 player.position.x += player.x_add;
                 if ((player.x >> 16) < 0) {
-                    player.x = 0;
+                    player.position.x = 0;
                     player.x_add = 0;
                 }
                 if ((player.x >> 16) + 15 > 351) {
-                    player.x = 336L << 16;
+                    player.position.x = 336L << 16;
                     player.x_add = 0;
                 }
                 {

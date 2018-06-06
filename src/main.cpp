@@ -703,7 +703,7 @@ int init_level(char *pal) {
 
     for (c1 = 0; c1 < ban_map.get_height(); c1++) {
         for (c2 = 0; c2 < ban_map.get_width() ; c2++) {
-            if (ban_map.get(c2, c1) == BAN_SPRING)
+            if (ban_map.get(map_position_t{c2, c1}) == BAN_SPRING)
                 add_object(OBJ_SPRING, screen_position_t{map_position_t{c2, c1}}, 0, 0, OBJ_ANIM_SPRING, 5);
         }
     }

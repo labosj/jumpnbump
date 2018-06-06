@@ -194,11 +194,11 @@ void object_t::update_flesh() {
             add_object(OBJ_FLESH_TRACE, this->get_position().to_pixels(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 3);
     }
-    if (ban_map.get(this->x >> 20, this->y >> 20) == 0) {
+    if (ban_map.get(this->get_position()) == 0) {
         this->y_add += 3072;
         if (this->y_add > 196608L)
             this->y_add = 196608L;
-    } else if (ban_map.get(this->x >> 20, this->y >> 20) == 2) {
+    } else if (ban_map.get(this->get_position()) == 2) {
         if (this->x_add < 0) {
             if (this->x_add < -65536L)
                 this->x_add = -65536L;
@@ -219,8 +219,8 @@ void object_t::update_flesh() {
             this->y_add = 65536L;
     }
     this->x += this->x_add;
-    if ((this->y >> 16) > 0 && (ban_map.get(this->x >> 20, this->y >> 20) == 1 ||
-                                      ban_map.get(this->x >> 20, this->y >> 20) == 3)) {
+    if ((this->y >> 16) > 0 && (ban_map.get(this->get_position()) == 1 ||
+                                      ban_map.get(this->get_position()) == 3)) {
         if (this->x_add < 0) {
             this->x = (((this->x >> 16) + 16) & 0xfff0) << 16;
             this->x_add = -this->x_add >> 2;
@@ -232,15 +232,15 @@ void object_t::update_flesh() {
     this->y += this->y_add;
     if ((this->x >> 16) < -5 || (this->x >> 16) > 405 || (this->y >> 16) > 260)
         this->used = 0;
-    if ((this->y >> 16) > 0 && (ban_map.get(this->x >> 20, this->y >> 20) != 0)) {
+    if ((this->y >> 16) > 0 && (ban_map.get(this->get_position()) != 0)) {
         if (this->y_add < 0) {
-            if (ban_map.get(this->x >> 20, this->y >> 20) != 2) {
+            if (ban_map.get(this->get_position()) != 2) {
                 this->y = (((this->y >> 16) + 16) & 0xfff0) << 16;
                 this->x_add >>= 2;
                 this->y_add = -this->y_add >> 2;
             }
         } else {
-            if (ban_map.get(this->x >> 20, this->y >> 20) == 1) {
+            if (ban_map.get(this->get_position()) == 1) {
                 if (this->y_add > 131072L) {
                     this->y = ((((this->y >> 16) - 16) & 0xfff0) + 15) << 16;
                     this->x_add >>= 2;
@@ -255,7 +255,7 @@ void object_t::update_flesh() {
                     }
                     this->used = 0;
                 }
-            } else if (ban_map.get(this->x >> 20, this->y >> 20) == 3) {
+            } else if (ban_map.get(this->get_position()) == 3) {
                 this->y = ((((this->y >> 16) - 16) & 0xfff0) + 15) << 16;
                 if (this->y_add > 131072L)
                     this->y_add = -this->y_add >> 2;
@@ -274,11 +274,11 @@ void object_t::update_fur() {
     if (rnd(100) < 30)
         add_object(OBJ_FLESH_TRACE, screen_position_t{this->x >> 16, this->y >> 16}, 0, 0,
                    OBJ_ANIM_FLESH_TRACE, 0);
-    if (ban_map.get(this->x >> 20, this->y >> 20) == 0) {
+    if (ban_map.get(this->get_position()) == 0) {
         this->y_add += 3072;
         if (this->y_add > 196608L)
             this->y_add = 196608L;
-    } else if (ban_map.get(this->x >> 20, this->y >> 20) == 2) {
+    } else if (ban_map.get(this->get_position()) == 2) {
         if (this->x_add < 0) {
             if (this->x_add < -65536L)
                 this->x_add = -65536L;
@@ -299,8 +299,8 @@ void object_t::update_fur() {
             this->y_add = 65536L;
     }
     this->x += this->x_add;
-    if ((this->y >> 16) > 0 && (ban_map.get(this->x >> 20, this->y >> 20) == 1 ||
-                                      ban_map.get(this->x >> 20, this->y >> 20) == 3)) {
+    if ((this->y >> 16) > 0 && (ban_map.get(this->get_position()) == 1 ||
+                                      ban_map.get(this->get_position()) == 3)) {
         if (this->x_add < 0) {
             this->x = (((this->x >> 16) + 16) & 0xfff0) << 16;
             this->x_add = -this->x_add >> 2;
@@ -312,22 +312,22 @@ void object_t::update_fur() {
     this->y += this->y_add;
     if ((this->x >> 16) < -5 || (this->x >> 16) > 405 || (this->y >> 16) > 260)
         this->used = 0;
-    if ((this->y >> 16) > 0 && (ban_map.get(this->x >> 20, this->y >> 20) != 0)) {
+    if ((this->y >> 16) > 0 && (ban_map.get(this->get_position()) != 0)) {
         if (this->y_add < 0) {
-            if (ban_map.get(this->x >> 20, this->y >> 20) != 2) {
+            if (ban_map.get(this->get_position()) != 2) {
                 this->y = (((this->y >> 16) + 16) & 0xfff0) << 16;
                 this->x_add >>= 2;
                 this->y_add = -this->y_add >> 2;
             }
         } else {
-            if (ban_map.get(this->x >> 20, this->y >> 20) == 1) {
+            if (ban_map.get(this->get_position()) == 1) {
                 if (this->y_add > 131072L) {
                     this->y = ((((this->y >> 16) - 16) & 0xfff0) + 15) << 16;
                     this->x_add >>= 2;
                     this->y_add = -this->y_add >> 2;
                 } else
                     this->used = 0;
-            } else if (ban_map.get(this->x >> 20, this->y >> 20) == 3) {
+            } else if (ban_map.get(this->get_position()) == 3) {
                 this->y = ((((this->y >> 16) - 16) & 0xfff0) + 15) << 16;
                 if (this->y_add > 131072L)
                     this->y_add = -this->y_add >> 2;

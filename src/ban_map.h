@@ -33,14 +33,6 @@ public:
 
     unsigned int get(const map_position_t& position) const;
 
-    /**
-    * Get the value of a ban map coord using pixel
-    * @param x
-    * @param y
-    * @return
-    */
-    [[deprecated]]
-    unsigned int get(int x, int y) const;
     [[deprecated]]
     unsigned int get_by_pixel(int x, int y) const;
     bool is_pixel_in_water(int x, int y) const;

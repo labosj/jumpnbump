@@ -27,11 +27,6 @@ unsigned int ban_map_t::get(const map_position_t& pos) const {
     return this->map[pos.y][pos.x];
 }
 
-unsigned int ban_map_t::get(int x, int y) const {
-    return this->get(map_position_t{x, y});
-}
-
-
 bool ban_map_t::is_pixel_in_water(int x, int y) const {
     return (this->get(screen_position_t{x, y + 7}) == BAN_VOID || this->get(screen_position_t{x + 15, y + 7}) == BAN_VOID)
            && (this->get(screen_position_t{x, y + 8}) == BAN_WATER || this->get(screen_position_t{x + 15, y + 8}) == BAN_WATER);

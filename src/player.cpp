@@ -162,8 +162,8 @@ void steer_players() {
                 if (jetpack == 0) {
                     /* no jetpack */
                     if (pogostick == 1 || (player.jump_ready == 1 && player.action_up)) {
-                        s1 = (player.x >> 16);
-                        s2 = (player.y >> 16);
+                        s1 = (player.position.x >> 16);
+                        s2 = (player.position.y >> 16);
 
                         screen_position_t screen_position = player.get_position();
                         auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
@@ -237,44 +237,44 @@ void steer_players() {
                 }
 
                 player.position.x += player.x_add;
-                if ((player.x >> 16) < 0) {
+                if ((player.position.x >> 16) < 0) {
                     player.position.x = 0;
                     player.x_add = 0;
                 }
-                if ((player.x >> 16) + 15 > 351) {
+                if ((player.position.x >> 16) + 15 > 351) {
                     player.position.x = 336L << 16;
                     player.x_add = 0;
                 }
                 {
-                    if (player.y > 0) {
-                        s2 = (player.y >> 16);
+                    if (player.position.y > 0) {
+                        s2 = (player.position.y >> 16);
                     } else {
                         /* check top line only */
                         s2 = 0;
                     }
 
-                    s1 = (player.x >> 16);
+                    s1 = (player.position.x >> 16);
                     if (ban_map.get(screen_position_t{s1, s2}) == ban_map_t::Type::SOLID || ban_map.get(screen_position_t{s1, s2}) == ban_map_t::Type::ICE ||
                             ban_map.get(screen_position_t{s1, s2}) == ban_map_t::Type::SPRING || ban_map.get(screen_position_t{s1, (s2 + 15)}) == ban_map_t::Type::SOLID ||
                             ban_map.get(screen_position_t{s1, (s2 + 15)}) == ban_map_t::Type::ICE ||
                             ban_map.get(screen_position_t{s1, (s2 + 15)}) == ban_map_t::Type::SPRING) {
-                        player.x = (((s1 + 16) & 0xfff0)) << 16;
+                        player.position.x = (((s1 + 16) & 0xfff0)) << 16;
                         player.x_add = 0;
                     }
 
-                    s1 = (player.x >> 16);
+                    s1 = (player.position.x >> 16);
                     if (ban_map.get(screen_position_t{(s1 + 15), s2}) == ban_map_t::Type::SOLID ||
                             ban_map.get(screen_position_t{(s1 + 15), s2}) == ban_map_t::Type::ICE ||
                             ban_map.get(screen_position_t{(s1 + 15), s2}) == ban_map_t::Type::SPRING ||
                             ban_map.get(screen_position_t{(s1 + 15), (s2 + 15)}) == ban_map_t::Type::SOLID ||
                             ban_map.get(screen_position_t{(s1 + 15), (s2 + 15)}) == ban_map_t::Type::ICE ||
                             ban_map.get(screen_position_t{(s1 + 15), (s2 + 15)}) == ban_map_t::Type::SPRING) {
-                        player.x = (((s1 + 16) & 0xfff0) - 16) << 16;
+                        player.position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
                         player.x_add = 0;
                     }
                 }
 
-                player.y += player.y_add;
+                player.position.y += player.y_add;
 
                 s1 = (player.x >> 16);
                 s2 = (player.y >> 16);

@@ -69,8 +69,9 @@ void player_action_right(player_t& player) {
     int s1 = 0, s2 = 0;
     int below_left, below, below_right;
 
-    s1 = (player.x >> 16);
-    s2 = (player.y >> 16);
+    auto screen_position = screen_position_t{player.get_position()};
+    s1 = screen_position.x;
+    s2 = screen_position.y;
     below_left = ban_map.get_by_pixel(s1, s2 + 16);
     below = ban_map.get_by_pixel(s1 + 8, s2 + 16);
     below_right = ban_map.get_by_pixel(s1 + 15, s2 + 16);

@@ -129,8 +129,8 @@ void steer_players() {
                     player_action_right(player);
                 } else if ((!player.action_left) && (!player.action_right)) {
 
-                    s1 = (player.x >> 16);
-                    s2 = (player.y >> 16);
+                    s1 = (player.position.x >> 16);
+                    s2 = (player.position.y >> 16);
 
                     screen_position_t screen_position = player.get_position();
                     auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
@@ -276,8 +276,8 @@ void steer_players() {
 
                 player.position.y += player.y_add;
 
-                s1 = (player.x >> 16);
-                s2 = (player.y >> 16);
+                s1 = (player.position.x >> 16);
+                s2 = (player.position.y >> 16);
                 if (s2 < 0)
                     s2 = 0;
                 if (ban_map.get(screen_position_t{(s1 + 8), (s2 + 15)}) == ban_map_t::Type::SPRING ||
@@ -335,7 +335,7 @@ void steer_players() {
                         ban_map.get_by_pixel(s1, s2) == ban_map_t::Type::SPRING || ban_map.get_by_pixel((s1 + 15), s2) == ban_map_t::Type::SOLID ||
                         ban_map.get_by_pixel((s1 + 15), s2) == ban_map_t::Type::ICE ||
                         ban_map.get_by_pixel((s1 + 15), s2) == ban_map_t::Type::SPRING) {
-                    player.y = (((s2 + 16) & 0xfff0)) << 16; //TODO: MASK
+                    player.position.y = (((s2 + 16) & 0xfff0)) << 16; //TODO: MASK
                     player.y_add = 0;
                     player.anim = 0;
                     player.frame = 0;
@@ -388,7 +388,7 @@ void steer_players() {
                             ban_map.get_by_pixel(s1, (s2 + 15)) == ban_map_t::Type::ICE ||
                             ban_map.get_by_pixel((s1 + 15), (s2 + 15)) == ban_map_t::Type::SOLID ||
                             ban_map.get_by_pixel((s1 + 15), (s2 + 15)) == ban_map_t::Type::ICE) {
-                        player.y = (((s2 + 16) & 0xfff0) - 16) << 16;
+                        player.position.y = (((s2 + 16) & 0xfff0) - 16) << 16;
                         player.y_add = 0;
                     }
                 } else if (ban_map.get_by_pixel(s1, (s2 + 15)) == ban_map_t::Type::SOLID ||
@@ -398,7 +398,7 @@ void steer_players() {
                         ban_map.get_by_pixel((s1 + 15), (s2 + 15)) == ban_map_t::Type::ICE ||
                         ban_map.get_by_pixel((s1 + 15), (s2 + 15)) == ban_map_t::Type::SPRING) {
                     player.in_water = 0;
-                    player.y = (((s2 + 16) & 0xfff0) - 16) << 16;
+                    player.position.y = (((s2 + 16) & 0xfff0) - 16) << 16;
                     player.y_add = 0;
                     if (player.anim != 0 && player.anim != 1) {
                         player.anim = 0;
@@ -416,7 +416,7 @@ void steer_players() {
                         if (player.y_add > 327680L)
                             player.y_add = 327680L;
                     } else {
-                        player.y = (player.y & 0xffff0000) + 0x10000;
+                        player.position.y = (player.position.y & 0xffff0000) + 0x10000;
                         player.y_add = 0;
                     }
                     player.in_water = 0;
@@ -505,23 +505,23 @@ void check_collision(int c1, int c2) {
     auto& player_1 = players[c1];
     auto& player_2 = players[c2];
     if (players[c1].enabled == 1 && players[c2].enabled == 1) {
-        if (labs(player_1.position.x - players[c2].x) < (12L << 16) &&
-            labs(players[c1].y - players[c2].y) < (12L << 16)) {
-            if ((labs(players[c1].y - players[c2].y) >> 16) > 5) {
-                if (players[c1].y < players[c2].y) {
+        if (labs(player_1.position.x - players[c2].position.x) < (12L << 16) &&
+            labs(players[c1].position.y - players[c2].position.y) < (12L << 16)) {
+            if ((labs(players[c1].position.y - players[c2].position.y) >> 16) > 5) {
+                if (players[c1].position.y < players[c2].position.y) {
                     player_kill(c1, c2);
                 } else {
                     player_kill(c2, c1);
                 }
             } else {
-                if (player_1.position.x < players[c2].x) {
+                if (player_1.position.x < players[c2].position.x) {
                     if (players[c1].x_add > 0)
-                        player_1.position.x = players[c2].x - (12L << 16);
+                        player_1.position.x =players[c2].position.x - (12L << 16);
                     else if (players[c2].x_add < 0)
-                        players[c2].x = player_1.position.x + (12L << 16);
+                       players[c2].position.x = player_1.position.x + (12L << 16);
                     else {
                         player_1.position.x -= players[c1].x_add;
-                        players[c2].x -= players[c2].x_add;
+                       players[c2].position.x -= players[c2].x_add;
                     }
                     int l1 = players[c2].x_add;
                     players[c2].x_add = players[c1].x_add;
@@ -532,12 +532,12 @@ void check_collision(int c1, int c2) {
                         players[c2].x_add = -players[c2].x_add;
                 } else {
                     if (players[c1].x_add > 0)
-                        players[c2].x = player_1.position.x - (12L << 16);
+                       players[c2].position.x = player_1.position.x - (12L << 16);
                     else if (players[c2].x_add < 0)
-                        player_1.position.x = players[c2].x + (12L << 16);
+                        player_1.position.x =players[c2].position.x + (12L << 16);
                     else {
                         player_1.position.x -= players[c1].x_add;
-                        players[c2].x -= players[c2].x_add;
+                       players[c2].position.x -= players[c2].x_add;
                     }
                     int l1 = players[c2].x_add;
                     players[c2].x_add = players[c1].x_add;

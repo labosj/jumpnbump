@@ -9,12 +9,6 @@
 #include <vector>
 #include "map_position_t.h"
 
-const unsigned int BAN_VOID	= 0;
-const unsigned int BAN_SOLID = 1;
-const unsigned int BAN_WATER = 2;
-const unsigned int BAN_ICE = 3;
-const unsigned int BAN_SPRING =	4;
-
 /**
  * The ban map is a two dimensional map of blocks.
  * A map in the game as 22x17 blocks. A block is about the size of a bunny.
@@ -26,20 +20,28 @@ class ban_map_t {
 
 public:
 
+    enum class Type {
+        VOID = 0,
+        SOLID = 1,
+        WATER = 2,
+        ICE = 3,
+        SPRING = 4
+    };
+
     int width;
     int height;
 
     bool read_from_file(const std::string& filename);
 
-    unsigned int get(const map_position_t& position) const;
+    Type get(const map_position_t& position) const;
 
     [[deprecated]]
-    unsigned int get_by_pixel(int x, int y) const;
+    Type get_by_pixel(int x, int y) const;
     bool is_pixel_in_water(int x, int y) const;
     map_position_t get_random_position() const;
 
     /**
-     * Jusdt return a position with no BAN_VOID map
+     * Jusdt return a position with no VOID map
      * @return
      */
     map_position_t get_random_available_position() const;
@@ -50,7 +52,7 @@ public:
      */
     map_position_t get_random_available_floor_position() const;
 
-    std::vector<std::vector<unsigned int>> map{0};
+    std::vector<std::vector<ban_map_t::Type>> map{0};
 
     int get_width() const { return this->width; }
     int get_height() const { return this->height; }

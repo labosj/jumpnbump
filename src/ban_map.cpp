@@ -13,23 +13,23 @@
 ban_map_t ban_map;
 
 
-unsigned int ban_map_t::get_by_pixel(int x, int y) const {
+ban_map_t::Type ban_map_t::get_by_pixel(int x, int y) const {
     return this->get(screen_position_t{x, y});
 }
 
-unsigned int ban_map_t::get(const map_position_t& pos) const {
+ban_map_t::Type ban_map_t::get(const map_position_t& pos) const {
     //std::cout << "const[" << pos.x << "," << pos.y << "]\n";
-    if ( pos.x < 0) return BAN_VOID;
-    if ( pos.x >= this->width ) return BAN_VOID;
-    if ( pos.y < 0 ) return BAN_VOID;
-    if ( pos.y >= this->height ) return BAN_VOID;
+    if ( pos.x < 0) return ban_map_t::Type::VOID;
+    if ( pos.x >= this->width ) return ban_map_t::Type::VOID;
+    if ( pos.y < 0 ) return ban_map_t::Type::VOID;
+    if ( pos.y >= this->height ) return ban_map_t::Type::VOID;
 
     return this->map[pos.y][pos.x];
 }
 
 bool ban_map_t::is_pixel_in_water(int x, int y) const {
-    return (this->get(screen_position_t{x, y + 7}) == BAN_VOID || this->get(screen_position_t{x + 15, y + 7}) == BAN_VOID)
-           && (this->get(screen_position_t{x, y + 8}) == BAN_WATER || this->get(screen_position_t{x + 15, y + 8}) == BAN_WATER);
+    return (this->get(screen_position_t{x, y + 7}) == ban_map_t::Type::VOID || this->get(screen_position_t{x + 15, y + 7}) == ban_map_t::Type::VOID)
+           && (this->get(screen_position_t{x, y + 8}) == ban_map_t::Type::WATER || this->get(screen_position_t{x + 15, y + 8}) == ban_map_t::Type::WATER);
 }
 
 
@@ -43,7 +43,7 @@ map_position_t ban_map_t::get_random_available_position() const {
         auto position = get_random_position();
 
         if (
-                this->get(position) == BAN_VOID            //si esta vacio
+                this->get(position) == ban_map_t::Type::VOID            //si esta vacio
                 ) {
             return position;
         }
@@ -58,8 +58,8 @@ map_position_t ban_map_t::get_random_available_floor_position() const {
         below.y += 1;
 
         if (
-               this->get(below) == BAN_SOLID ||     //y el de abajo es un solido, posiblemente un suelo
-               this->get(below) == BAN_ICE  //o un hielo
+               this->get(below) == ban_map_t::Type::SOLID ||     //y el de abajo es un solido, posiblemente un suelo
+               this->get(below) == ban_map_t::Type::ICE  //o un hielo
          )
             return position;
     }
@@ -73,10 +73,10 @@ bool ban_map_t::read_from_file(const std::string& filename) {
 
     this->map.clear();
 
-    std::vector<unsigned int> row;
+    decltype(this->map)::value_type row;
     while ( inputfile.get(chr)) {
         if (chr >= '0' && chr <= '4') {
-            row.push_back(chr - '0');
+            row.push_back(static_cast<Type>(chr - '0'));
         } else {
             this->map.push_back(row);
             row.clear();
@@ -88,7 +88,7 @@ bool ban_map_t::read_from_file(const std::string& filename) {
 
     this->width = this->map[0].size();
 
-    this->map.emplace_back(this->width, BAN_SOLID);
+    this->map.emplace_back(this->width, ban_map_t::Type::SOLID);
 
     this->height = this->map.size();
     std::cout << '[' << this->width << ", " << this->height << "]\n";

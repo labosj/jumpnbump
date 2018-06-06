@@ -590,26 +590,26 @@ void update_objects() {
                 case OBJ_SPRING:
                     object.update_spring();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.image,
                                 &object_gobs);
                     break;
                 case OBJ_SPLASH:
                     object.update_splash();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.image,
                                 &object_gobs);
                     break;
                 case OBJ_SMOKE:
                     object.update_smoke();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.image,
                                 &object_gobs);
                     break;
                 case OBJ_YEL_BUTFLY:
                 case OBJ_PINK_BUTFLY:
                     object.update_butterfly();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.image,
                                 &object_gobs);
                     break;
                 case OBJ_FUR:

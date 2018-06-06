@@ -48,7 +48,7 @@ void player_action_left(player_t& player) {
         if (player.x_add > 0) {
             player.x_add -= 16384;
             if (player.x_add > -98304L && player.in_water == 0 && below == ban_map_t::Type::SOLID)
-                add_object(OBJ_SMOKE, player.position.to_pixels() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
+                add_object(OBJ_SMOKE, player.get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
             player.x_add -= 12288;
@@ -66,10 +66,9 @@ void player_action_left(player_t& player) {
 
 void player_action_right(player_t& player) {
 
-    auto screen_position = screen_position_t{player.get_position()};
-    auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
-    auto below = ban_map.get(screen_position + screen_position_t{8, 16});
-    auto below_right = ban_map.get(screen_position + screen_position_t{15, 16});
+    auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
+    auto below = ban_map.get(player.get_position() + screen_position_t{8, 16});
+    auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
 
     if (below == ban_map_t::Type::ICE) {
         if (player.x_add < 0)
@@ -352,7 +351,7 @@ void steer_players() {
                 s2 = (player.position.y >> 16);
                 if (s2 < 0)
                     s2 = 0;
-                if (ban_map.get_by_pixel((s1 + 8), (s2 + 8)) == ban_map_t::Type::WATER) {
+                if (ban_map.get(player.get_position() + screen_position_t{8, 8}) == ban_map_t::Type::WATER) {
                     if (player.in_water == 0) {
                         /* falling into water */
                         player.in_water = 1;
@@ -362,11 +361,12 @@ void steer_players() {
                         player.image =
                                 player_anims[player.anim].frame[player.frame].image + player.direction * 9;
                         if (player.y_add >= 32768) {
+                            screen_position_t screen_position = player.get_position();
+                            screen_position.y &= 0xfff0;
                             add_object(OBJ_SPLASH,
-                                       screen_position_t{
-                                           player.position.to_pixels().x + 8,
-                                          (player.position.to_pixels().y & 0xfff0) + 15
-                                       }, 0, 0,
+                                       screen_position
+                                       + screen_position_t{9, 15}
+                                       , 0, 0,
                                        OBJ_ANIM_SPLASH, 0);
                             if (blood_is_thicker_than_water == 0)
                                 dj_play_sfx(main_info, SFX_SPLASH,
@@ -467,7 +467,7 @@ void position_player(int player_num) {
         for (c1 = 0; c1 < players.size(); c1++) {
             if (c1 != player_num && players[c1].enabled == 1) {
                 screen_position_t screen_position = position;
-                if (abs(screen_position.x - (players[c1].position.to_pixels().x)) < 32 && abs(screen_position.y - (players[c1].position.to_pixels().y)) < 32)
+                if (abs(screen_position.x - (screen_position_t{players[c1].get_position()}.x)) < 32 && abs(screen_position.y - (screen_position_t{players[c1].get_position()}.y)) < 32)
                     break;
             }
         }

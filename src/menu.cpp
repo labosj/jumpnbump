@@ -601,8 +601,7 @@ int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
 
 	for (c1 = 0; c1 < players.size(); c1++) {
 		players[c1].enabled = 0;
-		players[c1].position.x = (long) rnd(150) << 16;
-		players[c1].position.y = (160L + c1 * 2) << 16;
+		players[c1].position = screen_position_t{rnd(150), (160L + c1 * 2)};
 		players[c1].x_add = 0;
 		players[c1].y_add = 0;
 		players[c1].direction = rnd(2);

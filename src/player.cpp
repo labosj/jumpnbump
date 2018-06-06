@@ -40,7 +40,7 @@ void player_action_left(player_t& player) {
         if (player.x_add > 0) {
             player.x_add -= 16384;
             if (player.x_add > -98304L && player.in_water == 0 && below == BAN_SOLID)
-                add_object(OBJ_SMOKE, player.position.to_pixels() + position_t{2 + rnd(9), 13 + rnd(5)}, 0,
+                add_object(OBJ_SMOKE, player.position.to_pixels() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
             player.x_add -= 12288;
@@ -81,7 +81,7 @@ void player_action_right(player_t& player) {
         if (player.x_add < 0) {
             player.x_add += 16384;
             if (player.x_add < 98304L && player.in_water == 0 && below == BAN_SOLID)
-                add_object(OBJ_SMOKE, player.position.to_pixels() + position_t{2 + rnd(9), 13 + rnd(5)}, 0,
+                add_object(OBJ_SMOKE, player.position.to_pixels() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
             player.x_add += 12288;
@@ -148,7 +148,7 @@ void steer_players() {
                                 player.x_add = 0;
                         }
                         if (player.x_add != 0 && ban_map.get_by_pixel((s1 + 8), (s2 + 16)) == BAN_SOLID)
-                            add_object(OBJ_SMOKE, player.position.to_pixels() + position_t{2 + rnd(9), 13 + rnd(5)},
+                            add_object(OBJ_SMOKE, player.position.to_pixels() + screen_position_t{2 + rnd(9), 13 + rnd(5)},
                                        0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
                     }
                     if (player.anim == 1) {
@@ -228,7 +228,7 @@ void steer_players() {
                         if (ban_map.is_pixel_in_water(s1, s2))
                             player.in_water = 0;
                         if (rnd(100) < 50)
-                            add_object(OBJ_SMOKE, player.position.to_pixels() + position_t{6 + rnd(5), 10 + rnd(5)},
+                            add_object(OBJ_SMOKE, player.position.to_pixels() + screen_position_t{6 + rnd(5), 10 + rnd(5)},
                                        0, 16384 + rnd(8192), OBJ_ANIM_SMOKE, 0);
                     }
                 }

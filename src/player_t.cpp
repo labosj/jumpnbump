@@ -103,10 +103,9 @@ void player_action_right(player_t& player) {
 }
 
 void player_no_action(player_t& player) {
-    screen_position_t screen_position = player.get_position();
-    auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
-    auto below = ban_map.get(screen_position + screen_position_t{8, 16});
-    auto below_right = ban_map.get(screen_position + screen_position_t{15, 16});
+    auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
+    auto below = ban_map.get(player.get_position() + screen_position_t{8, 16});
+    auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
     if (below == ban_map_t::Type::SOLID || below == ban_map_t::Type::SPRING ||
         (((below_left == ban_map_t::Type::SOLID || below_left == ban_map_t::Type::SPRING) && below_right != ban_map_t::Type::ICE) ||
          (below_left != ban_map_t::Type::ICE && (below_right == ban_map_t::Type::SOLID || below_right == ban_map_t::Type::SPRING)))) {

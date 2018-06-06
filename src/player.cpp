@@ -101,6 +101,49 @@ void player_action_right(player_t& player) {
     }
 }
 
+void player_no_action(player_t& player) {
+    screen_position_t screen_position = player.get_position();
+    auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
+    auto below = ban_map.get(screen_position + screen_position_t{8, 16});
+    auto below_right = ban_map.get(screen_position + screen_position_t{15, 16});
+    if (below == ban_map_t::Type::SOLID || below == ban_map_t::Type::SPRING ||
+        (((below_left == ban_map_t::Type::SOLID || below_left == ban_map_t::Type::SPRING) && below_right != ban_map_t::Type::ICE) ||
+         (below_left != ban_map_t::Type::ICE && (below_right == ban_map_t::Type::SOLID || below_right == ban_map_t::Type::SPRING)))) {
+        if (player.x_add < 0) {
+            player.x_add += 16384;
+            if (player.x_add > 0)
+                player.x_add = 0;
+        } else {
+            player.x_add -= 16384;
+            if (player.x_add < 0)
+                player.x_add = 0;
+        }
+        if (player.x_add != 0 && below == ban_map_t::Type::SOLID)
+            add_smoke(player);
+    }
+    if (player.anim == 1) {
+        player.anim = 0;
+        player.frame = 0;
+        player.frame_tick = 0;
+        player.image =
+                player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+    }
+}
+
+void player_t::gravity_fall() {
+
+    auto gravity = 32768;
+    if (bunnies_in_space == 0)
+        gravity = 16384;
+
+    this->jump_ready = 1;
+    if (this->in_water == 0 && this->y_add < 0 && this->jump_abort == 1) {
+        this->y_add += gravity;
+        if (this->y_add > 0)
+            this->y_add = 0;
+    }
+}
+
 void steer_players() {
     int c1;
     int s1 = 0, s2 = 0;
@@ -128,36 +171,8 @@ void steer_players() {
                 } else if (player.action_right) {
                     player_action_right(player);
                 } else if ((!player.action_left) && (!player.action_right)) {
+                    player_no_action(player);
 
-                    s1 = (player.position.x >> 16);
-                    s2 = (player.position.y >> 16);
-
-                    screen_position_t screen_position = player.get_position();
-                    auto below_left = ban_map.get(screen_position + screen_position_t{0, 16});
-                    auto below = ban_map.get(screen_position + screen_position_t{8, 16});
-                    auto below_right = ban_map.get(screen_position + screen_position_t{15, 16});
-                    if (below == ban_map_t::Type::SOLID || below == ban_map_t::Type::SPRING ||
-                        (((below_left == ban_map_t::Type::SOLID || below_left == ban_map_t::Type::SPRING) && below_right != ban_map_t::Type::ICE) ||
-                         (below_left != ban_map_t::Type::ICE && (below_right == ban_map_t::Type::SOLID || below_right == ban_map_t::Type::SPRING)))) {
-                        if (player.x_add < 0) {
-                            player.x_add += 16384;
-                            if (player.x_add > 0)
-                                player.x_add = 0;
-                        } else {
-                            player.x_add -= 16384;
-                            if (player.x_add < 0)
-                                player.x_add = 0;
-                        }
-                        if (player.x_add != 0 && below == ban_map_t::Type::SOLID)
-                            add_smoke(player);
-                    }
-                    if (player.anim == 1) {
-                        player.anim = 0;
-                        player.frame = 0;
-                        player.frame_tick = 0;
-                        player.image =
-                                player_anims[player.anim].frame[player.frame].image + player.direction * 9;
-                    }
                 }
                 if (jetpack == 0) {
                     /* no jetpack */
@@ -211,17 +226,7 @@ void steer_players() {
                     }
                     /* fall down by gravity */
                     if (pogostick == 0 && (!player.action_up)) {
-                        player.jump_ready = 1;
-                        if (player.in_water == 0 && player.y_add < 0 && player.jump_abort == 1) {
-                            if (bunnies_in_space == 0)
-                                /* normal gravity */
-                                player.y_add += 32768;
-                            else
-                                /* light gravity */
-                                player.y_add += 16384;
-                            if (player.y_add > 0)
-                                player.y_add = 0;
-                        }
+                        player.gravity_fall();
                     }
                 } else {
                     /* with jetpack */
@@ -437,8 +442,7 @@ void steer_players() {
                 if (player.frame >= player_anims[player.anim].num_frames) {
                     if (player.anim != 6)
                         player.frame = player_anims[player.anim].restart_frame;
-                    else
-                        position_player(c1);
+                    else position_player(c1);
                 }
                 player.frame_tick = 0;
             }
@@ -449,6 +453,7 @@ void steer_players() {
     }
 
 }
+
 
 void position_player(int player_num) {
     int c1;
@@ -553,7 +558,7 @@ void check_collision(int c1, int c2) {
 }
 
 void collision_check() {
-    /* collision check */
+
     for (int c1 = 0; c1 < players.size(); c1++) {
         for (int c2 = c1 + 1; c2 < players.size() ; c2++) {
             check_collision(c1, c2);

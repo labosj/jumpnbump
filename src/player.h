@@ -38,6 +38,8 @@ struct player_t {
 		this->bumped[victim]++;
 	}
 
+	void gravity_fall();
+
 };
 
 void steer_players();

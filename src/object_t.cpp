@@ -273,7 +273,7 @@ void object_t::update_flesh() {
 
 void object_t::update_fur() {
     if (rnd(100) < 30)
-        add_object(OBJ_FLESH_TRACE, screen_position_t{this->position.x >> 16, this->position.y >> 16}, 0, 0,
+        add_object(OBJ_FLESH_TRACE, this->get_position(), 0, 0,
                    OBJ_ANIM_FLESH_TRACE, 0);
     if (ban_map.get(this->get_position()) == ban_map_t::Type::VOID) {
         this->y_add += 3072;
@@ -345,14 +345,14 @@ void object_t::update_fur() {
 
 void add_smoke(const player_t& player) {
     add_object(OBJ_SMOKE,
-               screen_position_t{player.get_position()} +
+               player.get_position() +
                screen_position_t{2 + rnd(9), 13 + rnd(5)}
                , 0,
                -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 }
 
 void add_jetpack_smoke(const player_t& player) {
-    add_object(OBJ_SMOKE, screen_position_t{player.get_position()} + screen_position_t{6 + rnd(5), 10 + rnd(5)},
+    add_object(OBJ_SMOKE, player.get_position() + screen_position_t{6 + rnd(5), 10 + rnd(5)},
                0, 16384 + rnd(8192), OBJ_ANIM_SMOKE, 0);
 }
 

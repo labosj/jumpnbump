@@ -240,7 +240,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								if (players[c1].x_add < 0) {
 									players[c1].x_add += 16384;
 									if ((players[c1].position.y >> 16) >= (160 + c1 * 2))
-										add_object(OBJ_SMOKE, players[c1].position.to_pixels() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+										add_object(OBJ_SMOKE, players[c1].get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 								} else
 									players[c1].x_add += 12288;
 							}
@@ -248,7 +248,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								if (players[c1].x_add < 0) {
 									players[c1].x_add += 16384;
 									if ((players[c1].position.y >> 16) >= (138 + c1 * 2))
-										add_object(OBJ_SMOKE, players[c1].position.to_pixels() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+										add_object(OBJ_SMOKE, players[c1].get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 								} else
 									players[c1].x_add += 12288;
 							}

@@ -389,19 +389,19 @@ void steer_players() {
                         player.y_add = -65536L;
                     if (player.y_add > 65535L)
                         player.y_add = 65535L;
-                    if (ban_map.get_by_pixel(s1, (s2 + 15)) == ban_map_t::Type::SOLID ||
-                            ban_map.get_by_pixel(s1, (s2 + 15)) == ban_map_t::Type::ICE ||
-                            ban_map.get_by_pixel((s1 + 15), (s2 + 15)) == ban_map_t::Type::SOLID ||
-                            ban_map.get_by_pixel((s1 + 15), (s2 + 15)) == ban_map_t::Type::ICE) {
+                    if (ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
+                            ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
+                            ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
+                            ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::ICE) {
                         player.position.y = (((s2 + 16) & 0xfff0) - 16) << 16;
                         player.y_add = 0;
                     }
-                } else if (ban_map.get_by_pixel(s1, (s2 + 15)) == ban_map_t::Type::SOLID ||
-                        ban_map.get_by_pixel(s1, (s2 + 15)) == ban_map_t::Type::ICE ||
-                        ban_map.get_by_pixel(s1, (s2 + 15)) == ban_map_t::Type::SPRING ||
-                        ban_map.get_by_pixel((s1 + 15), (s2 + 15)) == ban_map_t::Type::SOLID ||
-                        ban_map.get_by_pixel((s1 + 15), (s2 + 15)) == ban_map_t::Type::ICE ||
-                        ban_map.get_by_pixel((s1 + 15), (s2 + 15)) == ban_map_t::Type::SPRING) {
+                } else if (ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
+                        ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
+                        ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING ||
+                        ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
+                        ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::ICE ||
+                        ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
                     player.in_water = 0;
                     player.position.y = (((s2 + 16) & 0xfff0) - 16) << 16;
                     player.y_add = 0;
@@ -509,48 +509,48 @@ void player_kill(int c1, int c2) {
 void check_collision(int c1, int c2) {
     auto& player_1 = players[c1];
     auto& player_2 = players[c2];
-    if (players[c1].enabled == 1 && players[c2].enabled == 1) {
-        if (labs(player_1.position.x - players[c2].position.x) < (12L << 16) &&
-            labs(players[c1].position.y - players[c2].position.y) < (12L << 16)) {
-            if ((labs(players[c1].position.y - players[c2].position.y) >> 16) > 5) {
-                if (players[c1].position.y < players[c2].position.y) {
+    if (player_1.enabled == 1 && player_2.enabled == 1) {
+        if (labs(player_1.position.x - player_2.position.x) < (12L << 16) &&
+            labs(player_1.position.y - player_2.position.y) < (12L << 16)) {
+            if ((labs(player_1.position.y - player_2.position.y) >> 16) > 5) {
+                if (player_1.position.y < player_2.position.y) {
                     player_kill(c1, c2);
                 } else {
                     player_kill(c2, c1);
                 }
             } else {
-                if (player_1.position.x < players[c2].position.x) {
-                    if (players[c1].x_add > 0)
-                        player_1.position.x =players[c2].position.x - (12L << 16);
-                    else if (players[c2].x_add < 0)
-                       players[c2].position.x = player_1.position.x + (12L << 16);
+                if (player_1.position.x < player_2.position.x) {
+                    if (player_1.x_add > 0)
+                        player_1.position.x = player_2.position.x - (12L << 16);
+                    else if (player_2.x_add < 0)
+                       player_2.position.x = player_1.position.x + (12L << 16);
                     else {
-                        player_1.position.x -= players[c1].x_add;
-                       players[c2].position.x -= players[c2].x_add;
+                        player_1.position.x -= player_1.x_add;
+                       player_2.position.x -= player_2.x_add;
                     }
-                    int l1 = players[c2].x_add;
-                    players[c2].x_add = players[c1].x_add;
-                    players[c1].x_add = l1;
-                    if (players[c1].x_add > 0)
-                        players[c1].x_add = -players[c1].x_add;
-                    if (players[c2].x_add < 0)
-                        players[c2].x_add = -players[c2].x_add;
+                    int l1 = player_2.x_add;
+                    player_2.x_add = player_1.x_add;
+                    player_1.x_add = l1;
+                    if (player_1.x_add > 0)
+                        player_1.x_add = -player_1.x_add;
+                    if (player_2.x_add < 0)
+                        player_2.x_add = -player_2.x_add;
                 } else {
-                    if (players[c1].x_add > 0)
-                       players[c2].position.x = player_1.position.x - (12L << 16);
-                    else if (players[c2].x_add < 0)
-                        player_1.position.x =players[c2].position.x + (12L << 16);
+                    if (player_1.x_add > 0)
+                       player_2.position.x = player_1.position.x - (12L << 16);
+                    else if (player_2.x_add < 0)
+                        player_1.position.x =player_2.position.x + (12L << 16);
                     else {
-                        player_1.position.x -= players[c1].x_add;
-                       players[c2].position.x -= players[c2].x_add;
+                        player_1.position.x -= player_1.x_add;
+                       player_2.position.x -= player_2.x_add;
                     }
-                    int l1 = players[c2].x_add;
-                    players[c2].x_add = players[c1].x_add;
-                    players[c1].x_add = l1;
-                    if (players[c1].x_add < 0)
-                        players[c1].x_add = -players[c1].x_add;
-                    if (players[c2].x_add > 0)
-                        players[c2].x_add = -players[c2].x_add;
+                    int l1 = player_2.x_add;
+                    player_2.x_add = player_1.x_add;
+                    player_1.x_add = l1;
+                    if (player_1.x_add < 0)
+                        player_1.x_add = -player_1.x_add;
+                    if (player_2.x_add > 0)
+                        player_2.x_add = -player_2.x_add;
                 }
             }
         }

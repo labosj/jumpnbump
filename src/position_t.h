@@ -5,6 +5,7 @@
 #ifndef JUMPNBUMP_POSITION_T_H
 #define JUMPNBUMP_POSITION_T_H
 
+#include "screen_position_t.h"
 
 class position_t {
 public:
@@ -15,10 +16,8 @@ public:
 
     position_t(int x, int y) : x(x), y(y) {}
 
-    position_t to_pixels() const {
-        position_t pixels{this->x >> 16, this->y >> 16};
-
-        return pixels;
+    screen_position_t to_pixels() const {
+        return screen_position_t{*this};
     }
 
     position_t operator+(const position_t& position) {

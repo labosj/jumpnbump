@@ -149,13 +149,17 @@ extern gob_t number_gobs;
 
 [[deprecated]]
 void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame);
+[[deprecated]]
 void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
+void add_object(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame);
 void update_objects(void);
 void update_player_actions();
 
 [[deprecated]]
 int add_pob(int page, int x, int y, int image, gob_t *pob_data);
+[[deprecated]]
 int add_pob(int page, const position_t& position, int image, gob_t *pob_data);
+int add_pob(int page, const screen_position_t& position, int image, gob_t *pob_data);
 
 int init_level(int level, char *pal);
 void deinit_level(void);

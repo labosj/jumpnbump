@@ -5,6 +5,7 @@
 #ifndef JUMPNBUMP_OBJECT_T_H
 #define JUMPNBUMP_OBJECT_T_H
 
+#include "screen_position_t.h"
 #include "position_t.h"
 
 struct object_t{
@@ -20,7 +21,7 @@ struct object_t{
 	int frame, ticks;
 	int image;
 
-	object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
+	object_t(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame);
 
 	/**
 	 * Read only

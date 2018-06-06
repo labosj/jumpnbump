@@ -5,7 +5,7 @@
 #ifndef JUMPNBUMP_POB_T_H
 #define JUMPNBUMP_POB_T_H
 
-#include "position_t.h"
+#include "screen_position_t.h"
 
 struct gob_t;
 
@@ -17,7 +17,7 @@ struct pob_t {
     gob_t *pob_data;
     int back_buf_ofs;
 
-    pob_t(position_t position, int image, gob_t* pob_data) {
+    pob_t(const screen_position_t& position, int image, gob_t* pob_data) {
         this->x = position.x;
         this->y = position.y;
         this->image = image;
@@ -25,7 +25,7 @@ struct pob_t {
     }
 
     [[deprecated]]
-    pob_t(int x, int y, int image, gob_t* pob_data) : pob_t{position_t{x, y}, image, pob_data} {};
+    pob_t(int x, int y, int image, gob_t* pob_data) : pob_t{screen_position_t{x, y}, image, pob_data} {};
 };
 
 #endif //JUMPNBUMP_POB_T_H

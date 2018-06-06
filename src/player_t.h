@@ -28,6 +28,7 @@ struct player_t {
 	bool is_alive() const { return this->dead_flag == 0; }
 
 	void set_position(const position_t& position);
+	void check_spring_jump();
 
 	void reset_kills() {
 		this->bumps = 0;

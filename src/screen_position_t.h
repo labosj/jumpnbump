@@ -21,7 +21,7 @@ public:
     screen_position_t(const position_t& position);
     screen_position_t(const map_position_t& position);
 
-    screen_position_t operator+(const screen_position_t &position) {
+    screen_position_t operator+(const screen_position_t &position) const {
         return screen_position_t{
                 this->x + position.x,
                 this->y + position.y

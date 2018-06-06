@@ -13,10 +13,6 @@
 ban_map_t ban_map;
 
 
-ban_map_t::Type ban_map_t::get_by_pixel(int x, int y) const {
-    return this->get(screen_position_t{x, y});
-}
-
 ban_map_t::Type ban_map_t::get(const map_position_t& pos) const {
     //std::cout << "const[" << pos.x << "," << pos.y << "]\n";
     if ( pos.x < 0) return ban_map_t::Type::VOID;
@@ -27,9 +23,9 @@ ban_map_t::Type ban_map_t::get(const map_position_t& pos) const {
     return this->map[pos.y][pos.x];
 }
 
-bool ban_map_t::is_pixel_in_water(int x, int y) const {
-    return (this->get(screen_position_t{x, y + 7}) == ban_map_t::Type::VOID || this->get(screen_position_t{x + 15, y + 7}) == ban_map_t::Type::VOID)
-           && (this->get(screen_position_t{x, y + 8}) == ban_map_t::Type::WATER || this->get(screen_position_t{x + 15, y + 8}) == ban_map_t::Type::WATER);
+bool ban_map_t::is_in_water(const screen_position_t& position) const {
+    return (this->get(position + screen_position_t{0,7}) == ban_map_t::Type::VOID || this->get(position + screen_position_t{15, 7}) == ban_map_t::Type::VOID)
+           && (this->get(position + screen_position_t{0, 8}) == ban_map_t::Type::WATER || this->get(position + screen_position_t{15, 8}) == ban_map_t::Type::WATER);
 }
 
 

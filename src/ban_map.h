@@ -35,9 +35,8 @@ public:
 
     Type get(const map_position_t& position) const;
 
-    [[deprecated]]
-    Type get_by_pixel(int x, int y) const;
-    bool is_pixel_in_water(int x, int y) const;
+
+    bool is_in_water(const screen_position_t& position) const;
     map_position_t get_random_position() const;
 
     /**

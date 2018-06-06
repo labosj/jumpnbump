@@ -13,12 +13,11 @@
 extern leftovers_t leftovers;
 extern object_anim_t object_anims[8];
 
-object_t::object_t(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame) {
+object_t::object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame) {
     this->used = 1;
     this->type = type;
 
-    this->x = (long) position.x << 16;
-    this->y = (long) position.y << 16;
+    this->position = position;
     this->x_add = x_add;
     this->y_add = y_add;
     this->x_acc = 0;
@@ -45,8 +44,8 @@ void object_t::update_flesh_trace() {
 }
 
 void object_t::update_smoke() {
-    this->x += this->x_add;
-    this->y += this->y_add;
+    this->position.x += this->x_add;
+    this->position.y += this->y_add;
     this->ticks--;
     if (this->ticks <= 0) {
         this->frame++;
@@ -97,21 +96,21 @@ void object_t::update_butterfly() {
         this->x_add = -32768;
     if (this->x_add > 32768)
         this->x_add = 32768;
-    this->x += this->x_add;
-    if ((this->x >> 16) < 16) {
-        this->x = 16 << 16;
+    this->position.x += this->x_add;
+    if ((this->position.x >> 16) < 16) {
+        this->position.x = 16 << 16;
         this->x_add = -this->x_add >> 2;
         this->x_acc = 0;
-    } else if ((this->x >> 16) > 350) {
-        this->x = 350 << 16;
+    } else if ((this->position.x >> 16) > 350) {
+        this->position.x = 350 << 16;
         this->x_add = -this->x_add >> 2;
         this->x_acc = 0;
     }
     if (ban_map.get(this->get_position()) != ban_map_t::Type::VOID) {
         if (this->x_add < 0) {
-            this->x = (((this->x >> 16) + 16) & 0xfff0) << 16;
+            this->position.x = (((this->position.x >> 16) + 16) & 0xfff0) << 16;
         } else {
-            this->x = ((((this->x >> 16) - 16) & 0xfff0) + 15) << 16;
+            this->position.x = ((((this->position.x >> 16) - 16) & 0xfff0) + 15) << 16;
         }
         this->x_add = -this->x_add >> 2;
         this->x_acc = 0;
@@ -126,21 +125,21 @@ void object_t::update_butterfly() {
         this->y_add = -32768;
     if (this->y_add > 32768)
         this->y_add = 32768;
-    this->y += this->y_add;
-    if ((this->y >> 16) < 0) {
-        this->y = 0;
+    this->position.y += this->y_add;
+    if ((this->position.y >> 16) < 0) {
+        this->position.y = 0;
         this->y_add = -this->y_add >> 2;
         this->y_acc = 0;
-    } else if ((this->y >> 16) > 255) {
-        this->y = 255 << 16;
+    } else if ((this->position.y >> 16) > 255) {
+        this->position.y = 255 << 16;
         this->y_add = -this->y_add >> 2;
         this->y_acc = 0;
     }
     if (ban_map.get(this->get_position()) != ban_map_t::Type::VOID) {
         if (this->y_add < 0) {
-            this->y = (((this->y >> 16) + 16) & 0xfff0) << 16;
+            this->position.y = (((this->position.y >> 16) + 16) & 0xfff0) << 16;
         } else {
-            this->y = ((((this->y >> 16) - 16) & 0xfff0) + 15) << 16;
+            this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
         }
         this->y_add = -this->y_add >> 2;
         this->y_acc = 0;
@@ -220,45 +219,45 @@ void object_t::update_flesh() {
         if (this->y_add > 65536L)
             this->y_add = 65536L;
     }
-    this->x += this->x_add;
-    if ((this->y >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
+    this->position.x += this->x_add;
+    if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
                                       ban_map.get(this->get_position()) == ban_map_t::Type::ICE)) {
         if (this->x_add < 0) {
-            this->x = (((this->x >> 16) + 16) & 0xfff0) << 16;
+            this->position.x = (((this->position.x >> 16) + 16) & 0xfff0) << 16;
             this->x_add = -this->x_add >> 2;
         } else {
-            this->x = ((((this->x >> 16) - 16) & 0xfff0) + 15) << 16;
+            this->position.x = ((((this->position.x >> 16) - 16) & 0xfff0) + 15) << 16;
             this->x_add = -this->x_add >> 2;
         }
     }
-    this->y += this->y_add;
-    if ((this->x >> 16) < -5 || (this->x >> 16) > 405 || (this->y >> 16) > 260)
+    this->position.y += this->y_add;
+    if ((this->position.x >> 16) < -5 || (this->position.x >> 16) > 405 || (this->position.y >> 16) > 260)
         this->used = 0;
-    if ((this->y >> 16) > 0 && (ban_map.get(this->get_position()) != ban_map_t::Type::VOID)) {
+    if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) != ban_map_t::Type::VOID)) {
         if (this->y_add < 0) {
             if (ban_map.get(this->get_position()) != ban_map_t::Type::WATER) {
-                this->y = (((this->y >> 16) + 16) & 0xfff0) << 16;
+                this->position.y = (((this->position.y >> 16) + 16) & 0xfff0) << 16;
                 this->x_add >>= 2;
                 this->y_add = -this->y_add >> 2;
             }
         } else {
             if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID) {
                 if (this->y_add > 131072L) {
-                    this->y = ((((this->y >> 16) - 16) & 0xfff0) + 15) << 16;
+                    this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
                     this->x_add >>= 2;
                     this->y_add = -this->y_add >> 2;
                 } else {
                     if (rnd(100) < 10) {
                         int s1 = rnd(4) - 2;
-                        add_leftovers(0, screen_position_t{this->x >> 16, (this->y >> 16) + s1},
+                        add_leftovers(0, screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
                                       this->frame, &object_gobs, leftovers);
-                        add_leftovers(1, screen_position_t{this->x >> 16, (this->y >> 16) + s1},
+                        add_leftovers(1, screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
                                       this->frame, &object_gobs, leftovers);
                     }
                     this->used = 0;
                 }
             } else if (ban_map.get(this->get_position()) == ban_map_t::Type::ICE) {
-                this->y = ((((this->y >> 16) - 16) & 0xfff0) + 15) << 16;
+                this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
                 if (this->y_add > 131072L)
                     this->y_add = -this->y_add >> 2;
                 else
@@ -274,7 +273,7 @@ void object_t::update_flesh() {
 
 void object_t::update_fur() {
     if (rnd(100) < 30)
-        add_object(OBJ_FLESH_TRACE, screen_position_t{this->x >> 16, this->y >> 16}, 0, 0,
+        add_object(OBJ_FLESH_TRACE, screen_position_t{this->position.x >> 16, this->position.y >> 16}, 0, 0,
                    OBJ_ANIM_FLESH_TRACE, 0);
     if (ban_map.get(this->get_position()) == ban_map_t::Type::VOID) {
         this->y_add += 3072;
@@ -300,37 +299,37 @@ void object_t::update_fur() {
         if (this->y_add > 65536L)
             this->y_add = 65536L;
     }
-    this->x += this->x_add;
-    if ((this->y >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
+    this->position.x += this->x_add;
+    if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
                                       ban_map.get(this->get_position()) == ban_map_t::Type::ICE)) {
         if (this->x_add < 0) {
-            this->x = (((this->x >> 16) + 16) & 0xfff0) << 16;
+            this->position.x = (((this->position.x >> 16) + 16) & 0xfff0) << 16;
             this->x_add = -this->x_add >> 2;
         } else {
-            this->x = ((((this->x >> 16) - 16) & 0xfff0) + 15) << 16;
+            this->position.x = ((((this->position.x >> 16) - 16) & 0xfff0) + 15) << 16;
             this->x_add = -this->x_add >> 2;
         }
     }
-    this->y += this->y_add;
-    if ((this->x >> 16) < -5 || (this->x >> 16) > 405 || (this->y >> 16) > 260)
+    this->position.y += this->y_add;
+    if ((this->position.x >> 16) < -5 || (this->position.x >> 16) > 405 || (this->position.y >> 16) > 260)
         this->used = 0;
-    if ((this->y >> 16) > 0 && (ban_map.get(this->get_position()) != ban_map_t::Type::VOID)) {
+    if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) != ban_map_t::Type::VOID)) {
         if (this->y_add < 0) {
             if (ban_map.get(this->get_position()) != ban_map_t::Type::WATER) {
-                this->y = (((this->y >> 16) + 16) & 0xfff0) << 16;
+                this->position.y = (((this->position.y >> 16) + 16) & 0xfff0) << 16;
                 this->x_add >>= 2;
                 this->y_add = -this->y_add >> 2;
             }
         } else {
             if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID) {
                 if (this->y_add > 131072L) {
-                    this->y = ((((this->y >> 16) - 16) & 0xfff0) + 15) << 16;
+                    this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
                     this->x_add >>= 2;
                     this->y_add = -this->y_add >> 2;
                 } else
                     this->used = 0;
             } else if (ban_map.get(this->get_position()) == ban_map_t::Type::ICE) {
-                this->y = ((((this->y >> 16) - 16) & 0xfff0) + 15) << 16;
+                this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
                 if (this->y_add > 131072L)
                     this->y_add = -this->y_add >> 2;
                 else
@@ -357,7 +356,7 @@ void add_jetpack_smoke(const player_t& player) {
                0, 16384 + rnd(8192), OBJ_ANIM_SMOKE, 0);
 }
 
-void add_object(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame) {
+void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame) {
 
     for ( auto& object : objects ) {
         if (object.used == 0) {

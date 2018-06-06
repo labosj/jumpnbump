@@ -285,7 +285,7 @@ void steer_players() {
                             ban_map.get(screen_position_t{(s1 + 15), (s2 + 15)}) != ban_map_t::Type::SOLID) ||
                      (ban_map.get(screen_position_t{s1, (s2 + 15)}) != ban_map_t::Type::SOLID &&
                              ban_map.get(screen_position_t{(s1 + 15), (s2 + 15)}) == ban_map_t::Type::SPRING))) {
-                    player.y = ((player.y >> 16) & 0xfff0) << 16;
+                    player.position.y = ((player.position.y >> 16) & 0xfff0) << 16;
                     player.y_add = -400000L;
                     player.anim = 2;
                     player.frame = 0;
@@ -297,8 +297,8 @@ void steer_players() {
                     for (auto& object : objects) {
                         if (object.used == 1 && object.type == OBJ_SPRING) {
                             if (ban_map.get(screen_position_t{(s1 + 8), (s2 + 15)}) == ban_map_t::Type::SPRING) {
-                                if ((object.x >> 20) == ((s1 + 8) >> 4) &&
-                                    (object.y >> 20) == ((s2 + 15) >> 4)) {
+                                if ((object.position.x >> 20) == ((s1 + 8) >> 4) &&
+                                    (object.position.y >> 20) == ((s2 + 15) >> 4)) {
                                     object.frame = 0;
                                     object.ticks = object_anims[object.anim].frame[object.frame].ticks;
                                     object.image = object_anims[object.anim].frame[object.frame].image;
@@ -306,16 +306,16 @@ void steer_players() {
                                 }
                             } else {
                                 if (ban_map.get(screen_position_t{s1, (s2 + 15)}) == ban_map_t::Type::SPRING) {
-                                    if ((object.x >> 20) == (s1 >> 4) &&
-                                        (object.y >> 20) == ((s2 + 15) >> 4)) {
+                                    if ((object.position.x >> 20) == (s1 >> 4) &&
+                                        (object.position.y >> 20) == ((s2 + 15) >> 4)) {
                                         object.frame = 0;
                                         object.ticks = object_anims[object.anim].frame[object.frame].ticks;
                                         object.image = object_anims[object.anim].frame[object.frame].image;
                                         break;
                                     }
                                 } else if (ban_map.get(screen_position_t{(s1 + 15), (s2 + 15)}) == ban_map_t::Type::SPRING) {
-                                    if ((object.x >> 20) == ((s1 + 15) >> 4) &&
-                                        (object.y >> 20) == ((s2 + 15) >> 4)) {
+                                    if ((object.position.x >> 20) == ((s1 + 15) >> 4) &&
+                                        (object.position.y >> 20) == ((s2 + 15) >> 4)) {
                                         object.frame = 0;
                                         object.ticks = object_anims[object.anim].frame[object.frame].ticks;
                                         object.image = object_anims[object.anim].frame[object.frame].image;
@@ -327,8 +327,8 @@ void steer_players() {
                     }
                     dj_play_sfx(main_info, SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
                 }
-                s1 = (player.x >> 16);
-                s2 = (player.y >> 16);
+                s1 = (player.position.x >> 16);
+                s2 = (player.position.y >> 16);
                 if (s2 < 0)
                     s2 = 0;
                 if (ban_map.get_by_pixel(s1, s2) == ban_map_t::Type::SOLID || ban_map.get_by_pixel(s1, s2) == ban_map_t::Type::ICE ||

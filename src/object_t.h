@@ -7,19 +7,16 @@
 
 class player_t;
 
-#include "screen_position_t.h"
 #include "position_t.h"
 
 void add_smoke(const player_t& player);
 void add_jetpack_smoke(const player_t& player);
-void add_object(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame);
+void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
 
 struct object_t{
 	int used, type;
 
-	int x;
-
-	int y;
+	position_t position;
 
 	int x_add, y_add;
 	int x_acc, y_acc;
@@ -27,14 +24,14 @@ struct object_t{
 	int frame, ticks;
 	int image;
 
-	object_t(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame);
+	object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
 
 	/**
 	 * Read only
 	 * @return
 	 */
 	position_t get_position() const {
-		return position_t{this->x, this->y};
+		return this->position;
 	}
 
 	void update_flesh_trace();

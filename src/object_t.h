@@ -8,6 +8,12 @@
 #include "screen_position_t.h"
 #include "position_t.h"
 
+[[deprecated]]
+void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame);
+[[deprecated]]
+void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
+void add_object(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame);
+
 struct object_t{
 	int used, type;
 

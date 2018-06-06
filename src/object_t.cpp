@@ -341,3 +341,26 @@ void object_t::update_fur() {
     if (this->x_add > 0 && this->x_add < 16384)
         this->x_add = 16384;
 }
+
+[[deprecated]]
+void add_object(int type, int x, int y, int x_add, int y_add, int anim, int frame ) {
+    add_object(type, screen_position_t{x, y}, x_add, y_add, anim, frame);
+}
+
+[[deprecated]]
+void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame) {
+    add_object(type, screen_position_t{position.x, position.y}, x_add, y_add, anim, frame);
+}
+
+void add_object(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame) {
+
+    for ( auto& object : objects ) {
+        if (object.used == 0) {
+            object = object_t{type, position, x_add, y_add, anim, frame};
+            return;
+        }
+    }
+
+    objects.emplace_back(type, position, x_add, y_add, anim, frame);
+
+}

@@ -705,20 +705,20 @@ int init_level(int level, char *pal) {
     for (c1 = 0; c1 < ban_map.get_height(); c1++) {
         for (c2 = 0; c2 < ban_map.get_width() ; c2++) {
             if (ban_map.get(c2, c1) == BAN_SPRING)
-                add_object(OBJ_SPRING, position_t{c2 << 4, c1 << 4}, 0, 0, OBJ_ANIM_SPRING, 5);
+                add_object(OBJ_SPRING, screen_position_t{map_position_t{c2, c1}}, 0, 0, OBJ_ANIM_SPRING, 5);
         }
     }
 
     for ( int i = 0 ; i < 2 ; i++ ) {
         auto new_pos = ban_map.get_random_available_position();
-        add_object(OBJ_YEL_BUTFLY, (new_pos.first << 4) + 8, (new_pos.second << 4) + 8, (rnd(65535) - 32768) * 2,
+        add_object(OBJ_YEL_BUTFLY, screen_position_t{new_pos} + screen_position_t{8, 8}, (rnd(65535) - 32768) * 2,
                    (rnd(65535) - 32768) * 2,
                    0, 0);
     }
 
     for ( int i = 0 ; i < 2 ; i++ ) {
         auto new_pos = ban_map.get_random_available_position();
-        add_object(OBJ_PINK_BUTFLY, (new_pos.first << 4) + 8, (new_pos.second << 4) + 8, (rnd(65535) - 32768) * 2,
+        add_object(OBJ_PINK_BUTFLY, screen_position_t{new_pos} + screen_position_t{8, 8}, (rnd(65535) - 32768) * 2,
                    (rnd(65535) - 32768) * 2, 0, 0);
     }
 

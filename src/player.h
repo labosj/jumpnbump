@@ -30,6 +30,8 @@ struct player_t {
 
 	bool is_alive() const { return this->dead_flag == 0; }
 
+	void set_position(const position_t& position);
+
 	void reset_kills() {
 		this->bumps = 0;
 		this->bumped = std::vector<int>(JNB_MAX_PLAYERS, 0);

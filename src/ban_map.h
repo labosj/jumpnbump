@@ -6,6 +6,7 @@
 #define JUMPNBUMP_BAN_MAP_H
 
 #include <tuple>
+#include "map_position_t.h"
 
 const unsigned int BAN_VOID	= 0;
 const unsigned int BAN_SOLID = 1;
@@ -30,31 +31,37 @@ public:
     static const int HEIGHT = 17;
 
 public:
+
+    unsigned int& get(const map_position_t& position);
+
+    const unsigned int& get(const map_position_t& position) const;
+
     /**
     * Get the value of a ban map coord using pixel
     * @param x
     * @param y
     * @return
     */
-    unsigned int& get_by_pixel(int x, int y);
-    unsigned int& get(std::pair<int, int> position);
+    [[deprecated]]
     unsigned int& get(int x, int y);
-    const unsigned int& get(std::pair<int, int> position) const;
+    [[deprecated]]
+    unsigned int& get_by_pixel(int x, int y);
+    [[deprecated]]
     const unsigned int& get_by_pixel(int x, int y) const;
     bool is_pixel_in_water(int x, int y) const;
-    std::pair<int, int> get_random_position() const;
+    map_position_t get_random_position() const;
 
     /**
      * Jusdt return a position with no BAN_VOID map
      * @return
      */
-    std::pair<int, int> get_random_available_position() const;
+    map_position_t get_random_available_position() const;
 
     /**
      * Return a position suitable for a bunny new bunny in the floor
      * @return
      */
-    std::pair<int, int> get_random_available_floor_position() const;
+    map_position_t get_random_available_floor_position() const;
 
     unsigned int map[ban_map_t::HEIGHT][ban_map_t::WIDTH];
 

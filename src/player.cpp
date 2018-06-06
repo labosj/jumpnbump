@@ -15,6 +15,11 @@ extern int blood_is_thicker_than_water;
 extern main_info_t main_info;
 extern object_anim_t object_anims[8];
 
+void player_t::set_position(const position_t& position) {
+    this->x = position.x;
+    this->y = position.y;
+}
+
 void serverSendKillPacket(int c1, int c2);
 
 void player_action_left(player_t& player) {
@@ -449,24 +454,24 @@ void steer_players() {
 
 void position_player(int player_num) {
     int c1;
-    int x, y;
+    map_position_t position;
 
     while (true) {
 
-        std::tie(x, y) = ban_map.get_random_available_floor_position();
+        position = ban_map.get_random_available_floor_position();
 
         //verifica que el conejo no este cerca de otros conejos
         for (c1 = 0; c1 < players.size(); c1++) {
             if (c1 != player_num && players[c1].enabled == 1) {
-                if (abs((x << 4) - (players[c1].position.to_pixels().x)) < 32 && abs((y << 4) - (players[c1].position.to_pixels().y)) < 32)
+                screen_position_t screen_position = position;
+                if (abs(screen_position.x - (players[c1].position.to_pixels().x)) < 32 && abs(screen_position.y - (players[c1].position.to_pixels().y)) < 32)
                     break;
             }
         }
 
 
         if (c1 == players.size()) {
-            players[player_num].x = (long) x << 20;
-            players[player_num].y = (long) y << 20;
+            players[player_num].set_position(position);
 
             players[player_num].x_add = players[player_num].y_add = 0;
             players[player_num].direction = 0;

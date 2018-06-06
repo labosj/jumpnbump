@@ -6,7 +6,7 @@
 #define JUMPNBUMP_POSITION_T_H
 
 #include "screen_position_t.h"
-class map_position;
+class map_position_t;
 
 class position_t {
 public:

@@ -11,12 +11,12 @@ unsigned int& ban_map_t::get_by_pixel(int x, int y) {
     return this->map[(y) >> 4][(x) >> 4];
 }
 
-unsigned int& ban_map_t::get(std::pair<int, int> pos) {
-    return this->map[pos.second][pos.first];
+unsigned int& ban_map_t::get(const map_position_t& pos) {
+    return this->map[pos.y][pos.x];
 }
 
-const unsigned int& ban_map_t::get(std::pair<int, int> pos) const {
-    return this->map[pos.second][pos.first];
+const unsigned int& ban_map_t::get(const map_position_t& pos) const {
+    return this->map[pos.y][pos.x];
 }
 
 unsigned int& ban_map_t::get(int x, int y) {
@@ -33,11 +33,11 @@ bool ban_map_t::is_pixel_in_water(int x, int y) const {
 }
 
 
-std::pair<int, int> ban_map_t::get_random_position() const {
-    return std::make_pair(rnd(ban_map_t::WIDTH), rnd(ban_map_t::HEIGHT));
+map_position_t ban_map_t::get_random_position() const {
+    return map_position_t{rnd(ban_map_t::WIDTH), rnd(ban_map_t::HEIGHT)};
 };
 
-std::pair<int, int> ban_map_t::get_random_available_position() const {
+map_position_t ban_map_t::get_random_available_position() const {
 
     while (true) {
         auto position = get_random_position();
@@ -50,12 +50,12 @@ std::pair<int, int> ban_map_t::get_random_available_position() const {
     }
 }
 
-std::pair<int, int> ban_map_t::get_random_available_floor_position() const {
+map_position_t ban_map_t::get_random_available_floor_position() const {
 
     while (true) {
         auto position = get_random_available_position();
         auto below = position;
-        below.second += 1;
+        below.y += 1;
 
         if (
                this->get(below) == BAN_SOLID ||     //y el de abajo es un solido, posiblemente un suelo

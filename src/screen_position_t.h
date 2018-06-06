@@ -6,6 +6,7 @@
 #define JUMPNBUMP_SCREEN_POSITION_T_H
 
 class position_t;
+class map_position_t;
 
 class screen_position_t {
 
@@ -18,6 +19,7 @@ public:
     screen_position_t(int x, int y) : x(x), y(y) {}
 
     screen_position_t(const position_t& position);
+    screen_position_t(const map_position_t& position);
 
     screen_position_t operator+(const screen_position_t &position) {
         return screen_position_t{

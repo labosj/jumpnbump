@@ -16,8 +16,8 @@ extern main_info_t main_info;
 extern object_anim_t object_anims[8];
 
 void player_t::set_position(const position_t& position) {
-    this->x = position.x;
-    this->y = position.y;
+    this->position.x = position.x;
+    this->position.y = position.y;
 }
 
 void serverSendKillPacket(int c1, int c2);
@@ -91,7 +91,7 @@ void player_action_right(player_t& player) {
         if (player.x_add < 0) {
             player.x_add += 16384;
             if (player.x_add < 98304L && player.in_water == 0 && below == BAN_SOLID)
-                add_object(OBJ_SMOKE, player.position.to_pixels() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
+                add_object(OBJ_SMOKE, screen_position_t{player.position} + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
             player.x_add += 12288;
@@ -139,9 +139,7 @@ void steer_players() {
                     s1 = (player.x >> 16);
                     s2 = (player.y >> 16);
 
-                    //TODO: log de steer
-                    if ( c1 == 0 )
-                        printf("Steer players %d => [%d, %d] => [%d, %d]\n", c1, player.x, player.y, s1, s2);
+
                     below_left = ban_map.get_by_pixel(s1, s2 + 16);
                     below = ban_map.get_by_pixel(s1 + 8, s2 + 16);
                     below_right = ban_map.get_by_pixel(s1 + 15, s2 + 16);
@@ -243,7 +241,7 @@ void steer_players() {
                     }
                 }
 
-                player.x += player.x_add;
+                player.position.x += player.x_add;
                 if ((player.x >> 16) < 0) {
                     player.x = 0;
                     player.x_add = 0;

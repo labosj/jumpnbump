@@ -318,12 +318,12 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								players[c1].x_add += 16384;
 								if (players[c1].x_add > 0)
 									players[c1].x_add = 0;
-								add_object(OBJ_SMOKE, screen_position_t{(players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+								add_smoke(players[c1]);
 							} else if (players[c1].x_add > 0) {
 								players[c1].x_add -= 16384;
 								if (players[c1].x_add < 0)
 									players[c1].x_add = 0;
-								add_object(OBJ_SMOKE, screen_position_t{(players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+								add_smoke(players[c1]);
 							}
 						}
 						if ((((players[c1].x >> 16) > (165 + c1 * 2) && (players[c1].x >> 16) < (208 + c1 * 2)) && (players[c1].y >> 16) >= (138 + c1 * 2))) {
@@ -331,12 +331,12 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								players[c1].x_add += 16384;
 								if (players[c1].x_add > 0)
 									players[c1].x_add = 0;
-								add_object(OBJ_SMOKE, screen_position_t{(players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+								add_smoke(players[c1]);
 							} else if (players[c1].x_add > 0) {
 								players[c1].x_add -= 16384;
 								if (players[c1].x_add < 0)
 									players[c1].x_add = 0;
-								add_object(OBJ_SMOKE, screen_position_t{(players[c1].x >> 16) + 2 + rnd(9), (players[c1].y >> 16) + 13 + rnd(5)}, 0, -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+								add_smoke(players[c1]);
 							}
 						}
 						if (players[c1].anim == 1) {

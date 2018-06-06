@@ -235,8 +235,7 @@ void steer_players() {
                         if (ban_map.is_pixel_in_water(s1, s2))
                             player.in_water = 0;
                         if (rnd(100) < 50)
-                            add_object(OBJ_SMOKE, player.position.to_pixels() + screen_position_t{6 + rnd(5), 10 + rnd(5)},
-                                       0, 16384 + rnd(8192), OBJ_ANIM_SMOKE, 0);
+                            add_jetpack_smoke(player);
                     }
                 }
 

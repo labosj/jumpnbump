@@ -351,6 +351,11 @@ void add_smoke(const player_t& player) {
                -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 }
 
+void add_jetpack_smoke(const player_t& player) {
+    add_object(OBJ_SMOKE, screen_position_t{player.get_position()} + screen_position_t{6 + rnd(5), 10 + rnd(5)},
+               0, 16384 + rnd(8192), OBJ_ANIM_SMOKE, 0);
+}
+
 void add_object(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame) {
 
     for ( auto& object : objects ) {

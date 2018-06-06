@@ -11,6 +11,7 @@ class player_t;
 #include "position_t.h"
 
 void add_smoke(const player_t& player);
+void add_jetpack_smoke(const player_t& player);
 void add_object(int type, const screen_position_t& position, int x_add, int y_add, int anim, int frame);
 
 struct object_t{

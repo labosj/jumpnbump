@@ -54,12 +54,6 @@ const auto RABBIT_NAME_1 = "AMANDA";
 const auto RABBIT_NAME_2 = "EDWIN";
 unsigned char *datafile_buffer = nullptr;
 
-gob_t rabbit_gobs = {0};
-gob_t font_gobs = {0};
-gob_t object_gobs = {0};
-gob_t number_gobs = {0};
-
-main_info_t main_info;
 std::vector<player_t> players{JNB_MAX_PLAYERS};
 std::vector<player_anim_t> player_anims{7};
 std::vector<object_t> objects;

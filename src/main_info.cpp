@@ -3,3 +3,5 @@
 //
 
 #include "main_info.h"
+
+main_info_t main_info;

@@ -25,6 +25,7 @@
 
 #include "src/globals.h"
 #include "src/player.h"
+#include "src/main_info.h"
 #include <SDL.h>
 
 static int num_joys=0;

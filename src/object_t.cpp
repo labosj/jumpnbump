@@ -8,6 +8,7 @@
 #include "util.h"
 #include "globals.h"
 #include "draw.h"
+#include "gob.h"
 
 extern leftovers_t leftovers;
 extern object_anim_t object_anims[8];

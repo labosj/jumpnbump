@@ -28,9 +28,11 @@
 #ifndef __GLOBALS_H
 #define __GLOBALS_H
 
-#include <src/main_info.h>
 #include <SDL.h>
 
+struct main_info_t;
+struct gob_t;
+#include <string>
 
 #include <assert.h>
 #include <stdio.h>
@@ -141,11 +143,6 @@ extern char datfile_name[2048];
 
 extern unsigned char *background_pic;
 extern unsigned char *mask_pic;
-
-extern gob_t rabbit_gobs;
-extern gob_t font_gobs;
-extern gob_t object_gobs;
-extern gob_t number_gobs;
 
 void update_objects(void);
 void update_player_actions();

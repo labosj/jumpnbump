@@ -26,4 +26,6 @@ struct main_info_t {
 
 	void *pob_backbuf[2];
 };
+
+extern main_info_t main_info;
 #endif //JUMPNBUMP_MAIN_INFO_H

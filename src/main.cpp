@@ -42,6 +42,7 @@
 #include "object_t.h"
 #include "player_anim_t.h"
 #include "joy_t.h"
+#include "level_t.h"
 
 
 #ifndef M_PI
@@ -436,7 +437,7 @@ static int menu_loop(unsigned char* datafile_buffer) {
         if (key_pressed(1) == 1) {
             return 0;
         }
-        if (init_level(0, pal) != 0) {
+        if (init_level(pal) != 0) {
             deinit_level();
             deinit_program();
         }
@@ -652,7 +653,7 @@ void update_objects() {
 }
 
 
-int init_level(int level, char *pal) {
+int init_level(char *pal) {
     unsigned char *handle;
     int c1, c2;
 
@@ -1064,37 +1065,6 @@ void deinit_program() {
         exit(1);
     } else
         exit(0);
-
-}
-
-
-int read_level() {
-    unsigned char *handle;
-    int chr;
-
-    if ((handle = dat_open("levelmap.txt", datafile_buffer)) == 0) {
-        main_info.error_str = "Error loading 'levelmap.txt', aborting...\n";
-        return 1;
-    }
-
-    for (int y  = 0; y < ban_map_t::HEIGHT - 1; y++) {
-        for (int x = 0; x < ban_map_t::WIDTH; x++) {
-            while (true) {
-                chr = (int) *(handle++);
-                if (chr >= '0' && chr <= '4')
-                    break;
-            }
-            if (flip)
-                ban_map.get(ban_map_t::WIDTH - 1 - x, y) = chr - '0';
-            else
-                ban_map.get(x, y) = chr - '0';
-        }
-    }
-
-    for (int x = 0; x < ban_map_t::WIDTH; x++)
-        ban_map.get(x, ban_map_t::HEIGHT - 1) = BAN_SOLID;
-
-    return 0;
 
 }
 

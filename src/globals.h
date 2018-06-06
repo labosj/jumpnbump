@@ -150,14 +150,10 @@ extern gob_t number_gobs;
 void update_objects(void);
 void update_player_actions();
 
-int init_level(int level, char *pal);
+int init_level(char *pal);
 void deinit_level(void);
 int init_program(int argc, char *argv[], char *pal);
 void deinit_program(void);
-
-int read_level(void);
-
-
 /* input.c */
 
 void init_inputs(main_info_t&);

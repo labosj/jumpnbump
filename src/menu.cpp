@@ -137,8 +137,9 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 
 			update_player_actions();
 			for (c1 = 0; c1 < players.size(); c1++) {
+				auto screen_position = screen_position_t{players[c1].get_position()};
 				if (end_loop_flag == 1 && new_game_flag == 1) {
-					if ((players[c1].x >> 16) > (165 + c1 * 2)) {
+					if ((screen_position.x) > (165 + c1 * 2)) {
 						if (players[c1].x_add < 0)
 							players[c1].x_add += 16384;
 						else
@@ -168,7 +169,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 						players[c1].frame_tick = 0;
 						players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
 					}
-					players[c1].y += players[c1].y_add;
+					players[c1].position.y += players[c1].y_add;
 					if ((players[c1].x >> 16) <= (165 + c1 * 2) || (players[c1].x >> 16) >= (208 + c1 * 2)) {
 						if ((players[c1].y >> 16) > (160 + c1 * 2)) {
 							players[c1].y = (160L + c1 * 2) << 16;
@@ -194,7 +195,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								players[c1].jump_ready = 1;
 						}
 					}
-					players[c1].x += players[c1].x_add;
+					players[c1].position.x += players[c1].x_add;
 					if ((players[c1].y >> 16) > (138 + c1 * 2)) {
 						if ((players[c1].x >> 16) > (165 + c1 * 2) && (players[c1].x >> 16) < (190 + c1 * 2)) {
 							players[c1].x = (165L + c1 * 2) << 16;

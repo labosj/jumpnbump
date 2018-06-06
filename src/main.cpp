@@ -254,10 +254,10 @@ void serverSendKillPacket(int killer, int victim) {
             endscore_reached = 1;
         }
         s1 = players[c1].bumps % 100;
-        add_leftovers(0, 360, 34 + c1 * 64, s1 / 10, &number_gobs, leftovers);
-        add_leftovers(1, 360, 34 + c1 * 64, s1 / 10, &number_gobs, leftovers);
-        add_leftovers(0, 376, 34 + c1 * 64, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
-        add_leftovers(1, 376, 34 + c1 * 64, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
+        add_leftovers(0, screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs, leftovers);
+        add_leftovers(1, screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs, leftovers);
+        add_leftovers(0, screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
+        add_leftovers(1, screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
     }
 }
 
@@ -685,10 +685,10 @@ int init_level(char *pal) {
         if (players[c1].enabled == 1) {
             players[c1].reset_kills();
             position_player(c1);
-            add_leftovers(0, 360, 34 + c1 * 64, 0, &number_gobs, leftovers);
-            add_leftovers(1, 360, 34 + c1 * 64, 0, &number_gobs, leftovers);
-            add_leftovers(0, 376, 34 + c1 * 64, 0, &number_gobs, leftovers);
-            add_leftovers(1, 376, 34 + c1 * 64, 0, &number_gobs, leftovers);
+            add_leftovers(0, screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
+            add_leftovers(1, screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
+            add_leftovers(0, screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
+            add_leftovers(1, screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
         }
     }
 

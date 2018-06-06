@@ -24,7 +24,7 @@
  */
 
 #include "src/globals.h"
-#include "src/player.h"
+#include "src/player_t.h"
 #include "src/main_info.h"
 #include <SDL.h>
 

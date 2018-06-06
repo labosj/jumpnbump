@@ -5,6 +5,9 @@
 #ifndef JUMPNBUMP_GOB_H
 #define JUMPNBUMP_GOB_H
 
+/**
+ * Maybe this stands for graphic object
+ */
 struct gob_t{
 	int num_images;
 	int *width;

@@ -26,12 +26,12 @@
  */
 
 #include "globals.h"
-#include "gob.h"
+#include "gob_t.h"
 #include "object_anim.h"
 #include "leftovers.h"
 #include "util.h"
 #include "draw.h"
-#include "player.h"
+#include "player_t.h"
 #include "menu.h"
 #include "data.h"
 #include "ban_map.h"

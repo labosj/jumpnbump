@@ -3,7 +3,7 @@
 //
 
 #include "leftovers.h"
-#include "gob.h"
+#include "gob_t.h"
 #include "globals.h"
 #include "draw.h"
 

@@ -9,6 +9,9 @@
 
 struct gob_t;
 
+/**
+ * Maybe this stands for player object
+ */
 struct pob_t {
     screen_position_t position;
 

@@ -2,7 +2,7 @@
 // Created by edwin on 31-05-18.
 //
 
-#include "gob.h"
+#include "gob_t.h"
 
 gob_t rabbit_gobs = {0};
 gob_t font_gobs = {0};

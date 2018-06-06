@@ -58,7 +58,7 @@ struct gob_t;
 #else
 # ifdef USE_SDL
 #  include <sys/stat.h>
-#include "player.h"
+#include "player_t.h"
 #include "object_t.h"
 #include "player_anim_t.h"
 #include "joy_t.h"

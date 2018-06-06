@@ -3,7 +3,7 @@
 //
 
 #include "globals.h"
-#include "player.h"
+#include "player_t.h"
 #include "ban_map.h"
 #include "object_anim.h"
 #include "util.h"

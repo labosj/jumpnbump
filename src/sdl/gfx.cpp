@@ -32,7 +32,7 @@
 
 
 #include "jumpnbump64.xpm"
-#include "src/gob.h"
+#include "src/gob_t.h"
 
 SDL_Surface *icon;
 

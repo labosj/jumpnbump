@@ -622,21 +622,21 @@ void update_objects() {
                             s1 = 0;
                         if (s1 > 7)
                             s1 = 7;
-                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.frame + s1,
+                        add_pob(main_info.draw_page, object.get_position(), object.frame + s1,
                                 &object_gobs);
                     }
                     break;
                 case OBJ_FLESH:
                     object.update_flesh();
                     if (object.is_used())
-                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.frame,
+                        add_pob(main_info.draw_page, object.get_position(), object.frame,
                                 &object_gobs);
                     break;
                 case OBJ_FLESH_TRACE:
                     object.update_flesh_trace();
 
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position().to_pixels(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.image,
                                 &object_gobs);
                     break;
             }

@@ -41,6 +41,9 @@ struct player_t {
 
 	void gravity_fall();
 
+	void check_ceiling();
+
+	void check_lateral_walls();
 };
 
 void steer_players();

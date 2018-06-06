@@ -22,6 +22,8 @@ void player_t::set_position(const position_t& position) {
 
 void serverSendKillPacket(int c1, int c2);
 
+void check_something(player_t &player);
+
 position_t player_t::get_position() const {
     return this->position;
 }
@@ -124,8 +126,7 @@ void player_no_action(player_t& player) {
         player.anim = 0;
         player.frame = 0;
         player.frame_tick = 0;
-        player.image =
-                player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
     }
 }
 
@@ -167,10 +168,8 @@ void player_t::check_spring_jump() {
             screen_position_t screen_position = position;
             if (object.used == 1 && object.type == OBJ_SPRING) {
                 if (ban_map.get(screen_position + screen_position_t{8, 15}) == ban_map_t::Type::SPRING) {
-                    std::cout << "sprtin 1";
                     if ((object.position.x >> 20) == ((screen_position.x + 8) >> 4) &&
                         (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
-                        std::cout << "sprtin 11";
                         object.frame = 0;
                         object.ticks = object_anims[object.anim].frame[object.frame].ticks;
                         object.image = object_anims[object.anim].frame[object.frame].image;
@@ -178,20 +177,16 @@ void player_t::check_spring_jump() {
                     }
                 } else {
                     if (ban_map.get(screen_position + screen_position_t{0, 15}) == ban_map_t::Type::SPRING) {
-                        std::cout << "sprtin 2";
                         if ((object.position.x >> 20) == (screen_position.x >> 4) &&
                             (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
-                            std::cout << "sprtin 22";
                             object.frame = 0;
                             object.ticks = object_anims[object.anim].frame[object.frame].ticks;
                             object.image = object_anims[object.anim].frame[object.frame].image;
                             break;
                         }
                     } else if (ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
-                        std::cout << "sprtin 3";
                         if ((object.position.x >> 20) == ((screen_position.x + 15) >> 4) &&
                             (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
-                            std::cout << "sprtin 33";
                             object.frame = 0;
                             object.ticks = object_anims[object.anim].frame[object.frame].ticks;
                             object.image = object_anims[object.anim].frame[object.frame].image;
@@ -214,6 +209,24 @@ void player_t::check_spring_jump() {
         this->jump_ready = 0;
         this->jump_abort = 0;
         dj_play_sfx(main_info, SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
+    }
+}
+
+void player_t::check_ceiling() {
+
+    if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID || ban_map.get(this->get_position()) == ban_map_t::Type::ICE ||
+        ban_map.get(this->get_position()) == ban_map_t::Type::SPRING ||
+        ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SOLID ||
+        ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::ICE ||
+        ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SPRING) {
+        //stop the velocity in y
+        this->position.y = (((screen_position_t{this->get_position()}.y + 16) & 0xfff0)) << 16; //TODO: MASK
+        this->y_add = 0;
+        this->anim = 0;
+        this->frame = 0;
+        this->frame_tick = 0;
+        this->image =
+                player_anims[this->anim].frame[this->frame].image + this->direction * 9;
     }
 }
 
@@ -275,6 +288,7 @@ void steer_players() {
                         }
                         /* jump out of water */
                         if (ban_map.is_in_water(player.get_position())) {
+                            std::cout << "is_in_water";
                             player.y_add = -196608L;
                             player.in_water = 0;
                             player.anim = 2;
@@ -318,62 +332,24 @@ void steer_players() {
                     player.position.x = 336L << 16;
                     player.x_add = 0;
                 }
-                {
-
-
-                    if (ban_map.get(player.get_position()) == ban_map_t::Type::SOLID ||
-                        ban_map.get(player.get_position()) == ban_map_t::Type::ICE ||
-                        ban_map.get(player.get_position()) == ban_map_t::Type::SPRING ||
-                        ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
-                        ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
-                        ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING) {
-                        int s1 = (player.position.x >> 16);
-                        player.position.x = (((s1 + 16) & 0xfff0)) << 16;
-                        player.x_add = 0;
-                    }
-
-
-                    if (ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
-                            ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
-                            ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING ||
-                            ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
-                            ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::ICE ||
-                            ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
-                        int s1 = (player.position.x >> 16);
-                        player.position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
-                        player.x_add = 0;
-                    }
-                }
+                player.check_lateral_walls();
 
                 player.position.y += player.y_add;
 
                 player.check_spring_jump();
 
-                if (ban_map.get(player.get_position()) == ban_map_t::Type::SOLID || ban_map.get(player.get_position()) == ban_map_t::Type::ICE ||
-                        ban_map.get(player.get_position()) == ban_map_t::Type::SPRING || ban_map.get(player.get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SOLID ||
-                        ban_map.get(player.get_position() + screen_position_t{15, 0}) == ban_map_t::Type::ICE ||
-                        ban_map.get(player.get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SPRING) {
-                    int s1 = (player.position.x >> 16);
-                    int s2 = (player.position.y >> 16);
-                    player.position.y = (((s2 + 16) & 0xfff0)) << 16; //TODO: MASK
-                    player.y_add = 0;
-                    player.anim = 0;
-                    player.frame = 0;
-                    player.frame_tick = 0;
-                    player.image =
-                            player_anims[player.anim].frame[player.frame].image + player.direction * 9;
-                }
+                player.check_ceiling();
 
-
-                if (ban_map.get(player.get_position() + screen_position_t{8, 8}) == ban_map_t::Type::WATER) {
+                screen_position_t screen_position = player.get_position();
+                if (ban_map.get(screen_position + screen_position_t{8, 8}) == ban_map_t::Type::WATER) {
                     if (player.in_water == 0) {
                         /* falling into water */
                         player.in_water = 1;
                         player.anim = 4;
                         player.frame = 0;
                         player.frame_tick = 0;
-                        player.image =
-                                player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+                        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+
                         if (player.y_add >= 32768) {
                             screen_position_t screen_position = player.get_position();
                             screen_position.y &= 0xfff0;
@@ -396,19 +372,18 @@ void steer_players() {
                         player.anim = 5;
                         player.frame = 0;
                         player.frame_tick = 0;
-                        player.image =
-                                player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+                        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
                     }
                     if (player.y_add < -65536L)
                         player.y_add = -65536L;
                     if (player.y_add > 65535L)
                         player.y_add = 65535L;
-                    if (ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
-                            ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
-                            ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
-                            ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::ICE) {
-                        int s2 = (player.position.y >> 16);
-                        player.position.y = (((s2 + 16) & 0xfff0) - 16) << 16;
+
+                    if (ban_map.get(screen_position + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
+                            ban_map.get(screen_position + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
+                            ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
+                            ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::ICE) {
+                        player.position.y = (((screen_position.y + 16) & 0xfff0) - 16) << 16;
                         player.y_add = 0;
                     }
                 } else if (ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
@@ -417,9 +392,8 @@ void steer_players() {
                         ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
                         ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::ICE ||
                         ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
-                    int s2 = (player.position.y >> 16);
                     player.in_water = 0;
-                    player.position.y = (((s2 + 16) & 0xfff0) - 16) << 16;
+                    player.position.y = (((screen_position.y + 16) & 0xfff0) - 16) << 16;
                     player.y_add = 0;
                     if (player.anim != 0 && player.anim != 1) {
                         player.anim = 0;
@@ -469,6 +443,32 @@ void steer_players() {
     }
 
 }
+
+void player_t::check_lateral_walls() {
+
+                    if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
+                        ban_map.get(this->get_position()) == ban_map_t::Type::ICE ||
+                        ban_map.get(this->get_position()) == ban_map_t::Type::SPRING ||
+                        ban_map.get(this->get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
+                        ban_map.get(this->get_position() + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
+                        ban_map.get(this->get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING) {
+                        int s1 = (this->position.x >> 16);
+                        this->position.x = (((s1 + 16) & 0xfff0)) << 16;
+                        this->x_add = 0;
+                    }
+
+
+                    if (ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SOLID ||
+                            ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::ICE ||
+                            ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SPRING ||
+                            ban_map.get(this->get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
+                            ban_map.get(this->get_position() + screen_position_t{15, 15}) == ban_map_t::Type::ICE ||
+                            ban_map.get(this->get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
+                        int s1 = (this->position.x >> 16);
+                        this->position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
+                        this->x_add = 0;
+                    }
+                }
 
 
 void position_player(int player_num) {

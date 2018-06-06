@@ -29,10 +29,10 @@ position_t player_t::get_position() const {
 void player_action_left(player_t& player) {
     int below_left, below, below_right;
 
-    auto pixel_pos = player.position.to_pixels();
-    below_left = ban_map.get_by_pixel(pixel_pos.x, pixel_pos.y + 16);
-    below = ban_map.get_by_pixel(pixel_pos.x + 8, pixel_pos.y + 16);
-    below_right = ban_map.get_by_pixel(pixel_pos.x + 15, pixel_pos.y + 16);
+    screen_position_t pixel_pos = player.position;
+    below_left = ban_map.get(pixel_pos + screen_position_t{0, 16});
+    below = ban_map.get(pixel_pos + screen_position_t{8, 16});
+    below_right = ban_map.get(pixel_pos + screen_position_t{15, 16});
 
     if (below == BAN_ICE) {
         if (player.x_add > 0)
@@ -139,10 +139,10 @@ void steer_players() {
                     s1 = (player.x >> 16);
                     s2 = (player.y >> 16);
 
-
-                    below_left = ban_map.get_by_pixel(s1, s2 + 16);
-                    below = ban_map.get_by_pixel(s1 + 8, s2 + 16);
-                    below_right = ban_map.get_by_pixel(s1 + 15, s2 + 16);
+                    screen_position_t screen_position = player.get_position();
+                    below_left = ban_map.get(screen_position + screen_position_t{0, 16});
+                    below = ban_map.get(screen_position + screen_position_t{8, 16});
+                    below_right = ban_map.get(screen_position + screen_position_t{15, 16});
                     if (below == BAN_SOLID || below == BAN_SPRING ||
                         (((below_left == BAN_SOLID || below_left == BAN_SPRING) && below_right != BAN_ICE) ||
                          (below_left != BAN_ICE && (below_right == BAN_SOLID || below_right == BAN_SPRING)))) {

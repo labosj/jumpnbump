@@ -42,7 +42,6 @@
 #include "object_t.h"
 #include "player_anim_t.h"
 #include "joy_t.h"
-#include "level_t.h"
 
 
 #ifndef M_PI
@@ -900,7 +899,7 @@ int init_program(int argc, char *argv[], char *pal) {
         return 1;
     }
 
-    if (read_level() != 0) {
+    if (!ban_map.read_from_file("/home/edwin/Projects/jumpnbump/data/levelmap.txt")) {
         main_info.error_str = "Error loading 'levelmap.txt', aborting...\n";
         return 1;
     }

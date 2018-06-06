@@ -6,6 +6,7 @@
 #define JUMPNBUMP_BAN_MAP_H
 
 #include <tuple>
+#include <vector>
 #include "map_position_t.h"
 
 const unsigned int BAN_VOID	= 0;
@@ -24,17 +25,13 @@ const unsigned int BAN_SPRING =	4;
 class ban_map_t {
 
 public:
-    /**
-     * These should be dynamic not harcoded
-     */
-    static const int WIDTH = 22;
-    static const int HEIGHT = 17;
 
-public:
+    int width;
+    int height;
 
-    unsigned int& get(const map_position_t& position);
+    bool read_from_file(const std::string& filename);
 
-    const unsigned int& get(const map_position_t& position) const;
+    unsigned int get(const map_position_t& position) const;
 
     /**
     * Get the value of a ban map coord using pixel
@@ -43,11 +40,9 @@ public:
     * @return
     */
     [[deprecated]]
-    unsigned int& get(int x, int y);
+    unsigned int get(int x, int y) const;
     [[deprecated]]
-    unsigned int& get_by_pixel(int x, int y);
-    [[deprecated]]
-    const unsigned int& get_by_pixel(int x, int y) const;
+    unsigned int get_by_pixel(int x, int y) const;
     bool is_pixel_in_water(int x, int y) const;
     map_position_t get_random_position() const;
 
@@ -63,16 +58,13 @@ public:
      */
     map_position_t get_random_available_floor_position() const;
 
-    unsigned int map[ban_map_t::HEIGHT][ban_map_t::WIDTH];
+    std::vector<std::vector<unsigned int>> map{0};
 
-    int get_width() const { return WIDTH; }
-    int get_height() const { return HEIGHT; }
+    int get_width() const { return this->width; }
+    int get_height() const { return this->height; }
+    void flip();
 };
 
-/**
- * This must replace completely ban_map.
- * Just keep for migration propuses
- */
 extern ban_map_t ban_map;
 
 

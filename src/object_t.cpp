@@ -106,7 +106,7 @@ void object_t::update_butterfly() {
         this->x_add = -this->x_add >> 2;
         this->x_acc = 0;
     }
-    if (ban_map.get(this->x >> 20, this->y >> 20) != 0) {
+    if (ban_map.get(this->get_position()) != 0) {
         if (this->x_add < 0) {
             this->x = (((this->x >> 16) + 16) & 0xfff0) << 16;
         } else {
@@ -135,7 +135,7 @@ void object_t::update_butterfly() {
         this->y_add = -this->y_add >> 2;
         this->y_acc = 0;
     }
-    if (ban_map.get(this->x >> 20,this->y >> 20) != 0) {
+    if (ban_map.get(this->get_position()) != 0) {
         if (this->y_add < 0) {
             this->y = (((this->y >> 16) + 16) & 0xfff0) << 16;
         } else {

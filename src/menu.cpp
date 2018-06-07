@@ -438,7 +438,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 				players[c1].frame_tick++;
 				if (players[c1].frame_tick >= player_anims[players[c1].anim].frame[players[c1].frame].ticks) {
 					players[c1].frame++;
-					if (players[c1].frame >= player_anims[players[c1].anim].num_frames)
+					if (players[c1].frame >= player_anims[players[c1].anim].frame.size())
 						players[c1].frame = player_anims[players[c1].anim].restart_frame;
 					players[c1].frame_tick = 0;
 				}

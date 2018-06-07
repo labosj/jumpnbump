@@ -6,10 +6,10 @@
 #define JUMPNBUMP_PLAYER_ANIM_T_H
 
 #include "anim_frame_t.h"
+#include <vector>
 
 struct player_anim_t {
-	int num_frames;
 	int restart_frame;
-	anim_frame_t frame[4];
+	std::vector<anim_frame_t> frame;
 };
 #endif //JUMPNBUMP_PLAYER_ANIM_T_H

@@ -428,7 +428,7 @@ void steer_players() {
             player.frame_tick++;
             if (player.frame_tick >= player_anims[player.anim].frame[player.frame].ticks) {
                 player.frame++;
-                if (player.frame >= player_anims[player.anim].num_frames) {
+                if (player.frame >= player_anims[player.anim].frame.size()) {
                     if (player.anim != 6)
                         player.frame = player_anims[player.anim].restart_frame;
                     else position_player(c1);

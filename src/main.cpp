@@ -812,12 +812,11 @@ int init_program(int argc, char *argv[], char *pal) {
     main_info.pob_backbuf[0] = malloc(screen_pitch * screen_height);
     main_info.pob_backbuf[1] = malloc(screen_pitch * screen_height);
 
+    player_anims[c1].frame.clear();
     for (c1 = 0; c1 < 7; c1++) {
-        player_anims[c1].num_frames = player_anim_data[c1 * 10];
         player_anims[c1].restart_frame = player_anim_data[c1 * 10 + 1];
         for (c2 = 0; c2 < 4; c2++) {
-            player_anims[c1].frame[c2].image = player_anim_data[c1 * 10 + c2 * 2 + 2];
-            player_anims[c1].frame[c2].ticks = player_anim_data[c1 * 10 + c2 * 2 + 3];
+            player_anims[c1].frame.push_back({player_anim_data[c1 * 10 + c2 * 2 + 2], player_anim_data[c1 * 10 + c2 * 2 + 3]});
         }
     }
 

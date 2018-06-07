@@ -3,7 +3,7 @@
 //
 
 #include "object_t.h"
-#include "object_anim.h"
+#include "anim_t.h"
 #include "ban_map.h"
 #include "util.h"
 #include "globals.h"
@@ -11,7 +11,7 @@
 #include "gob_t.h"
 
 extern leftovers_t leftovers;
-extern object_anim_t object_anims[8];
+extern anim_t object_anims[8];
 
 object_t::object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame) {
     this->used = 1;

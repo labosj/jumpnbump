@@ -27,7 +27,7 @@
 
 #include "globals.h"
 #include "gob_t.h"
-#include "object_anim.h"
+#include "anim_t.h"
 #include "leftovers.h"
 #include "util.h"
 #include "draw.h"
@@ -40,7 +40,7 @@
 #include <unistd.h>
 #include "sdl/gfx.h"
 #include "object_t.h"
-#include "player_anim_t.h"
+#include "anim_t.h"
 #include "joy_t.h"
 
 
@@ -55,7 +55,7 @@ const auto RABBIT_NAME_2 = "EDWIN";
 unsigned char *datafile_buffer = nullptr;
 
 std::vector<player_t> players{JNB_MAX_PLAYERS};
-std::vector<player_anim_t> player_anims{7};
+std::vector<anim_t> player_anims{7};
 std::vector<object_t> objects;
 joy_t joy;
 
@@ -68,7 +68,7 @@ char pal[768];
 char cur_pal[768];
 
 
-object_anim_t object_anims[8] = {
+anim_t object_anims[8] = {
         {
                 0,
                 {

@@ -26,7 +26,7 @@ add_executable(jumpnbump
         src/menu.cpp
         src/main.cpp
         src/menu.h
-        src/object_anim.h src/sdl/gfx.h src/pob_t.h src/position_t.cpp src/position_t.h src/screen_position_t.cpp src/screen_position_t.h src/map_position_t.cpp src/map_position_t.h src/pob_t.cpp src/anim_frame_t.cpp src/anim_frame_t.h)
+        src/anim_t.h src/sdl/gfx.h src/pob_t.h src/position_t.cpp src/position_t.h src/screen_position_t.cpp src/screen_position_t.h src/map_position_t.cpp src/map_position_t.h src/pob_t.cpp src/anim_frame_t.cpp src/anim_frame_t.h)
 
 target_compile_features(jumpnbump PRIVATE cxx_std_14)
 target_compile_definitions(jumpnbump PRIVATE -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DNDEBUG -DUSE_SDL -DZLIB_SUPPORT -DBZLIB_SUPPORT)

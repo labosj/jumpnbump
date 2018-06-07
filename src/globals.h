@@ -59,8 +59,9 @@ struct gob_t;
 # ifdef USE_SDL
 #  include <sys/stat.h>
 #include "player_t.h"
+#include "anim_t.h"
+
 #include "object_t.h"
-#include "player_anim_t.h"
 #include "joy_t.h"
 
 #  if USE_SDL_MIXER
@@ -135,7 +136,7 @@ extern int scale_up;
 #define SFX_SPLASH_FREQ 12000
 
 extern std::vector<player_t> players;
-extern std::vector<player_anim_t> player_anims;
+extern std::vector<anim_t> player_anims;
 extern std::vector<object_t> objects;
 extern joy_t joy;
 

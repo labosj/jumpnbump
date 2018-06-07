@@ -5,7 +5,7 @@
 #include "globals.h"
 #include "player_t.h"
 #include "ban_map.h"
-#include "object_anim.h"
+#include "anim_t.h"
 #include "util.h"
 #include <iostream>
 
@@ -14,7 +14,7 @@ extern int bunnies_in_space;
 extern int pogostick;
 extern int blood_is_thicker_than_water;
 extern main_info_t main_info;
-extern object_anim_t object_anims[8];
+extern anim_t object_anims[8];
 
 void player_t::set_position(const position_t& position) {
     this->position = position;

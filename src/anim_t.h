@@ -8,7 +8,7 @@
 #include "anim_frame_t.h"
 #include <vector>
 
-struct object_anim_t {
+struct anim_t {
     int restart_frame;
     std::vector<anim_frame_t> frame;
 };

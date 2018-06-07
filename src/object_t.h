@@ -8,6 +8,7 @@
 class player_t;
 
 #include "position_t.h"
+#include "anim_t.h"
 
 void add_smoke(const player_t& player);
 void add_jetpack_smoke(const player_t& player);
@@ -43,6 +44,26 @@ struct object_t{
 	void update_flesh();
 	void update_fur();
 
+	/**
+	 * Is this element an active element?
+	 * @return
+	 */
 	bool is_used() const { return this->used == 1; }
+
+	/**
+	 * Is this element available to create a new element?
+	 * @return
+	 */
+	bool is_available() const { return this->used == 0; }
+
+	/**
+	 * Set this element available.
+	 *
+	 * Use this function when you want to free this element as a new element
+	 */
+	void set_available() { this->used = 0; }
 };
+
+extern anim_t object_anims[8];
+
 #endif //JUMPNBUMP_OBJECT_T_H

@@ -26,6 +26,7 @@ struct object_t{
 
 	object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
 
+
 	/**
 	 * Read only
 	 * @return

@@ -33,7 +33,7 @@ void object_t::update_flesh_trace() {
     this->ticks--;
     if (this->ticks <= 0) {
         this->frame++;
-        if (this->frame >= object_anims[this->anim].num_frames)
+        if (this->frame >= object_anims[this->anim].frame.size())
             this->used = 0;
         else {
             this->ticks = object_anims[this->anim].frame[this->frame].ticks;
@@ -49,7 +49,7 @@ void object_t::update_smoke() {
     this->ticks--;
     if (this->ticks <= 0) {
         this->frame++;
-        if (this->frame >= object_anims[this->anim].num_frames)
+        if (this->frame >= object_anims[this->anim].frame.size())
             this->used = 0;
         else {
             this->ticks = object_anims[this->anim].frame[this->frame].ticks;
@@ -62,7 +62,7 @@ void object_t::update_spring() {
     this->ticks--;
     if (this->ticks <= 0) {
         this->frame++;
-        if (this->frame >= object_anims[this->anim].num_frames) {
+        if (this->frame >= object_anims[this->anim].frame.size()) {
             this->frame--;
             this->ticks = object_anims[this->anim].frame[this->frame].ticks;
         } else {
@@ -76,7 +76,7 @@ void object_t::update_splash() {
     this->ticks--;
     if (this->ticks <= 0) {
         this->frame++;
-        if (this->frame >= object_anims[this->anim].num_frames)
+        if (this->frame >= object_anims[this->anim].frame.size())
             this->used = 0;
         else {
             this->ticks = object_anims[this->anim].frame[this->frame].ticks;
@@ -172,7 +172,7 @@ void object_t::update_butterfly() {
     this->ticks--;
     if (this->ticks <= 0) {
         this->frame++;
-        if (this->frame >= object_anims[this->anim].num_frames)
+        if (this->frame >= object_anims[this->anim].frame.size())
             this->frame = object_anims[this->anim].restart_frame;
         else {
             this->ticks = object_anims[this->anim].frame[this->frame].ticks;

@@ -13,4 +13,7 @@ struct anim_t {
     std::vector<anim_frame_t> frame;
 };
 
+extern std::vector<anim_t> player_anims;
+extern std::vector<anim_t> object_anims;
+
 #endif //JUMPNBUMP_OBJECT_ANIM_H

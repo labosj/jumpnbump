@@ -136,7 +136,7 @@ extern int scale_up;
 #define SFX_SPLASH_FREQ 12000
 
 extern std::vector<player_t> players;
-extern std::vector<anim_t> player_anims;
+
 extern std::vector<object_t> objects;
 extern joy_t joy;
 

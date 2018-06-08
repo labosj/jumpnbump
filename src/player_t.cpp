@@ -14,15 +14,12 @@ extern int bunnies_in_space;
 extern int pogostick;
 extern int blood_is_thicker_than_water;
 extern main_info_t main_info;
-extern anim_t object_anims[8];
 
 void player_t::set_position(const position_t& position) {
     this->position = position;
 }
 
 void serverSendKillPacket(int c1, int c2);
-
-void check_something(player_t &player);
 
 position_t player_t::get_position() const {
     return this->position;

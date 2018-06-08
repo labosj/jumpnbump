@@ -55,7 +55,6 @@ const auto RABBIT_NAME_2 = "EDWIN";
 unsigned char *datafile_buffer = nullptr;
 
 std::vector<player_t> players{JNB_MAX_PLAYERS};
-std::vector<anim_t> player_anims{7};
 std::vector<object_t> objects;
 joy_t joy;
 
@@ -696,7 +695,7 @@ int init_program(int argc, char *argv[], char *pal) {
     main_info.pob_backbuf[1] = malloc(screen_pitch * screen_height);
 
     player_anims = {
-            { 0, {{ 0, 0x7fff}}},
+            {0, {{ 0, 0x7fff}}},
             {0, {{0, 4}, {1, 4}, {2, 4}, {3, 4}}},
             {0, {{4, 0x7fff}}},
             {2, {{5, 8}, {6, 10}, {7, 3}, {6, 3}}},

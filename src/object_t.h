@@ -64,6 +64,4 @@ struct object_t{
 	void set_available() { this->used = 0; }
 };
 
-extern anim_t object_anims[8];
-
 #endif //JUMPNBUMP_OBJECT_T_H

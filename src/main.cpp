@@ -631,8 +631,7 @@ static void preread_datafile(const std::string& fname) {
 
 
 int init_program(int argc, char *argv[], char *pal) {
-    unsigned char *handle = (unsigned char *) NULL;
-    int c1 = 0, c2 = 0;
+    unsigned char *handle = nullptr;
     int load_flag = 0;
     main_info.music_no_sound =0;
     main_info.no_sound = 0;
@@ -656,7 +655,7 @@ int init_program(int argc, char *argv[], char *pal) {
     std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
 
     if (argc > 1) {
-        for (c1 = 1; c1 < argc; c1++) {
+        for (auto c1 = 1; c1 < argc; c1++) {
             if (stricmp(argv[c1], "-nosound") == 0)
                 main_info.no_sound = 1;
             else if (stricmp(argv[c1], "-musicnosound") == 0)
@@ -705,10 +704,11 @@ int init_program(int argc, char *argv[], char *pal) {
     main_info.pob_backbuf[0] = malloc(screen_pitch * screen_height);
     main_info.pob_backbuf[1] = malloc(screen_pitch * screen_height);
 
-    player_anims[c1].frame.clear();
-    for (c1 = 0; c1 < 7; c1++) {
+
+    for (auto c1 = 0; c1 < 7; c1++) {
+        player_anims[c1].frame.clear();
         player_anims[c1].restart_frame = player_anim_data[c1 * 10 + 1];
-        for (c2 = 0; c2 < 4; c2++) {
+        for (auto c2 = 0; c2 < 4; c2++) {
             player_anims[c1].frame.push_back({player_anim_data[c1 * 10 + c2 * 2 + 2], player_anim_data[c1 * 10 + c2 * 2 + 3]});
         }
     }
@@ -818,7 +818,7 @@ int init_program(int argc, char *argv[], char *pal) {
     register_mask(mask_pic);
 
     /* fix dark font */
-    for (c1 = 0; c1 < 16; c1++) {
+    for (auto c1 = 0; c1 < 16; c1++) {
         pal[(240 + c1) * 3 + 0] = c1 << 2;
         pal[(240 + c1) * 3 + 1] = c1 << 2;
         pal[(240 + c1) * 3 + 2] = c1 << 2;

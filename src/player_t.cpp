@@ -9,6 +9,8 @@
 #include "util.h"
 #include <iostream>
 
+std::vector<player_t> players;
+
 extern int jetpack;
 extern int bunnies_in_space;
 extern int pogostick;
@@ -577,4 +579,9 @@ void collision_check() {
 
         }
     }
+}
+void player_t::reset_kills()
+{
+    this->bumps = 0;
+    this->bumped = std::vector<int>(players.size(), 0);
 }

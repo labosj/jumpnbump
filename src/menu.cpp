@@ -590,18 +590,22 @@ int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
 
 	register_background(background_pic);
 	register_mask(mask_pic);
+ 	players.clear();
+	for (c1 = 0; c1 < 4; c1++) {
+		auto player = player_t{};
 
-	for (c1 = 0; c1 < players.size(); c1++) {
-		players[c1].enabled = 0;
-		players[c1].position = screen_position_t{rnd(150), (160L + c1 * 2)};
-		players[c1].x_add = 0;
-		players[c1].y_add = 0;
-		players[c1].direction = rnd(2);
-		players[c1].jump_ready = 1;
-		players[c1].anim = 0;
-		players[c1].frame = 0;
-		players[c1].frame_tick = 0;
-		players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image;
+		player.enabled = 0;
+		player.position = screen_position_t{rnd(150), (160L + c1 * 2)};
+		player.x_add = 0;
+		player.y_add = 0;
+		player.direction = rnd(2);
+		player.jump_ready = 1;
+		player.anim = 0;
+		player.frame = 0;
+		player.frame_tick = 0;
+		player.image = player_anims[player.anim].frame[player.frame].image;
+
+		players.push_back(player);
 	}
 
 	for (c1 = 0; c1 < objects.size(); c1++)

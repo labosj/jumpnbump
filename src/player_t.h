@@ -8,8 +8,6 @@
 #include <vector>
 #include "position_t.h"
 
-const unsigned int JNB_MAX_PLAYERS = 4;
-
 struct player_t {
 	int action_left,action_up,action_right;
 	int enabled, dead_flag;
@@ -30,10 +28,7 @@ struct player_t {
 	void set_position(const position_t& position);
 	void check_spring_jump();
 
-	void reset_kills() {
-		this->bumps = 0;
-		this->bumped = std::vector<int>(JNB_MAX_PLAYERS, 0);
-	}
+	void reset_kills();
 	void count_kill(int victim) {
 		this->bumps++;
 		this->bumped[victim]++;
@@ -51,5 +46,7 @@ void steer_players();
 void position_player(int player_num);
 
 void collision_check();
+
+extern std::vector<player_t> players;
 
 #endif //JUMPNBUMP_PLAYER_H

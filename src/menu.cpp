@@ -592,6 +592,7 @@ int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
 	register_mask(mask_pic);
  	players.clear();
 	for (c1 = 0; c1 < 4; c1++) {
+		//create bunnies randomly in the menu screen
 		auto player = player_t{};
 
 		player.enabled = 0;

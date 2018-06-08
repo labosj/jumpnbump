@@ -377,11 +377,13 @@ static int menu_loop(unsigned char* datafile_buffer) {
 
         flippage(main_info.view_page);
 
+        /*
         if ((handle = dat_open("menu.pcx", datafile_buffer)) == 0) {
             main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
             return 1;
         }
-        if (read_pcx(handle, background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
+         */
+        if (read_pcx("/home/edwin/Projects/jumpnbump/data/menu.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
             main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
             return 1;
         }
@@ -523,7 +525,6 @@ void update_objects() {
 
 
 int init_level(char *pal) {
-    unsigned char *handle;
     int c1, c2;
 
 
@@ -533,11 +534,12 @@ int init_level(char *pal) {
     }
     if (flip)
         flip_pixels(background_pic);
+    /*
     if ((handle = dat_open("mask.pcx", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
         return 1;
-    }
-    if (read_pcx(handle, mask_pic, JNB_WIDTH * JNB_HEIGHT, 0) != 0) {
+    }*/
+    if (read_pcx("/home/edwin/Projects/jumpnbump/data/mask.pcx", mask_pic, JNB_WIDTH * JNB_HEIGHT, 0) != 0) {
         main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
         return 1;
     }
@@ -710,12 +712,13 @@ int init_program(int argc, char *argv[], char *pal) {
             player_anims[c1].frame.push_back({player_anim_data[c1 * 10 + c2 * 2 + 2], player_anim_data[c1 * 10 + c2 * 2 + 3]});
         }
     }
-
+/*
     if ((handle = dat_open("menu.pcx", datafile_buffer)) == nullptr) {
         main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
         return 1;
     }
-    if (read_pcx(handle, background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
+    */
+    if (read_pcx("/home/edwin/Projects/jumpnbump/data/menu.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
         main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
         return 1;
     }

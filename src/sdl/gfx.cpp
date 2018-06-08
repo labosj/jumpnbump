@@ -813,36 +813,6 @@ int read_pcx(const std::string& filename, unsigned char *buf, int buf_len, char 
 	return 0;
 }
 
-[[deprecated]]
-int read_pcx(unsigned char * handle, unsigned char *buf, int buf_len, char *pal)
-{
-	unsigned char *buffer=buf;
-	short c1;
-	short a, b;
-	long ofs1;
-	if (buffer != 0) {
-		handle += 128;  //avanza 128 algo, parece que esto es para saltarse los header del pcx
-		ofs1 = 0; //no se que es eso, parece un offset
-		while (ofs1 < buf_len) {  //hay un buffer length
-			a = *(handle++); //aritmetica de punteros, avanza al proximo indice
-			if ((a & 0xc0) == 0xc0) { //una mascara de algo,
-				b = *(handle++);
-				a &= 0x3f;
-				for (c1 = 0; c1 < a && ofs1 < buf_len; c1++)
-					buffer[ofs1++] = (char) b;
-			} else
-				buffer[ofs1++] = (char) a;
-		}
-		if (pal != 0) {
-			handle++;
-			for (c1 = 0; c1 < 768; c1++)
-				pal[c1] = *(handle++) /*fgetc(handle)*/ >> 2;
-		}
-	}
-	return 0;
-}
-
-
 void register_background(unsigned char *pixels)
 {
 	if (background) {

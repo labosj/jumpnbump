@@ -566,24 +566,16 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 
 int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
 {
-	unsigned char *handle;
 	int c1;
 
 	fillpalette(0, 0, 0);
 
-	if ((handle = dat_open("menu.pcx", datafile_buffer)) == 0) {
+	if (read_pcx("/home/edwin/Projects/jumpnbump/data/menu.pcx", background_pic, JNB_WIDTH*JNB_HEIGHT, menu_pal) != 0) {
         main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
 		return 1;
 	}
-	if (read_pcx(handle, background_pic, JNB_WIDTH*JNB_HEIGHT, menu_pal) != 0) {
-        main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
-		return 1;
-	}
-	if ((handle = dat_open("menumask.pcx", datafile_buffer)) == 0) {
-        main_info.error_str = "Error loading 'menumask.pcx', aborting...\n";
-		return 1;
-	}
-	if (read_pcx(handle, mask_pic, JNB_WIDTH*JNB_HEIGHT, 0) != 0) {
+
+	if (read_pcx("/home/edwin/Projects/jumpnbump/data/menumask.pcx", mask_pic, JNB_WIDTH*JNB_HEIGHT, 0) != 0) {
 		main_info.error_str = "Error loading 'menumask.pcx', aborting...\n";
 		return 1;
 	}

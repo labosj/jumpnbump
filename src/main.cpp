@@ -635,15 +635,6 @@ int init_program(int argc, char *argv[], char *pal) {
     int load_flag = 0;
     main_info.music_no_sound =0;
     main_info.no_sound = 0;
-    int player_anim_data[] = {
-            1, 0, 0, 0x7fff, 0, 0, 0, 0, 0, 0,
-            4, 0, 0, 4, 1, 4, 2, 4, 3, 4,
-            1, 0, 4, 0x7fff, 0, 0, 0, 0, 0, 0,
-            4, 2, 5, 8, 6, 10, 7, 3, 6, 3,
-            1, 0, 6, 0x7fff, 0, 0, 0, 0, 0, 0,
-            2, 1, 5, 8, 4, 0x7fff, 0, 0, 0, 0,
-            1, 0, 8, 5, 0, 0, 0, 0, 0, 0
-    };
 
     srand(time(NULL));
 
@@ -704,20 +695,17 @@ int init_program(int argc, char *argv[], char *pal) {
     main_info.pob_backbuf[0] = malloc(screen_pitch * screen_height);
     main_info.pob_backbuf[1] = malloc(screen_pitch * screen_height);
 
+    player_anims = {
+            { 0, {{ 0, 0x7fff}}},
+            {0, {{0, 4}, {1, 4}, {2, 4}, {3, 4}}},
+            {0, {{4, 0x7fff}}},
+            {2, {{5, 8}, {6, 10}, {7, 3}, {6, 3}}},
+            {0, {{6, 0x7fff}}},
+            {1, {{5, 8}, {4, 0x7fff}}},
+            {0, {{8, 5}}}
+    };
 
-    for (auto c1 = 0; c1 < 7; c1++) {
-        player_anims[c1].frame.clear();
-        player_anims[c1].restart_frame = player_anim_data[c1 * 10 + 1];
-        for (auto c2 = 0; c2 < 4; c2++) {
-            player_anims[c1].frame.push_back({player_anim_data[c1 * 10 + c2 * 2 + 2], player_anim_data[c1 * 10 + c2 * 2 + 3]});
-        }
-    }
-/*
-    if ((handle = dat_open("menu.pcx", datafile_buffer)) == nullptr) {
-        main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
-        return 1;
-    }
-    */
+
     if (read_pcx("/home/edwin/Projects/jumpnbump/data/menu.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
         main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
         return 1;

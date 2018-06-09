@@ -593,8 +593,7 @@ int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
  	players.clear();
 	for (c1 = 0; c1 < 4; c1++) {
 		//create bunnies randomly in the menu screen
-		auto player = player_t{};
-
+		auto player = player_t{c1};
 		player.enabled = 0;
 		player.position = screen_position_t{rnd(150), (160L + c1 * 2)};
 		player.x_add = 0;

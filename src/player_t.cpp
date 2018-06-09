@@ -513,7 +513,7 @@ void player_kill(int c1, int c2) {
 
     if (player_1.y_add >= 0) {
 
-        serverSendKillPacket(c1, c2);
+        serverSendKillPacket(player_1.get_id(), player_2.get_id());
     } else {
         if (player_2.y_add < 0)
             player_2.y_add = 0;

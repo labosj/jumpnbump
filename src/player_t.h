@@ -9,6 +9,10 @@
 #include "position_t.h"
 
 struct player_t {
+private:
+	int id;
+public:
+
 	int action_left,action_up,action_right;
 	int enabled, dead_flag;
 	int bumps;
@@ -20,6 +24,10 @@ struct player_t {
 	int x_add, y_add;
 	int direction, jump_ready, jump_abort, in_water;
 	int anim, frame, frame_tick, image;
+
+	player_t(int id) : id{id} {}
+
+	int get_id() const { return this->id; }
 
 	position_t get_position() const;
 

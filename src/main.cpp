@@ -291,7 +291,6 @@ static void game_loop(void) {
 
 
 static int menu_loop(unsigned char* datafile_buffer) {
-    unsigned char *handle;
     int mod_vol;
     int c1, c2;
 
@@ -336,7 +335,7 @@ static int menu_loop(unsigned char* datafile_buffer) {
         memset(mask_pic, 0, JNB_WIDTH * JNB_HEIGHT);
         register_mask(mask_pic);
 
-        register_background(NULL);
+        register_background(nullptr);
 
         draw_begin();
 

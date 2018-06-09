@@ -17,6 +17,7 @@ void add_object(int type, const position_t& position, int x_add, int y_add, int 
 struct object_t{
 	int used, type;
 
+
 	position_t position;
 
 	int x_add, y_add;

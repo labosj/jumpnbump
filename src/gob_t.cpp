@@ -4,7 +4,7 @@
 
 #include "gob_t.h"
 
-gob_t rabbit_gobs = {0};
-gob_t font_gobs = {0};
-gob_t object_gobs = {0};
-gob_t number_gobs = {0};
+gob_t rabbit_gobs;
+gob_t font_gobs;
+gob_t object_gobs;
+gob_t number_gobs;

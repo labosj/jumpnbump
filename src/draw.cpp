@@ -19,23 +19,23 @@ void draw_pobs(int page, main_info_t& main_info) {
     for (c1 = main_info.page_info[page].pobs.size() - 1; c1 >= 0; c1--) {
         main_info.page_info[page].pobs[c1].back_buf_ofs = back_buf_ofs;
         get_block(page, main_info.page_info[page].pobs[c1].position.x -
-                        pob_hs_x(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
+                        pob_hs_x(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data),
                   main_info.page_info[page].pobs[c1].position.y -
-                  pob_hs_y(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  pob_width(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  pob_height(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
+                  pob_hs_y(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data),
+                  pob_width(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data),
+                  pob_height(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data),
                   (unsigned char *) main_info.pob_backbuf[page] + back_buf_ofs);
         if (scale_up)
             back_buf_ofs +=
-                    pob_width(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data) *
-                    pob_height(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data) *
+                    pob_width(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data) *
+                    pob_height(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data) *
                     4;
         else
             back_buf_ofs +=
-                    pob_width(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data) *
-                    pob_height(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data);
+                    pob_width(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data) *
+                    pob_height(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data);
         put_pob(page, main_info.page_info[page].pobs[c1].position.x, main_info.page_info[page].pobs[c1].position.y,
-                main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data, 1);
+                main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data, 1);
     }
 
 }
@@ -45,11 +45,11 @@ void redraw_pob_backgrounds(int page, main_info_t& main_info) {
 
     for (c1 = 0; c1 < main_info.page_info[page].pobs.size() ; c1++)
         put_block(page, main_info.page_info[page].pobs[c1].position.x -
-                        pob_hs_x(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
+                        pob_hs_x(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data),
                   main_info.page_info[page].pobs[c1].position.y -
-                  pob_hs_y(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  pob_width(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
-                  pob_height(main_info.page_info[page].pobs[c1].image, main_info.page_info[page].pobs[c1].pob_data),
+                  pob_hs_y(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data),
+                  pob_width(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data),
+                  pob_height(main_info.page_info[page].pobs[c1].image, *main_info.page_info[page].pobs[c1].pob_data),
                   (unsigned char *) main_info.pob_backbuf[page] + main_info.page_info[page].pobs[c1].back_buf_ofs);
 
 }
@@ -67,7 +67,7 @@ void draw_leftovers(int page, leftovers_t& leftovers) {
 
     for (c1 = leftovers.page[page].pobs.size() - 1; c1 >= 0; c1--)
         put_pob(page, leftovers.page[page].pobs[c1].position.x, leftovers.page[page].pobs[c1].position.y,
-                leftovers.page[page].pobs[c1].image, leftovers.page[page].pobs[c1].pob_data, 1);
+                leftovers.page[page].pobs[c1].image, *leftovers.page[page].pobs[c1].pob_data, 1);
 
     leftovers.page[page].pobs.clear();
 

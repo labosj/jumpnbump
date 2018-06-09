@@ -540,9 +540,9 @@ void put_text(int page, int x, int y, const char *text, int align)
 
 	assert(drawing_enable==1);
 
-	if (text == NULL || strlen(text) == 0)
+	if (text == nullptr || strlen(text) == 0)
 		return;
-	if (font_gobs.num_images == 0)
+	if (font_gobs.images.size() == 0)
 		return;
 
 	width = 0;
@@ -592,7 +592,7 @@ void put_text(int page, int x, int y, const char *text, int align)
 
 		else
 			continue;
-		width += pob_width(image, &font_gobs) + 1;
+		width += font_gobs.images[image].width + 1;
 	}
 
 	switch (align) {
@@ -656,13 +656,13 @@ void put_text(int page, int x, int y, const char *text, int align)
 
 		else
 			continue;
-		put_pob(page, cur_x, y, image, &font_gobs, 1);
-		cur_x += pob_width(image, &font_gobs) + 1;
+		put_pob(page, cur_x, y, image, font_gobs, 1);
+		cur_x += pob_width(image, font_gobs) + 1;
 	}
 }
 
 
-void put_pob(int page, int x, int y, int image, gob_t *gob, int use_mask)
+void put_pob(int page, int x, int y, int image, gob_t &gob, int use_mask)
 {
 	int c1, c2;
 	int pob_x, pob_y;
@@ -676,21 +676,11 @@ void put_pob(int page, int x, int y, int image, gob_t *gob, int use_mask)
 	assert(drawing_enable==1);
 	assert(gob);
 	assert(image>=0);
-	assert(image<gob->num_images);
 
-	if (scale_up) {
-		x *= 2;
-		y *= 2;
-		width = draw_width = gob->width[image]*2;
-		height = draw_height = gob->height[image]*2;
-		x -= gob->hs_x[image]*2;
-		y -= gob->hs_y[image]*2;
-	} else {
-		width = draw_width = gob->width[image];
-		height = draw_height = gob->height[image];
-		x -= gob->hs_x[image];
-		y -= gob->hs_y[image];
-	}
+		width = draw_width = gob.images[image].width;
+		height = draw_height = gob.images[image].height;
+		x -= gob.images[image].hs_x;
+		y -= gob.images[image].hs_y;
 
 	if ((x + width) <= 0 || x >= screen_width)
 		return;
@@ -715,7 +705,7 @@ void put_pob(int page, int x, int y, int image, gob_t *gob, int use_mask)
 		draw_height -= y + height - screen_height;
 
 	vga_ptr = get_vgaptr(page, x, y);
-	pob_ptr = ((unsigned char *)gob->data[image]) + ((pob_y * width) + pob_x);
+	pob_ptr = ((unsigned char *)gob.images[image].data) + ((pob_y * width) + pob_x);
 	mask_ptr = ((unsigned char *)mask) + ((y * screen_pitch) + (x));
 	for (c1 = 0; c1 < draw_height; c1++) {
 		for (c2 = 0; c2 < draw_width; c2++) {
@@ -743,40 +733,40 @@ void put_pob(int page, int x, int y, int image, gob_t *gob, int use_mask)
 			dirty_blocks[page][(y+c1)*25+(x+draw_width)] = 1;
 }
 
-
-int pob_width(int image, gob_t *gob)
+[[deprecated]]
+int pob_width(int image, gob_t &gob)
 {
 	assert(gob);
 	assert(image>=0);
-	assert(image<gob->num_images);
-	return gob->width[image];
+	assert(image<gob.images.size());
+	return gob.images[image].width;
 }
 
-
-int pob_height(int image, gob_t *gob)
+[[deprecated]]
+int pob_height(int image, gob_t& gob)
 {
 	assert(gob);
 	assert(image>=0);
-	assert(image<gob->num_images);
-	return gob->height[image];
+	assert(image<gob.images.size());
+	return gob.images[image].height;
 }
 
-
-int pob_hs_x(int image, gob_t *gob)
+[[deprecated]]
+int pob_hs_x(int image, gob_t& gob)
 {
 	assert(gob);
 	assert(image>=0);
-	assert(image<gob->num_images);
-	return gob->hs_x[image];
+	assert(image<gob. images.size());
+	return gob. images[image].hs_x;
 }
 
-
-int pob_hs_y(int image, gob_t *gob)
+[[deprecated]]
+int pob_hs_y(int image, gob_t& gob)
 {
 	assert(gob);
 	assert(image>=0);
-	assert(image<gob->num_images);
-	return gob->hs_y[image];
+	assert(image<gob.images.size());
+	return gob.images[image].hs_y;
 }
 
 int read_pcx(const std::string& filename, unsigned char *buf, int buf_len, char *pal)
@@ -828,7 +818,7 @@ void register_background(unsigned char *pixels)
 		memcpy(background, pixels, JNB_WIDTH*JNB_HEIGHT);
 }
 
-int register_gob(unsigned char *handle, gob_t *gob, int len)
+int register_gob(unsigned char *handle, gob_t &gob, int len)
 {
 	unsigned char *gob_data;
 	int i;
@@ -836,30 +826,27 @@ int register_gob(unsigned char *handle, gob_t *gob, int len)
 	gob_data = reinterpret_cast<unsigned char*>(malloc(len));
 	memcpy(gob_data, handle, len);
 
-	gob->num_images = (short)((gob_data[0]) + (gob_data[1] << 8));
+	auto num_images = (short)((gob_data[0]) + (gob_data[1] << 8));
 
-	gob->width = reinterpret_cast<int*>(malloc(gob->num_images*sizeof(int)));
-	gob->height = reinterpret_cast<int*>(malloc(gob->num_images*sizeof(int)));
-	gob->hs_x = reinterpret_cast<int*>(malloc(gob->num_images*sizeof(int)));
-	gob->hs_y =reinterpret_cast<int*>( malloc(gob->num_images*sizeof(int)));
-	gob->data = reinterpret_cast<void**>(malloc(gob->num_images*sizeof(void *)));
-	gob->orig_data = reinterpret_cast<void**>(malloc(gob->num_images*sizeof(void *)));
-	for (i=0; i<gob->num_images; i++) {
-		int image_size;
-		int offset;
+	for (i=0; i< num_images; i++) {
 
-		offset = (gob_data[i*4+2]) + (gob_data[i*4+3] << 8) + (gob_data[i*4+4] << 16) + (gob_data[i*4+5] << 24);
+		auto offset = (gob_data[i*4+2]) + (gob_data[i*4+3] << 8) + (gob_data[i*4+4] << 16) + (gob_data[i*4+5] << 24);
 
-		gob->width[i]  = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
-		gob->height[i] = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
-		gob->hs_x[i]   = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
-		gob->hs_y[i]   = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
+		auto image = image_t{};
+		image.width = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
+		image.height = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
+		image.hs_x = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
+		image.hs_y = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
 
-		image_size = gob->width[i] * gob->height[i];
-		gob->orig_data[i] = malloc(image_size);
-		memcpy(gob->orig_data[i], &gob_data[offset], image_size);
 
-			gob->data[i] = (unsigned short *)gob->orig_data[i];
+		auto image_size = image.width * image.height;
+		image.orig_data =  malloc(image_size);
+
+		memcpy(image.orig_data, &gob_data[offset], image_size);
+
+		image.data = (unsigned short *)image.orig_data;
+
+		gob.images.push_back(image);
 
 	}
 	free(gob_data);

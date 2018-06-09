@@ -712,7 +712,7 @@ int init_program(int argc, char *argv[], char *pal) {
         main_info.error_str = "Error loading 'rabbit.gob', aborting...\n";
         return 1;
     }
-    if (register_gob(handle, &rabbit_gobs, dat_filelen("rabbit.gob", datafile_buffer))) {
+    if (register_gob(handle, rabbit_gobs, dat_filelen("rabbit.gob", datafile_buffer))) {
         /* error */
         return 1;
     }
@@ -721,7 +721,7 @@ int init_program(int argc, char *argv[], char *pal) {
         main_info.error_str = "Error loading 'objects.gob', aborting...\n";
         return 1;
     }
-    if (register_gob(handle, &object_gobs, dat_filelen("objects.gob", datafile_buffer))) {
+    if (register_gob(handle, object_gobs, dat_filelen("objects.gob", datafile_buffer))) {
         /* error */
         return 1;
     }
@@ -730,7 +730,7 @@ int init_program(int argc, char *argv[], char *pal) {
         main_info.error_str = "Error loading 'font.gob', aborting...\n";
         return 1;
     }
-    if (register_gob(handle, &font_gobs, dat_filelen("font.gob", datafile_buffer))) {
+    if (register_gob(handle, font_gobs, dat_filelen("font.gob", datafile_buffer))) {
         /* error */
         return 1;
     }
@@ -739,7 +739,7 @@ int init_program(int argc, char *argv[], char *pal) {
         main_info.error_str = "Error loading 'numbers.gob', aborting...\n";
         return 1;
     }
-    if (register_gob(handle, &number_gobs, dat_filelen("numbers.gob", datafile_buffer))) {
+    if (register_gob(handle, number_gobs, dat_filelen("numbers.gob", datafile_buffer))) {
         /* error */
         return 1;
     }

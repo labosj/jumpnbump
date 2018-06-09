@@ -81,7 +81,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 	char fade_pal[48];
 	int update_count;
 
-	if (menu_init(main_info, datafile_buffer) != 0)
+	if (menu_init(main_info) != 0)
 		return 1;
 
 	/* After a game, we have to release the keys, cause AI players
@@ -564,7 +564,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 }
 
 
-int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
+int menu_init(main_info_t& main_info)
 {
 	int c1;
 

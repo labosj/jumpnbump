@@ -608,8 +608,7 @@ int menu_init(main_info_t& main_info, unsigned char *datafile_buffer)
 		players.push_back(player);
 	}
 
-	for (c1 = 0; c1 < objects.size(); c1++)
-		objects[c1].used = 0;
+	objects.clear();
 
 	main_info.page_info[0].pobs.clear();
 	main_info.page_info[1].pobs.clear();

@@ -37,9 +37,9 @@ public:
 	void check_spring_jump();
 
 	void reset_kills();
-	void count_kill(int victim) {
+	void count_kill(const player_t& victim) {
 		this->bumps++;
-		this->bumped[victim]++;
+		this->bumped[victim.get_id()]++;
 	}
 
 	void gravity_fall();
@@ -51,7 +51,7 @@ public:
 
 void steer_players();
 
-void position_player(int player_num);
+void position_player(player_t& player);
 
 void collision_check();
 

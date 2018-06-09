@@ -374,12 +374,6 @@ static int menu_loop(unsigned char* datafile_buffer) {
 
         flippage(main_info.view_page);
 
-        /*
-        if ((handle = dat_open("menu.pcx", datafile_buffer)) == 0) {
-            main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
-            return 1;
-        }
-         */
         if (read_pcx("/home/edwin/Projects/jumpnbump/data/menu.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
             main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
             return 1;

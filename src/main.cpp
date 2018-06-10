@@ -287,12 +287,12 @@ static void game_loop(void) {
 
 
 static int menu_loop(unsigned char* datafile_buffer) {
-    int mod_vol;
-    int c1, c2;
 
+    /*
         if (menu(main_info, datafile_buffer, leftovers) != 0)
             deinit_program();
-
+*/
+        menu_init(main_info);
 
         if (key_pressed(1) == 1) {
             return 0;

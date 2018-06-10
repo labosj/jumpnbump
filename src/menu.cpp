@@ -55,9 +55,6 @@ int menu_init(main_info_t& main_info)
 
 	objects.clear();
 
-	main_info.page_info[0].pobs.clear();
-	main_info.page_info[1].pobs.clear();
-
 	return 0;
 
 }

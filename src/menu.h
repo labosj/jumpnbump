@@ -6,7 +6,6 @@
 #define JUMPNBUMP_MENU_H
 
 struct main_info_t;
-struct leftovers_t;
 
 int menu_init(main_info_t& main_info);
 

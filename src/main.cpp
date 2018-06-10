@@ -288,9 +288,6 @@ static int menu_loop() {
 
         menu_init(main_info);
 
-        if (key_pressed(1) == 1) {
-            return 0;
-        }
         if (init_level(pal) != 0) {
             deinit_level();
             deinit_program();

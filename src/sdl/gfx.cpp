@@ -203,10 +203,6 @@ void open_screen(void)
 	screen_buffer[0]=malloc(screen_width*screen_height);
 	screen_buffer[1]=malloc(screen_width*screen_height);
 
-/*
-	dirty_blocks[0]=malloc(sizeof(int)*25*16+1000);
-	dirty_blocks[1]=malloc(sizeof(int)*25*16+1000);
-*/
 
 	return;
 }

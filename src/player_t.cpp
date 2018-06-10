@@ -57,11 +57,9 @@ void player_action_left(player_t &player) {
     if (player.x_add < -98304L)
         player.x_add = -98304L;
     player.direction = 1;
-    if (player.anim == 0) {
-        player.anim = 1;
-        player.frame = 0;
-        player.frame_tick = 0;
-        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+
+    if (player.anim_handler.anim == 0) {
+        player.set_anim(1);
     }
 }
 
@@ -93,18 +91,15 @@ void player_action_right(player_t &player) {
     if (player.x_add > 98304L)
         player.x_add = 98304L;
     player.direction = 0;
-    if (player.anim == 0) {
-        player.anim = 1;
-        player.frame = 0;
-        player.frame_tick = 0;
-        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
-    }
+    if ( player.anim_handler.anim == 1 )
+        player.set_anim(0);
 }
 
 void player_no_action(player_t &player) {
     auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
     auto below = ban_map.get(player.get_position() + screen_position_t{8, 16});
     auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
+
     if (below == ban_map_t::Type::SOLID || below == ban_map_t::Type::SPRING ||
         (((below_left == ban_map_t::Type::SOLID || below_left == ban_map_t::Type::SPRING) &&
           below_right != ban_map_t::Type::ICE) ||
@@ -122,12 +117,15 @@ void player_no_action(player_t &player) {
         if (player.x_add != 0 && below == ban_map_t::Type::SOLID)
             add_smoke(player);
     }
-    if (player.anim == 1) {
-        player.anim = 0;
-        player.frame = 0;
-        player.frame_tick = 0;
-        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
-    }
+    if ( player.anim_handler.anim == 1 )
+        player.set_anim(0);
+}
+
+void player_t::set_anim(int anim) {
+    this->anim_handler.anim = anim;
+    this->anim_handler.frame = 0;
+    this->anim_handler.frame_tick = 0;
+    this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image + this->direction * 9;
 }
 
 void player_t::gravity_fall() {
@@ -199,11 +197,7 @@ void player_t::check_spring_jump() {
 
         this->position.y = ((this->position.y >> 16) & 0xfff0) << 16;
         this->y_add = -400000L;
-        this->anim = 2;
-        this->frame = 0;
-        this->frame_tick = 0;
-        this->image =
-                player_anims[this->anim].frame[this->frame].image + this->direction * 9;
+        this->set_anim(2);
         this->jump_ready = 0;
         this->jump_abort = 0;
         dj_play_sfx(main_info, SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
@@ -221,21 +215,15 @@ void player_t::check_ceiling() {
         //stop the velocity in y
         this->position.y = (((screen_position_t{this->get_position()}.y + 16) & 0xfff0)) << 16; //TODO: MASK
         this->y_add = 0;
-        this->anim = 0;
-        this->frame = 0;
-        this->frame_tick = 0;
-        this->image =
-                player_anims[this->anim].frame[this->frame].image + this->direction * 9;
+        this->set_anim(0);
     }
 }
 
 void steer_players() {
-    int c1;
 
     update_player_actions();
 
-    for (c1 = 0; c1 < players.size(); c1++) {
-        auto &player = players[c1];
+    for (auto& player : players) {
         if (player.enabled == 1) {
 
             if (player.is_alive()) {
@@ -271,11 +259,7 @@ void steer_players() {
                             below_right == ban_map_t::Type::SOLID ||
                             below_right == ban_map_t::Type::ICE) {
                             player.y_add = -280000L;
-                            player.anim = 2;
-                            player.frame = 0;
-                            player.frame_tick = 0;
-                            player.image = player_anims[player.anim].frame[player.frame].image +
-                                           player.direction * 9;
+                            player.set_anim(2);
                             player.jump_ready = 0;
                             player.jump_abort = 1;
                             if (pogostick == 0)
@@ -287,14 +271,9 @@ void steer_players() {
                         }
                         /* jump out of water */
                         if (ban_map.is_in_water(player.get_position())) {
-                            std::cout << "is_in_water";
                             player.y_add = -196608L;
                             player.in_water = 0;
-                            player.anim = 2;
-                            player.frame = 0;
-                            player.frame_tick = 0;
-                            player.image = player_anims[player.anim].frame[player.frame].image +
-                                           player.direction * 9;
+                            player.set_anim(2);
                             player.jump_ready = 0;
                             player.jump_abort = 1;
                             if (pogostick == 0)
@@ -344,10 +323,8 @@ void steer_players() {
                     if (player.in_water == 0) {
                         /* falling into water */
                         player.in_water = 1;
-                        player.anim = 4;
-                        player.frame = 0;
-                        player.frame_tick = 0;
-                        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+                        player.set_anim(4);
+
 
                         if (player.y_add >= 32768) {
                             screen_position_t screen_position = player.get_position();
@@ -366,11 +343,8 @@ void steer_players() {
                     }
                     /* slowly move up to water surface */
                     player.y_add -= 1536;
-                    if (player.y_add < 0 && player.anim != 5) {
-                        player.anim = 5;
-                        player.frame = 0;
-                        player.frame_tick = 0;
-                        player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+                    if (player.y_add < 0 && player.anim_handler.anim != 5) {
+                        player.set_anim(5);
                     }
                     if (player.y_add < -65536L)
                         player.y_add = -65536L;
@@ -393,12 +367,8 @@ void steer_players() {
                     player.in_water = 0;
                     player.position.y = (((screen_position.y + 16) & 0xfff0) - 16) << 16;
                     player.y_add = 0;
-                    if (player.anim != 0 && player.anim != 1) {
-                        player.anim = 0;
-                        player.frame = 0;
-                        player.frame_tick = 0;
-                        player.image =
-                                player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+                    if (player.anim_handler.anim != 0 && player.anim_handler.anim != 1) {
+                        player.set_anim(0);
                     }
                 } else {
                     if (player.in_water == 0) {
@@ -414,27 +384,23 @@ void steer_players() {
                     }
                     player.in_water = 0;
                 }
-                if (player.y_add > 36864 && player.anim != 3 && player.in_water == 0) {
-                    player.anim = 3;
-                    player.frame = 0;
-                    player.frame_tick = 0;
-                    player.image =
-                            player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+                if (player.y_add > 36864 && player.anim_handler.anim != 3 && player.in_water == 0) {
+                    player.set_anim(3);
                 }
 
             }
 
-            player.frame_tick++;
-            if (player.frame_tick >= player_anims[player.anim].frame[player.frame].ticks) {
-                player.frame++;
-                if (player.frame >= player_anims[player.anim].frame.size()) {
-                    if (player.anim != 6)
-                        player.frame = player_anims[player.anim].restart_frame;
+            player.anim_handler.frame_tick++;
+            if (player.anim_handler.frame_tick >= player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].ticks) {
+                player.anim_handler.frame++;
+                if (player.anim_handler.frame >= player_anims[player.anim_handler.anim].frame.size()) {
+                    if (player.anim_handler.anim != 6)
+                        player.anim_handler.frame = player_anims[player.anim_handler.anim].restart_frame;
                     else position_player(player);
                 }
-                player.frame_tick = 0;
+                player.anim_handler.frame_tick = 0;
             }
-            player.image = player_anims[player.anim].frame[player.frame].image + player.direction * 9;
+            player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image + player.direction * 9;
 
         }
 
@@ -492,10 +458,10 @@ void position_player(player_t &player) {
     player.direction = 0;
     player.jump_ready = 1;
     player.in_water = 0;
-    player.anim = 0;
-    player.frame = 0;
-    player.frame_tick = 0;
-    player.image = player_anims[player.anim].frame[player.frame].image;
+    player.anim_handler.anim = 0;
+    player.anim_handler.frame = 0;
+    player.anim_handler.frame_tick = 0;
+    player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image;
 
     player.dead_flag = 0;
 

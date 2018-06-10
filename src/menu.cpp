@@ -74,12 +74,11 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 {
 	int c1;
 	int esc_pressed;
-	int end_loop_flag, new_game_flag, fade_flag;
+
 	int mod_vol = 0, mod_fade_direction = 0;
 	int cur_message;
 	int fade_dir, fade_count;
 	char fade_pal[48];
-	int update_count;
 
 	if (menu_init(main_info) != 0)
 		return 1;
@@ -121,16 +120,16 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 	main_info.draw_page = 1;
 
 	esc_pressed = key_pressed(1);
-	end_loop_flag = new_game_flag = 0;
 
-	update_count = 1;
+	int update_count = 1;
+	bool end_loop_flag, new_game_flag, fade_flag = false;
 	while (true) {
 
 		while (update_count) {
 
 			if (key_pressed(1) == 1 && esc_pressed == 0) {
-				end_loop_flag = 1;
-				new_game_flag = 0;
+				end_loop_flag = true;
+				new_game_flag = false;
 				memset(menu_pal, 0, 768);
 				mod_fade_direction = 0;
 			} else if (key_pressed(1) == 0)
@@ -139,7 +138,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 			update_player_actions();
 			for (c1 = 0; c1 < players.size(); c1++) {
 				auto screen_position = screen_position_t{players[c1].get_position()};
-				if (end_loop_flag == 1 && new_game_flag == 1) {
+				if (end_loop_flag && new_game_flag) {
 					if ((screen_position.x) > (165 + c1 * 2)) {
 						if (players[c1].x_add < 0)
 							players[c1].x_add += 16384;
@@ -148,11 +147,8 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 						if (players[c1].x_add > 98304L)
 							players[c1].x_add = 98304L;
 						players[c1].direction = 0;
-						if (players[c1].anim == 0) {
-							players[c1].anim = 1;
-							players[c1].frame = 0;
-							players[c1].frame_tick = 0;
-							players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+						if (players[c1].anim_handler.anim == 0) {
+							players[c1].set_anim(1);
 						}
 						players[c1].enabled = 1;
 					}
@@ -164,33 +160,24 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 						}
 					}
 					players[c1].y_add += 12288;
-					if (players[c1].y_add > 36864 && players[c1].anim != 3) {
-						players[c1].anim = 3;
-						players[c1].frame = 0;
-						players[c1].frame_tick = 0;
-						players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+					if (players[c1].y_add > 36864 && players[c1].anim_handler.anim != 3) {
+						players[c1].set_anim(3);
 					}
 					players[c1].position.y += players[c1].y_add;
 					if ((players[c1].position.x >> 16) <= (165 + c1 * 2) || (players[c1].position.x >> 16) >= (208 + c1 * 2)) {
 						if ((players[c1].position.y >> 16) > (160 + c1 * 2)) {
 							players[c1].position.y = (160L + c1 * 2) << 16;
 							players[c1].y_add = 0;
-							if (players[c1].anim != 0 && players[c1].anim != 1) {
-								players[c1].anim = 0;
-								players[c1].frame = 0;
-								players[c1].frame_tick = 0;
-								players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+							if (players[c1].anim_handler.anim != 0 && players[c1].anim_handler.anim != 1) {
+								players[c1].set_anim(0);
 							}
 						}
 					} else {
 						if ((players[c1].position.y >> 16) > (138 + c1 * 2)) {
 							players[c1].position.y = (138L + c1 * 2) << 16;
 							players[c1].y_add = 0;
-							if (players[c1].anim != 0 && players[c1].anim != 1) {
-								players[c1].anim = 0;
-								players[c1].frame = 0;
-								players[c1].frame_tick = 0;
-								players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+							if (players[c1].anim_handler.anim != 0 && players[c1].anim_handler.anim != 1) {
+								players[c1].set_anim(0);
 							}
 							if (!players[c1].action_up)
 								players[c1].jump_ready = 1;
@@ -229,11 +216,8 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 							if (players[c1].x_add < -98304L)
 								players[c1].x_add = -98304L;
 							players[c1].direction = 1;
-							if (players[c1].anim == 0) {
-								players[c1].anim = 1;
-								players[c1].frame = 0;
-								players[c1].frame_tick = 0;
-								players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+							if (players[c1].anim_handler.anim == 0) {
+								players[c1].set_anim(1);
 							}
 						} else {
 							if ((players[c1].position.x >> 16) <= (165 + c1 * 2) || (players[c1].position.x >> 16) >= (208 + c1 * 2)) {
@@ -255,11 +239,8 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 							if (players[c1].x_add > 98304L)
 								players[c1].x_add = 98304L;
 							players[c1].direction = 0;
-							if (players[c1].anim == 0) {
-								players[c1].anim = 1;
-								players[c1].frame = 0;
-								players[c1].frame_tick = 0;
-								players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+							if (players[c1].anim_handler.anim == 0) {
+								players[c1].set_anim(1);
 							}
 						}
 					} else if (players[c1].action_left) {
@@ -282,11 +263,8 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 						if (players[c1].x_add < -98304L)
 							players[c1].x_add = -98304L;
 						players[c1].direction = 1;
-						if (players[c1].anim == 0) {
-							players[c1].anim = 1;
-							players[c1].frame = 0;
-							players[c1].frame_tick = 0;
-							players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+						if (players[c1].anim_handler.anim == 0) {
+							players[c1].set_anim(1);
 						}
 					} else if (players[c1].action_right) {
 						if ((players[c1].position.x >> 16) <= (165 + c1 * 2) || (players[c1].position.x >> 16) >= (208 + c1 * 2)) {
@@ -308,11 +286,8 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 						if (players[c1].x_add > 98304L)
 							players[c1].x_add = 98304L;
 						players[c1].direction = 0;
-						if (players[c1].anim == 0) {
-							players[c1].anim = 1;
-							players[c1].frame = 0;
-							players[c1].frame_tick = 0;
-							players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+						if (players[c1].anim_handler.anim == 0) {
+							players[c1].set_anim(1);
 						}
 					} else {
 						if (((players[c1].position.x >> 16) <= (165 + c1 * 2) || (players[c1].position.x >> 16) >= (208 + c1 * 2)) && (players[c1].position.y >> 16) >= (160 + c1 * 2)) {
@@ -341,21 +316,15 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 								add_smoke(players[c1]);
 							}
 						}
-						if (players[c1].anim == 1) {
-							players[c1].anim = 0;
-							players[c1].frame = 0;
-							players[c1].frame_tick = 0;
-							players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+						if (players[c1].anim_handler.anim == 1) {
+							players[c1].set_anim(0);
 						}
 					}
 					if ((players[c1].jump_ready == 1) && players[c1].action_up) {
 						if ((players[c1].position.x >> 16) <= (165 + c1 * 2) || (players[c1].position.x >> 16) >= (208 + c1 * 2)) {
 							if ((players[c1].position.y >> 16) >= (160 + c1 * 2)) {
 								players[c1].y_add = -280000L;
-								players[c1].anim = 2;
-								players[c1].frame = 0;
-								players[c1].frame_tick = 0;
-								players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+								players[c1].set_anim(2);
 								players[c1].jump_ready = 0;
 								dj_play_sfx(main_info, SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
 											64, 0, -1);
@@ -363,10 +332,7 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 						} else {
 							if ((players[c1].position.y >> 16) >= (138 + c1 * 2)) {
 								players[c1].y_add = -280000L;
-								players[c1].anim = 2;
-								players[c1].frame = 0;
-								players[c1].frame_tick = 0;
-								players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+								players[c1].set_anim(2);
 								players[c1].jump_ready = 0;
 								dj_play_sfx(main_info, SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
 											64, 0, -1);
@@ -383,33 +349,24 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 					if (!players[c1].action_up)
 						players[c1].jump_ready = 1;
 					players[c1].y_add += 12288;
-					if (players[c1].y_add > 36864 && players[c1].anim != 3) {
-						players[c1].anim = 3;
-						players[c1].frame = 0;
-						players[c1].frame_tick = 0;
-						players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+					if (players[c1].y_add > 36864 && players[c1].anim_handler.anim != 3) {
+						players[c1].set_anim(3);
 					}
 					players[c1].position.y += players[c1].y_add;
 					if ((players[c1].position.x >> 16) <= (165 + c1 * 2) || (players[c1].position.x >> 16) >= (208 + c1 * 2)) {
 						if ((players[c1].position.y >> 16) > (160 + c1 * 2)) {
 							players[c1].position.y = (160L + c1 * 2) << 16;
 							players[c1].y_add = 0;
-							if (players[c1].anim != 0 && players[c1].anim != 1) {
-								players[c1].anim = 0;
-								players[c1].frame = 0;
-								players[c1].frame_tick = 0;
-								players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+							if (players[c1].anim_handler.anim != 0 && players[c1].anim_handler.anim != 1) {
+								players[c1].set_anim(0);
 							}
 						}
 					} else {
 						if ((players[c1].position.y >> 16) > (138 + c1 * 2)) {
 							players[c1].position.y = (138L + c1 * 2) << 16;
 							players[c1].y_add = 0;
-							if (players[c1].anim != 0 && players[c1].anim != 1) {
-								players[c1].anim = 0;
-								players[c1].frame = 0;
-								players[c1].frame_tick = 0;
-								players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+							if (players[c1].anim_handler.anim != 0 && players[c1].anim_handler.anim != 1) {
+								players[c1].set_anim(0);
 							}
 						}
 					}
@@ -435,21 +392,21 @@ int menu(main_info_t& main_info, unsigned char* datafile_buffer, leftovers_t& le
 						}
 					}
 				}
-				players[c1].frame_tick++;
-				if (players[c1].frame_tick >= player_anims[players[c1].anim].frame[players[c1].frame].ticks) {
-					players[c1].frame++;
-					if (players[c1].frame >= player_anims[players[c1].anim].frame.size())
-						players[c1].frame = player_anims[players[c1].anim].restart_frame;
-					players[c1].frame_tick = 0;
+				players[c1].anim_handler.frame_tick++;
+				if (players[c1].anim_handler.frame_tick >= player_anims[players[c1].anim_handler.anim].frame[players[c1].anim_handler.frame].ticks) {
+					players[c1].anim_handler.frame++;
+					if (players[c1].anim_handler.frame >= player_anims[players[c1].anim_handler.anim].frame.size())
+						players[c1].anim_handler.frame = player_anims[players[c1].anim_handler.anim].restart_frame;
+					players[c1].anim_handler.frame_tick = 0;
 				}
-				players[c1].image = player_anims[players[c1].anim].frame[players[c1].frame].image + players[c1].direction * 9;
+				players[c1].anim_handler.image = player_anims[players[c1].anim_handler.anim].frame[players[c1].anim_handler.frame].image + players[c1].direction * 9;
 			}
 
 
 			main_info.page_info[main_info.draw_page].pobs.clear();
 
 			for (c1 = 3; c1 >= 0; c1--)
-				add_pob(main_info.draw_page, players[c1].get_position(), players[c1].image + c1 * 18, &rabbit_gobs);
+				add_pob(main_info.draw_page, players[c1].get_position(), players[c1].anim_handler.image + c1 * 18, &rabbit_gobs);
 
 			update_objects();
 
@@ -600,10 +557,10 @@ int menu_init(main_info_t& main_info)
 		player.y_add = 0;
 		player.direction = rnd(2);
 		player.jump_ready = 1;
-		player.anim = 0;
-		player.frame = 0;
-		player.frame_tick = 0;
-		player.image = player_anims[player.anim].frame[player.frame].image;
+		player.anim_handler.anim = 0;
+		player.anim_handler.frame = 0;
+		player.anim_handler.frame_tick = 0;
+		player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image;
 
 		players.push_back(player);
 	}

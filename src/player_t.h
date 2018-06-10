@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "position_t.h"
+#include "anim_handler_t.h"
 
 struct player_t {
 private:
@@ -23,7 +24,7 @@ public:
 
 	int x_add, y_add;
 	int direction, jump_ready, jump_abort, in_water;
-	int anim, frame, frame_tick, image;
+	anim_handler_t anim_handler;
 
 	player_t(int id) : id{id} {}
 
@@ -47,6 +48,10 @@ public:
 	void check_ceiling();
 
 	void check_lateral_walls();
+
+	void some_change_to_anim();
+
+	void set_anim(int anim);
 };
 
 void steer_players();

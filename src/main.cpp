@@ -97,11 +97,8 @@ void serverSendKillPacket(int killer, int victim) {
         players[c1].y_add = -262144L;
     players[c1].jump_abort = 1;
     players[c2].dead_flag = 1;
-    if (players[c2].anim != 6) {
-        players[c2].anim = 6;
-        players[c2].frame = 0;
-        players[c2].frame_tick = 0;
-        players[c2].image = player_anims[players[c2].anim].frame[players[c2].frame].image + players[c2].direction * 9;
+    if (players[c2].anim_handler.anim != 6) {
+        players[c2].set_anim(6);
         if (main_info.gore ) {
             auto screen_position = screen_position_t{players[victim].get_position()} + screen_position_t{6 + rnd(5), 6 + rnd(5)};
             for (c4 = 0; c4 < 6; c4++)
@@ -209,7 +206,7 @@ static void game_loop(void) {
 
                 for (i = 0, c2 = 0; i < players.size(); i++) {
                     if (players[i].enabled == 1) {
-                        add_pob(main_info.draw_page, players[i].get_position(),  players[i].image + i * 18,  &rabbit_gobs);
+                        add_pob(main_info.draw_page, players[i].get_position(),  players[i].anim_handler.image + i * 18,  &rabbit_gobs);
                         c2++;
                     }
                 }

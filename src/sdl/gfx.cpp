@@ -249,10 +249,6 @@ void clear_page(int page, int color)
 
 void flippage(int page)
 {
-	int x,y;
-	unsigned char *src;
-	unsigned char *dest;
-	SDL_Surface* surface;
 
 	assert(drawing_enable==0);
 
@@ -261,31 +257,12 @@ void flippage(int page)
 
 		return;
 	}
-	dest=(unsigned char *)jnb_surface->pixels;
-	src=reinterpret_cast<unsigned char*>(screen_buffer[page]);
-	for (y=0; y<screen_height; y++) {
-		for (x=0; x<25; x++) {
-			int count;
-			int test_x;
 
-			count=0;
-			test_x=x;
-			while ( (test_x<25) ) {
-				count++;
-				test_x++;
-			}
-			if (count) {
-				memcpy(
-					&dest[y*jnb_surface->pitch+(x<<dirty_block_shift)],
-					&src [y*screen_pitch+(x<<dirty_block_shift)],
-					((16<<dirty_block_shift)>>4)*count);
-			}
-			x = test_x;
-		}
-	}
-        SDL_UnlockSurface(jnb_surface);
+	memcpy(jnb_surface->pixels, screen_buffer[page], screen_width * screen_height);
 
-	surface = SDL_ConvertSurfaceFormat(jnb_surface, SDL_PIXELFORMAT_RGB888, 0);
+	SDL_UnlockSurface(jnb_surface);
+
+	auto surface = SDL_ConvertSurfaceFormat(jnb_surface, SDL_PIXELFORMAT_RGB888, 0);
 	SDL_UpdateTexture(jnb_texture, NULL, surface->pixels, screen_width*sizeof(Uint32));
 	SDL_FreeSurface(surface);
 	SDL_RenderClear(sdlRenderer);

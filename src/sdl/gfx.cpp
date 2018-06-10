@@ -150,24 +150,6 @@ unsigned char *get_vgaptr(int page, int x, int y)
 	return (unsigned char *)screen_buffer[page] + (y*screen_pitch)+(x);
 }
 
-
-void set_scaling(int scale)
-{
-	if (scale==1) {
-		screen_width=800;
-		screen_height=512;
-		scale_up=1;
-		dirty_block_shift=5;
-		screen_pitch=screen_width;
-	} else {
-		screen_width=400;
-		screen_height=256;
-		scale_up=0;
-		dirty_block_shift=4;
-		screen_pitch=screen_width;
-	}
-}
-
 void open_screen(void)
 {
 	int lval = 0;
@@ -218,7 +200,6 @@ void open_screen(void)
 
 	vinited = 1;
 
-	memset(dirty_blocks, 0, sizeof(dirty_blocks));
 
 	screen_buffer[0]=malloc(screen_width*screen_height);
 	screen_buffer[1]=malloc(screen_width*screen_height);
@@ -278,11 +259,6 @@ void flippage(int page)
 	SDL_LockSurface(jnb_surface);
 	if (!jnb_surface->pixels) {
 
-		for (x=0; x<(25*16); x++) {
-			dirty_blocks[0][x] = 1;
-			dirty_blocks[1][x] = 1;
-		}
-
 		return;
 	}
 	dest=(unsigned char *)jnb_surface->pixels;
@@ -294,7 +270,7 @@ void flippage(int page)
 
 			count=0;
 			test_x=x;
-			while ( (test_x<25) && (dirty_blocks[page][(y>>dirty_block_shift)*25+test_x]) ) {
+			while ( (test_x<25) ) {
 				count++;
 				test_x++;
 			}
@@ -307,7 +283,6 @@ void flippage(int page)
 			x = test_x;
 		}
 	}
-	memset(&dirty_blocks[page], 0, sizeof(int)*25*16);
         SDL_UnlockSurface(jnb_surface);
 
 	surface = SDL_ConvertSurfaceFormat(jnb_surface, SDL_PIXELFORMAT_RGB888, 0);
@@ -451,13 +426,6 @@ void put_block(int page, int x, int y, int width, int height, unsigned char *buf
 		vga_ptr += screen_pitch;
 		buffer_ptr += width;
 	}
-	width = ((x+width)>>dirty_block_shift) - (x>>dirty_block_shift) + 1;
-	height = ((y+height)>>dirty_block_shift) - (y>>dirty_block_shift) + 1;
-	x >>= dirty_block_shift;
-	y >>= dirty_block_shift;
-	while (width--)
-		for (h=0; h<height; h++)
-			dirty_blocks[page][(y+h)*25+(x+width)] = 1;
 }
 
 
@@ -655,13 +623,7 @@ void put_pob(int page, int x, int y, int image, gob_t &gob, int use_mask)
 		vga_ptr += (screen_width - c2);
 		mask_ptr += (screen_width - c2);
 	}
-	draw_width = ((x+draw_width)>>dirty_block_shift) - (x>>dirty_block_shift) + 1;
-	draw_height = ((y+draw_height)>>dirty_block_shift) - (y>>dirty_block_shift) + 1;
-	x >>= dirty_block_shift;
-	y >>= dirty_block_shift;
-	while (draw_width--)
-		for (c1=0; c1<draw_height; c1++)
-			dirty_blocks[page][(y+c1)*25+(x+draw_width)] = 1;
+
 }
 
 [[deprecated]]

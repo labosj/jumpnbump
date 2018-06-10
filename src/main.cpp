@@ -177,9 +177,7 @@ static void game_loop(void) {
         while (update_count) {
 
             if (endscore_reached || (key_pressed(1) == 1)) {
-
                 end_loop_flag = 1;
-                memset(pal, 0, 768);
             }
 
 
@@ -223,8 +221,6 @@ static void game_loop(void) {
             }
             if (fade_flag == 1)
                 update_palette = 1;
-            if (fade_flag == 0 && end_loop_flag == 1)
-                break;
 
             if (update_count == 1) {
                 if (update_palette == 1) {
@@ -253,7 +249,7 @@ static void game_loop(void) {
 
         update_count = intr_sysupdate();
 
-        if ((fade_flag == 0) && (end_loop_flag == 1))
+        if (end_loop_flag == 1)
             break;
     }
 }

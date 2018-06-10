@@ -456,26 +456,26 @@ void update_objects() {
                 case OBJ_SPRING:
                     object.update_spring();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.anim_handler.image,
                                 &object_gobs);
                     break;
                 case OBJ_SPLASH:
                     object.update_splash();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.anim_handler.image,
                                 &object_gobs);
                     break;
                 case OBJ_SMOKE:
                     object.update_smoke();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.anim_handler.image,
                                 &object_gobs);
                     break;
                 case OBJ_YEL_BUTFLY:
                 case OBJ_PINK_BUTFLY:
                     object.update_butterfly();
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.anim_handler.image,
                                 &object_gobs);
                     break;
                 case OBJ_FUR:
@@ -488,21 +488,21 @@ void update_objects() {
                             s1 = 0;
                         if (s1 > 7)
                             s1 = 7;
-                        add_pob(main_info.draw_page, object.get_position(), object.frame + s1,
+                        add_pob(main_info.draw_page, object.get_position(), object.anim_handler.frame + s1,
                                 &object_gobs);
                     }
                     break;
                 case OBJ_FLESH:
                     object.update_flesh();
                     if (object.is_used())
-                        add_pob(main_info.draw_page, object.get_position(), object.frame,
+                        add_pob(main_info.draw_page, object.get_position(), object.anim_handler.frame,
                                 &object_gobs);
                     break;
                 case OBJ_FLESH_TRACE:
                     object.update_flesh_trace();
 
                     if (object.is_used() )
-                        add_pob(main_info.draw_page, object.get_position(), object.image,
+                        add_pob(main_info.draw_page, object.get_position(), object.anim_handler.image,
                                 &object_gobs);
                     break;
             }

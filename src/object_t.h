@@ -9,6 +9,7 @@ class player_t;
 
 #include "position_t.h"
 #include "anim_t.h"
+#include "anim_handler_t.h"
 
 void add_smoke(const player_t& player);
 void add_jetpack_smoke(const player_t& player);
@@ -22,9 +23,8 @@ struct object_t{
 
 	int x_add, y_add;
 	int x_acc, y_acc;
-	int anim;
-	int frame, ticks;
-	int image;
+
+	anim_handler_t anim_handler;
 
 	object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
 
@@ -36,6 +36,7 @@ struct object_t{
 	position_t get_position() const {
 		return this->position;
 	}
+
 
 	void update_flesh_trace();
 	void update_smoke();
@@ -63,6 +64,10 @@ struct object_t{
 	 * Use this function when you want to free this element as a new element
 	 */
 	void set_available() { this->used = 0; }
+
+	void set_anim(int anim, int frame);
+
+	void advance_anim();
 };
 
 #endif //JUMPNBUMP_OBJECT_T_H

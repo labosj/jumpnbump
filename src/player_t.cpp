@@ -167,26 +167,20 @@ void player_t::check_spring_jump() {
                 if (ban_map.get(screen_position + screen_position_t{8, 15}) == ban_map_t::Type::SPRING) {
                     if ((object.position.x >> 20) == ((screen_position.x + 8) >> 4) &&
                         (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
-                        object.frame = 0;
-                        object.ticks = object_anims[object.anim].frame[object.frame].ticks;
-                        object.image = object_anims[object.anim].frame[object.frame].image;
+                        object.set_anim(object.anim_handler.anim, 0);
                         break;
                     }
                 } else {
                     if (ban_map.get(screen_position + screen_position_t{0, 15}) == ban_map_t::Type::SPRING) {
                         if ((object.position.x >> 20) == (screen_position.x >> 4) &&
                             (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
-                            object.frame = 0;
-                            object.ticks = object_anims[object.anim].frame[object.frame].ticks;
-                            object.image = object_anims[object.anim].frame[object.frame].image;
+                            object.set_anim(object.anim_handler.anim, 0);
                             break;
                         }
                     } else if (ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
                         if ((object.position.x >> 20) == ((screen_position.x + 15) >> 4) &&
                             (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
-                            object.frame = 0;
-                            object.ticks = object_anims[object.anim].frame[object.frame].ticks;
-                            object.image = object_anims[object.anim].frame[object.frame].image;
+                            object.set_anim(object.anim_handler.anim, 0);
                             break;
                         }
                     }

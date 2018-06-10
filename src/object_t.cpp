@@ -12,7 +12,7 @@
 
 extern leftovers_t leftovers;
 
-object_t::object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame) {
+object_t::object_t(int type, const position_t &position, int x_add, int y_add, int anim, int frame) {
     this->used = 1;
     this->type = type;
 
@@ -21,69 +21,56 @@ object_t::object_t(int type, const position_t& position, int x_add, int y_add, i
     this->y_add = y_add;
     this->x_acc = 0;
     this->y_acc = 0;
-    this->anim = anim;
-    this->frame = frame;
-    this->ticks = object_anims[anim].frame[frame].ticks;
-    this->image = object_anims[anim].frame[frame].image;
+    this->set_anim(anim, frame);
 }
 
+void object_t::set_anim(int anim, int frame) {
+    this->anim_handler.anim = anim;
+    this->anim_handler.frame = frame;
+    this->anim_handler.frame_tick = object_anims[anim].frame[frame].ticks;
+    this->anim_handler.image = object_anims[anim].frame[frame].image;
+}
 
-void object_t::update_flesh_trace() {
-    this->ticks--;
-    if (this->ticks <= 0) {
-        this->frame++;
-        if (this->frame >= object_anims[this->anim].frame.size())
+void object_t::advance_anim() {
+    this->anim_handler.frame_tick--;
+    if (this->anim_handler.frame_tick <= 0) {
+        this->anim_handler.frame++;
+        if (this->anim_handler.frame >= object_anims[this->anim_handler.anim].frame.size())
             this->used = 0;
         else {
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
-            this->image = object_anims[this->anim].frame[this->frame].image;
+            this->anim_handler.frame_tick = object_anims[this->anim_handler.anim].frame[this->anim_handler.frame].ticks;
+            this->anim_handler.image = object_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image;
         }
     }
+}
 
+void object_t::update_flesh_trace() {
+    this->advance_anim();
 }
 
 void object_t::update_smoke() {
     this->position.x += this->x_add;
     this->position.y += this->y_add;
-    this->ticks--;
-    if (this->ticks <= 0) {
-        this->frame++;
-        if (this->frame >= object_anims[this->anim].frame.size())
-            this->used = 0;
-        else {
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
-            this->image = object_anims[this->anim].frame[this->frame].image;
-        }
-    }
+    this->advance_anim();
 }
 
 void object_t::update_spring() {
-    this->ticks--;
-    if (this->ticks <= 0) {
-        this->frame++;
-        if (this->frame >= object_anims[this->anim].frame.size()) {
-            this->frame--;
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
+    this->anim_handler.frame_tick--;
+    if (this->anim_handler.frame_tick <= 0) {
+        this->anim_handler.frame++;
+        if (this->anim_handler.frame >= object_anims[this->anim_handler.anim].frame.size()) {
+            this->anim_handler.frame--;
+            this->anim_handler.frame_tick = object_anims[this->anim_handler.anim].frame[this->anim_handler.frame].ticks;
         } else {
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
-            this->image = object_anims[this->anim].frame[this->frame].image;
+            this->anim_handler.frame_tick = object_anims[this->anim_handler.anim].frame[this->anim_handler.frame].ticks;
+            this->anim_handler.image = object_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image;
         }
     }
 }
 
 
-
 void object_t::update_splash() {
-    this->ticks--;
-    if (this->ticks <= 0) {
-        this->frame++;
-        if (this->frame >= object_anims[this->anim].frame.size())
-            this->used = 0;
-        else {
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
-            this->image = object_anims[this->anim].frame[this->frame].image;
-        }
-    }
+    this->advance_anim();
 }
 
 void object_t::update_butterfly() {
@@ -146,38 +133,27 @@ void object_t::update_butterfly() {
         this->y_acc = 0;
     }
     if (this->type == OBJ_YEL_BUTFLY) {
-        if (this->x_add < 0 && this->anim != OBJ_ANIM_YEL_BUTFLY_LEFT) {
-            this->anim = OBJ_ANIM_YEL_BUTFLY_LEFT;
-            this->frame = 0;
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
-            this->image = object_anims[this->anim].frame[this->frame].image;
-        } else if (this->x_add > 0 && this->anim != OBJ_ANIM_YEL_BUTFLY_RIGHT) {
-            this->anim = OBJ_ANIM_YEL_BUTFLY_RIGHT;
-            this->frame = 0;
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
-            this->image = object_anims[this->anim].frame[this->frame].image;
+        if (this->x_add < 0 && this->anim_handler.anim != OBJ_ANIM_YEL_BUTFLY_LEFT) {
+            this->set_anim(OBJ_ANIM_YEL_BUTFLY_LEFT, 0);
+        } else if (this->x_add > 0 && this->anim_handler.anim != OBJ_ANIM_YEL_BUTFLY_RIGHT) {
+            this->set_anim(OBJ_ANIM_YEL_BUTFLY_RIGHT, 0);
         }
     } else {
-        if (this->x_add < 0 && this->anim != OBJ_ANIM_PINK_BUTFLY_LEFT) {
-            this->anim = OBJ_ANIM_PINK_BUTFLY_LEFT;
-            this->frame = 0;
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
-            this->image = object_anims[this->anim].frame[this->frame].image;
-        } else if (this->x_add > 0 && this->anim != OBJ_ANIM_PINK_BUTFLY_RIGHT) {
-            this->anim = OBJ_ANIM_PINK_BUTFLY_RIGHT;
-            this->frame = 0;
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
-            this->image = object_anims[this->anim].frame[this->frame].image;
+        if (this->x_add < 0 && this->anim_handler.anim != OBJ_ANIM_PINK_BUTFLY_LEFT) {
+            this->set_anim(OBJ_ANIM_PINK_BUTFLY_LEFT, 0);
+        } else if (this->x_add > 0 && this->anim_handler.anim != OBJ_ANIM_PINK_BUTFLY_RIGHT) {
+            this->set_anim(OBJ_ANIM_PINK_BUTFLY_RIGHT, 0);
         }
     }
-    this->ticks--;
-    if (this->ticks <= 0) {
-        this->frame++;
-        if (this->frame >= object_anims[this->anim].frame.size())
-            this->frame = object_anims[this->anim].restart_frame;
+
+    this->anim_handler.frame_tick--;
+    if (this->anim_handler.frame_tick <= 0) {
+        this->anim_handler.frame++;
+        if (this->anim_handler.frame >= object_anims[this->anim_handler.anim].frame.size())
+            this->anim_handler.frame = object_anims[this->anim_handler.anim].restart_frame;
         else {
-            this->ticks = object_anims[this->anim].frame[this->frame].ticks;
-            this->image = object_anims[this->anim].frame[this->frame].image;
+            this->anim_handler.frame_tick = object_anims[this->anim_handler.anim].frame[this->anim_handler.frame].ticks;
+            this->anim_handler.image = object_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image;
         }
     }
 }
@@ -185,13 +161,13 @@ void object_t::update_butterfly() {
 
 void object_t::update_flesh() {
     if (rnd(100) < 30) {
-        if (this->frame == 76)
+        if (this->anim_handler.frame == 76)
             add_object(OBJ_FLESH_TRACE, this->get_position(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 1);
-        else if (this->frame == 77)
+        else if (this->anim_handler.frame == 77)
             add_object(OBJ_FLESH_TRACE, this->get_position(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 2);
-        else if (this->frame == 78)
+        else if (this->anim_handler.frame == 78)
             add_object(OBJ_FLESH_TRACE, this->get_position(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 3);
     }
@@ -222,7 +198,7 @@ void object_t::update_flesh() {
     }
     this->position.x += this->x_add;
     if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
-                                      ban_map.get(this->get_position()) == ban_map_t::Type::ICE)) {
+                                         ban_map.get(this->get_position()) == ban_map_t::Type::ICE)) {
         if (this->x_add < 0) {
             this->position.x = (((this->position.x >> 16) + 16) & 0xfff0) << 16;
             this->x_add = -this->x_add >> 2;
@@ -251,9 +227,9 @@ void object_t::update_flesh() {
                     if (rnd(100) < 10) {
                         int s1 = rnd(4) - 2;
                         add_leftovers(0, screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
-                                      this->frame, &object_gobs, leftovers);
+                                      this->anim_handler.frame, &object_gobs, leftovers);
                         add_leftovers(1, screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
-                                      this->frame, &object_gobs, leftovers);
+                                      this->anim_handler.frame, &object_gobs, leftovers);
                     }
                     this->used = 0;
                 }
@@ -302,7 +278,7 @@ void object_t::update_fur() {
     }
     this->position.x += this->x_add;
     if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
-                                      ban_map.get(this->get_position()) == ban_map_t::Type::ICE)) {
+                                         ban_map.get(this->get_position()) == ban_map_t::Type::ICE)) {
         if (this->x_add < 0) {
             this->position.x = (((this->position.x >> 16) + 16) & 0xfff0) << 16;
             this->x_add = -this->x_add >> 2;
@@ -344,22 +320,21 @@ void object_t::update_fur() {
         this->x_add = 16384;
 }
 
-void add_smoke(const player_t& player) {
+void add_smoke(const player_t &player) {
     add_object(OBJ_SMOKE,
                player.get_position() +
-               screen_position_t{2 + rnd(9), 13 + rnd(5)}
-               , 0,
+               screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
                -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 }
 
-void add_jetpack_smoke(const player_t& player) {
+void add_jetpack_smoke(const player_t &player) {
     add_object(OBJ_SMOKE, player.get_position() + screen_position_t{6 + rnd(5), 10 + rnd(5)},
                0, 16384 + rnd(8192), OBJ_ANIM_SMOKE, 0);
 }
 
-void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame) {
+void add_object(int type, const position_t &position, int x_add, int y_add, int anim, int frame) {
 
-    for ( auto& object : objects ) {
+    for (auto &object : objects) {
         if (object.used == 0) {
             object = object_t{type, position, x_add, y_add, anim, frame};
             return;

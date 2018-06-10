@@ -531,3 +531,24 @@ void player_t::reset_kills() {
     this->bumps = 0;
     this->bumped = std::vector<int>(players.size(), 0);
 }
+
+void init_players()
+{
+
+    players.clear();
+    for (auto c1 = 0; c1 < 4; c1++) {
+        //create bunnies randomly in the menu screen
+        auto player = player_t{c1};
+        player.position = screen_position_t{rnd(150), (160L + c1 * 2)};
+        player.x_add = 0;
+        player.y_add = 0;
+        player.direction = rnd(2);
+        player.jump_ready = 1;
+        player.anim_handler.anim = 0;
+        player.anim_handler.frame = 0;
+        player.anim_handler.frame_tick = 0;
+        player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image;
+
+        players.push_back(player);
+    }
+}

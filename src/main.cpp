@@ -32,7 +32,6 @@
 #include "util.h"
 #include "draw.h"
 #include "player_t.h"
-#include "menu.h"
 #include "data.h"
 #include "ban_map.h"
 #include <string>
@@ -286,7 +285,8 @@ static void game_loop(void) {
 
 static int menu_loop() {
 
-        menu_init(main_info);
+        init_players();
+        objects.clear();
 
         if (init_level(pal) != 0) {
             deinit_level();

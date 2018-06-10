@@ -58,6 +58,8 @@ void position_player(player_t& player);
 
 void collision_check();
 
+void init_players();
+
 extern std::vector<player_t> players;
 
 #endif //JUMPNBUMP_PLAYER_H

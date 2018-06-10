@@ -157,7 +157,6 @@ int calib_joy();
 
 /* gfx.c */
 
-void set_scaling(int scale);
 void open_screen(void);
 void wait_vrt();
 void draw_begin(void);
@@ -165,9 +164,7 @@ void draw_end(void);
 void flippage(int page);
 void draw_begin(void);
 void draw_end(void);
-void clear_lines(int page, int y, int count, int color);
 void setpalette(int index, int count, char *palette);
-void fillpalette(int red, int green, int blue);
 
 void get_block(int page, int x, int y, int width, int height, unsigned char *buffer);
 void put_block(int page, int x, int y, int width, int height, unsigned char *buffer);

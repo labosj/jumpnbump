@@ -49,8 +49,6 @@ public:
 
 	void check_lateral_walls();
 
-	void some_change_to_anim();
-
 	void set_anim(int anim);
 };
 

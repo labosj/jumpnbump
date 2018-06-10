@@ -49,8 +49,6 @@
 int endscore_reached;
 
 
-const auto RABBIT_NAME_1 = "AMANDA";
-const auto RABBIT_NAME_2 = "EDWIN";
 unsigned char *datafile_buffer = nullptr;
 
 std::vector<object_t> objects;
@@ -68,21 +66,6 @@ leftovers_t leftovers;
 int pogostick, bunnies_in_space, jetpack, blood_is_thicker_than_water;
 
 int client_player_num = -1;
-
-static void flip_pixels(unsigned char *pixels) {
-    int x, y;
-    unsigned char temp;
-
-    assert(pixels);
-    for (y = 0; y < JNB_HEIGHT; y++) {
-        for (x = 0; x < (352 / 2); x++) {
-            temp = pixels[y * JNB_WIDTH + x];
-            pixels[y * JNB_WIDTH + x] = pixels[y * JNB_WIDTH + (352 - x) - 1];
-            pixels[y * JNB_WIDTH + (352 - x) - 1] = temp;
-        }
-    }
-}
-
 
 void serverSendKillPacket(int killer, int victim) {
     int c1 = killer;
@@ -129,31 +112,6 @@ void serverSendKillPacket(int killer, int victim) {
         add_leftovers(1, screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
     }
 }
-
-void set_blood_is_thicker_than_water() {
-    char blood[32] = {
-            63, 32, 32, 53, 17, 17, 42, 7,
-            7, 28, 0, 0, 24, 0, 0, 19,
-            0, 0, 12, 0, 0, 7, 0, 0
-    };
-    char water[32] = {
-            63, 63, 63, 40, 53, 62, 19, 42,
-            60, 0, 33, 60, 3, 32, 46, 3,
-            26, 33, 3, 19, 21, 1, 8, 8
-    };
-    int i;
-
-    blood_is_thicker_than_water ^= 1;
-    if (blood_is_thicker_than_water == 1) {
-        for (i = 0; i < 32; i++)
-            pal[432 + i] = blood[i];
-    } else {
-        for (i = 0; i < 32; i++)
-            pal[432 + i] = water[i];
-    }
-    register_background(background_pic);
-}
-
 
 static void game_loop(void) {
 

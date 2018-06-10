@@ -156,19 +156,16 @@ void set_blood_is_thicker_than_water() {
 
 
 static void game_loop(void) {
-    int mod_vol, sfx_vol;
+
     int update_count = 1;
     int end_loop_flag = 0;
     int fade_flag = 0;
     int update_palette = 0;
-    int mod_fade_direction;
     int i;
 
-    mod_vol = sfx_vol = 0;
-    mod_fade_direction = 1;
     dj_ready_mod(main_info, MOD_GAME, datafile_buffer);
-    dj_set_mod_volume(main_info, (char) mod_vol);
-    dj_set_sfx_volume(main_info, (char) mod_vol);
+    dj_set_mod_volume(main_info, (char) 30);
+    dj_set_sfx_volume(main_info, (char) 64);
     dj_start_mod(main_info);
 
     intr_sysupdate();
@@ -183,7 +180,6 @@ static void game_loop(void) {
 
                 end_loop_flag = 1;
                 memset(pal, 0, 768);
-                mod_fade_direction = 0;
             }
 
 
@@ -213,26 +209,6 @@ static void game_loop(void) {
 
 
                 draw_end();
-            }
-
-            if (mod_fade_direction == 1) {
-                if (mod_vol < 30) {
-                    mod_vol++;
-                    dj_set_mod_volume(main_info, (char) mod_vol);
-                }
-                if (sfx_vol < 64) {
-                    sfx_vol++;
-                    dj_set_sfx_volume(main_info, (char) sfx_vol);
-                }
-            } else {
-                if (mod_vol > 0) {
-                    mod_vol--;
-                    dj_set_mod_volume(main_info, (char) mod_vol);
-                }
-                if (sfx_vol > 0) {
-                    sfx_vol--;
-                    dj_set_sfx_volume(main_info, (char) sfx_vol);
-                }
             }
 
             fade_flag = 0;

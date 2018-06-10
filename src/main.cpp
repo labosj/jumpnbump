@@ -252,13 +252,6 @@ static int menu_loop() {
             deinit_program();
         }
 
-        memset(cur_pal, 0, 768);
-        setpalette(0, 256, cur_pal);
-
-
-        flippage(1);
-        register_background(background_pic);
-        flippage(0);
 
         bunnies_in_space = jetpack = pogostick = blood_is_thicker_than_water = 0;
         //blood_is_thicker_than_water = 1; HERE IS TO MOD THE CHEATS
@@ -268,9 +261,6 @@ static int menu_loop() {
         main_info.draw_page = 1;
 
         game_loop();
-
-        main_info.view_page = 0;
-        main_info.draw_page = 1;
 
         dj_stop_sfx_channel(main_info, 4);
 
@@ -365,6 +355,7 @@ int init_level(char *pal) {
         main_info.error_str = "Error loading 'level.pcx', aborting...\n";
         return 1;
     }
+    register_background(background_pic);
 
     if (read_pcx("/home/edwin/Projects/jumpnbump/data/mask.pcx", mask_pic, JNB_WIDTH * JNB_HEIGHT, 0) != 0) {
         main_info.error_str = "Error loading 'mask.pcx', aborting...\n";

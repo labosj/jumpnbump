@@ -61,7 +61,6 @@ char datfile_name[2048];
 
 unsigned char *background_pic;
 unsigned char *mask_pic;
-int flip = 0;
 char pal[768];
 char cur_pal[768];
 
@@ -291,8 +290,6 @@ static int menu_loop(unsigned char* datafile_buffer) {
     int mod_vol;
     int c1, c2;
 
-    while (true) {
-
         if (menu(main_info, datafile_buffer, leftovers) != 0)
             deinit_program();
 
@@ -430,7 +427,6 @@ static int menu_loop(unsigned char* datafile_buffer) {
 
 
         dj_stop_mod(main_info);
-    }
 }
 
 
@@ -520,8 +516,6 @@ int init_level(char *pal) {
         main_info.error_str = "Error loading 'level.pcx', aborting...\n";
         return 1;
     }
-    if (flip)
-        flip_pixels(background_pic);
     /*
     if ((handle = dat_open("mask.pcx", datafile_buffer)) == 0) {
         main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
@@ -531,8 +525,6 @@ int init_level(char *pal) {
         main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
         return 1;
     }
-    if (flip)
-        flip_pixels(mask_pic);
     register_mask(mask_pic);
 
     for (c1 = 0; c1 < players.size(); c1++) {
@@ -646,10 +638,6 @@ int init_program(int argc, char *argv[], char *pal) {
                 main_info.joy_enabled = 0;
             else if (stricmp(argv[c1], "-fullscreen") == 0)
                 fs_toggle();
-            else if (stricmp(argv[c1], "-scaleup") == 0)
-                set_scaling(1);
-            else if (stricmp(argv[c1], "-mirror") == 0)
-                flip = 1;
              else if (stricmp(argv[c1], "-players") == 0) {
                 if (c1 < (argc - 1)) {
                     if (client_player_num < 0)

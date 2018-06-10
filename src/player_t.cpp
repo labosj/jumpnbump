@@ -91,8 +91,8 @@ void player_action_right(player_t &player) {
     if (player.x_add > 98304L)
         player.x_add = 98304L;
     player.direction = 0;
-    if ( player.anim_handler.anim == 1 )
-        player.set_anim(0);
+    if ( player.anim_handler.anim == 0 )
+        player.set_anim(1);
 }
 
 void player_no_action(player_t &player) {

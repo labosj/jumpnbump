@@ -33,69 +33,11 @@
 #include "sdl/gfx.h"
 #include "gob_t.h"
 
-char menu_pal[768];
-char menu_cur_pal[768];
-
-const char *message[] = {
-	"Jump 'n Bump " JNB_VERSION,
-	"by Brainchild Design in 1998.",
-	"Code by Mattias Brynervall.",
-	"Graphics by Martin Magnusson",
-	"and Andreas Brynervall.",
-	"Music by Anders Nilsson.",
-	"Linux port by Chuck Mason.",
-	"New SDL port by Florian Schulze.",
-	"Port to SDL2 by Come Chilliet.",
-	"http://www.icculus.org/jumpnbump/",
-	"Ryan C. Gordon made networking possible again!",
-	"Visit our homepage at:",
-	"http://www.algonet.se/~mattiasb",
-	"Jump 'n Bump is e-mailware.",
-	"That means you're supposed to send us an e-mail!",
-	"Write for example where you're from",
-	"and what you thought about this game.",
-	"If you do that, you will greatly encourage us",
-	"to make more games for you!",
-	"Send your e-mail to: matbr656@student.liu.se",
-	"Oh, and by the way, there're a lot of secrets!",
-	"If you can't find them, you'd better ask us...",
-	"If you'd like to contact a specific member of BCD,",
-	"these are their e-mail addresses:",
-	"Andreas Brynervall: andreasb@acc.umu.se",
-	"Mattias Brynervall: matbr656@student.liu.se",
-	"Martin Magnusson: marma102@student.liu.se",
-	"Anders Nilsson: equel@swipnet.se",
-	""
-};
-
 int menu_init(main_info_t& main_info)
 {
-	int c1;
 
-	fillpalette(0, 0, 0);
-
-	if (read_pcx("/home/edwin/Projects/jumpnbump/data/menu.pcx", background_pic, JNB_WIDTH*JNB_HEIGHT, menu_pal) != 0) {
-        main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
-		return 1;
-	}
-
-	if (read_pcx("/home/edwin/Projects/jumpnbump/data/menumask.pcx", mask_pic, JNB_WIDTH*JNB_HEIGHT, 0) != 0) {
-		main_info.error_str = "Error loading 'menumask.pcx', aborting...\n";
-		return 1;
-	}
-	memset(menu_cur_pal, 0, 768);
-
-	/* fix dark font */
-	for (c1 = 0; c1 < 16; c1++) {
-		menu_pal[(240 + c1) * 3 + 0] = c1 << 2;
-		menu_pal[(240 + c1) * 3 + 1] = c1 << 2;
-		menu_pal[(240 + c1) * 3 + 2] = c1 << 2;
-	}
-
-	register_background(background_pic);
-	register_mask(mask_pic);
  	players.clear();
-	for (c1 = 0; c1 < 4; c1++) {
+	for (auto c1 = 0; c1 < 4; c1++) {
 		//create bunnies randomly in the menu screen
 		auto player = player_t{c1};
 		player.position = screen_position_t{rnd(150), (160L + c1 * 2)};

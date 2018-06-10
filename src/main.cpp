@@ -159,8 +159,6 @@ static void game_loop(void) {
 
     int update_count = 1;
     int end_loop_flag = 0;
-    int fade_flag = 0;
-    int update_palette = 0;
     int i;
 
     dj_ready_mod(main_info, MOD_GAME, datafile_buffer);
@@ -171,6 +169,11 @@ static void game_loop(void) {
     intr_sysupdate();
 
     endscore_reached = 0;
+
+    for (i = 0; i < 768; i++) {
+        cur_pal[i] = pal[i];
+    }
+    setpalette(0, 256, cur_pal);
 
     //set_blood_is_thicker_than_water();
     while (true) {
@@ -209,24 +212,8 @@ static void game_loop(void) {
                 draw_end();
             }
 
-            fade_flag = 0;
-            for (i = 0; i < 768; i++) {
-                if (cur_pal[i] < pal[i]) {
-                    cur_pal[i]++;
-                    fade_flag = 1;
-                } else if (cur_pal[i] > pal[i]) {
-                    cur_pal[i]--;
-                    fade_flag = 1;
-                }
-            }
-            if (fade_flag == 1)
-                update_palette = 1;
-
             if (update_count == 1) {
-                if (update_palette == 1) {
-                    setpalette(0, 256, cur_pal);
-                    update_palette = 0;
-                }
+
 
                 main_info.draw_page ^= 1;
                 main_info.view_page ^= 1;

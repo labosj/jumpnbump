@@ -40,7 +40,6 @@ int screen_width=400;
 int screen_height=256;
 int screen_pitch=400;
 int scale_up=0;
-int dirty_block_shift=4;
 
 static SDL_Window *sdlWindow;
 static SDL_Renderer *sdlRenderer;
@@ -312,24 +311,6 @@ void setpalette(int index, int count, char *palette)
 	}
 	SDL_SetPaletteColors(jnb_surface->format->palette, &colors[index], index, count);
 }
-
-
-void fillpalette(int red, int green, int blue)
-{
-	SDL_Color colors[256];
-	int i;
-
-	assert(drawing_enable==0);
-
-	for (i = 0; i < 256; i++) {
-		colors[i].r = red << 2;
-		colors[i].g = green << 2;
-		colors[i].b = blue << 2;
-		colors[i].a = 255;
-	}
-	SDL_SetPaletteColors(jnb_surface->format->palette, colors, 0, 256);
-}
-
 
 void get_block(int page, int x, int y, int width, int height, unsigned char *buffer)
 {

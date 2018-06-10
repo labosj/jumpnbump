@@ -204,10 +204,8 @@ static void game_loop(void) {
                 int c2 = 0;
 
                 for (i = 0, c2 = 0; i < players.size(); i++) {
-                    if (players[i].enabled == 1) {
                         add_pob(main_info.draw_page, players[i].get_position(),  players[i].anim_handler.image + i * 18,  &rabbit_gobs);
                         c2++;
-                    }
                 }
 
                 draw_begin();
@@ -286,12 +284,8 @@ static void game_loop(void) {
 }
 
 
-static int menu_loop(unsigned char* datafile_buffer) {
+static int menu_loop() {
 
-    /*
-        if (menu(main_info, datafile_buffer, leftovers) != 0)
-            deinit_program();
-*/
         menu_init(main_info);
 
         if (key_pressed(1) == 1) {
@@ -335,7 +329,7 @@ int main(int argc, char *argv[]) {
     if (init_program(argc, argv, pal) != 0)
         deinit_program();
 
-    result = menu_loop(datafile_buffer);
+    result = menu_loop();
 
     deinit_program();
 
@@ -415,11 +409,7 @@ int init_level(char *pal) {
         main_info.error_str = "Error loading 'level.pcx', aborting...\n";
         return 1;
     }
-    /*
-    if ((handle = dat_open("mask.pcx", datafile_buffer)) == 0) {
-        main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
-        return 1;
-    }*/
+
     if (read_pcx("/home/edwin/Projects/jumpnbump/data/mask.pcx", mask_pic, JNB_WIDTH * JNB_HEIGHT, 0) != 0) {
         main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
         return 1;
@@ -427,14 +417,12 @@ int init_level(char *pal) {
     register_mask(mask_pic);
 
     for (c1 = 0; c1 < players.size(); c1++) {
-        if (players[c1].enabled == 1) {
             players[c1].reset_kills();
             position_player(players[c1]);
             add_leftovers(0, screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
             add_leftovers(1, screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
             add_leftovers(0, screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
             add_leftovers(1, screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
-        }
     }
 
     for (auto& object : objects)

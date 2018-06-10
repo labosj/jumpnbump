@@ -218,8 +218,6 @@ void steer_players() {
     update_player_actions();
 
     for (auto& player : players) {
-        if (player.enabled == 1) {
-
             if (player.is_alive()) {
 
                 if (player.action_left && player.action_right) {
@@ -398,7 +396,6 @@ void steer_players() {
 
         }
 
-    }
 
 }
 
@@ -438,7 +435,7 @@ void position_player(player_t &player) {
 
         //verifica que el conejo no este cerca de otros conejos
         for (const auto &other_player : players) {
-            if (other_player.get_id() != player.get_id() && other_player.enabled == 1) {
+            if (other_player.get_id() != player.get_id()) {
                 screen_position_t screen_position = position;
                 if (abs(screen_position.x - (screen_position_t{other_player.get_position()}.x)) < 32 &&
                     abs(screen_position.y - (screen_position_t{other_player.get_position()}.y)) < 32)
@@ -474,7 +471,6 @@ void player_kill(player_t &player_1, player_t &player_2) {
 
 void check_collision(player_t &player_1, player_t &player_2) {
 
-    if (player_1.enabled == 1 && player_2.enabled == 1) {
         if (labs(player_1.position.x - player_2.position.x) < (12L << 16) &&
             labs(player_1.position.y - player_2.position.y) < (12L << 16)) {
             if ((labs(player_1.position.y - player_2.position.y) >> 16) > 5) {
@@ -519,7 +515,6 @@ void check_collision(player_t &player_1, player_t &player_2) {
                 }
             }
         }
-    }
 }
 
 void collision_check() {

@@ -20,11 +20,9 @@ struct main_info_t {
 	std::string error_str;
 	int draw_page, view_page;
 
-	struct {
-		std::vector<pob_t> pobs;
-	} page_info[2];
+	std::vector<pob_t> pobs;
 
-	void *pob_backbuf[2];
+	void *pob_backbuf;
 };
 
 extern main_info_t main_info;

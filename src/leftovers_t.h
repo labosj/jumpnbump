@@ -6,12 +6,18 @@
 #define JUMPNBUMP_LEFTOVERS_H
 
 #include <vector>
+#include "pob_t.h"
+
+class screen_position_t;
 
 struct gob_t;
-struct pob_t;
 
 struct leftovers_t {
 
-        std::vector<pob_t> pobs;
+    std::vector<pob_t> pobs;
+
+    void add(const screen_position_t &position, int image, gob_t *pob_data);
+
+    void draw();
 };
 #endif //JUMPNBUMP_LEFTOVERS_H

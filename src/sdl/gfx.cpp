@@ -578,7 +578,7 @@ int pob_hs_x(int image, gob_t& gob)
 	assert(gob);
 	assert(image>=0);
 	assert(image<gob. images.size());
-	return gob. images[image].hs_x;
+	return gob.images[image].hs_x;
 }
 
 [[deprecated]]

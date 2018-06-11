@@ -9,6 +9,7 @@
 #include "globals.h"
 #include "draw.h"
 #include "gob_t.h"
+#include "leftovers_t.h"
 
 extern leftovers_t leftovers;
 
@@ -226,10 +227,10 @@ void object_t::update_flesh() {
                 } else {
                     if (rnd(100) < 10) {
                         int s1 = rnd(4) - 2;
-                        add_leftovers(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
-                                      this->anim_handler.frame, &object_gobs, leftovers);
-                        add_leftovers(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
-                                      this->anim_handler.frame, &object_gobs, leftovers);
+                        leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
+                                    this->anim_handler.frame, &object_gobs);
+                        leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
+                                      this->anim_handler.frame, &object_gobs);
                     }
                     this->used = 0;
                 }

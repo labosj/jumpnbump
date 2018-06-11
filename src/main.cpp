@@ -28,7 +28,7 @@
 #include "globals.h"
 #include "gob_t.h"
 #include "anim_t.h"
-#include "leftovers.h"
+#include "leftovers_t.h"
 #include "util.h"
 #include "draw.h"
 #include "player_t.h"
@@ -106,10 +106,10 @@ void serverSendKillPacket(int killer, int victim) {
             endscore_reached = 1;
         }
         s1 = players[c1].bumps % 100;
-        add_leftovers(screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs, leftovers);
-        add_leftovers(screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs, leftovers);
-        add_leftovers(screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
-        add_leftovers(screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
+        leftovers.add(screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs);
+        leftovers.add(screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs);
+        leftovers.add(screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs);
+        leftovers.add(screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs);
     }
 }
 
@@ -182,7 +182,7 @@ static void game_loop(void) {
 
                 redraw_pob_backgrounds(main_info);
 
-                draw_leftovers(leftovers);
+                leftovers.draw();
 
                 draw_end();
 
@@ -313,10 +313,10 @@ int init_level(char *pal) {
     for (c1 = 0; c1 < players.size(); c1++) {
             players[c1].reset_kills();
             position_player(players[c1]);
-        add_leftovers(screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
-        add_leftovers(screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
-        add_leftovers(screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
-        add_leftovers(screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
+        leftovers.add(screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs);
+        leftovers.add(screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs);
+        leftovers.add(screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs);
+        leftovers.add(screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs);
     }
 
     for (auto& object : objects)

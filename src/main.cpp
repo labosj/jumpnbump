@@ -149,8 +149,6 @@ static void game_loop(void) {
             collision_check();
 
 
-            main_info.pobs.clear();
-
             update_objects();
 
 
@@ -165,13 +163,8 @@ static void game_loop(void) {
                 draw_begin();
 
                 main_info.pobs.draw();
-
-                flippage();
-
-                main_info.pobs.redraw_backgrounds();
-
                 leftovers.draw();
-
+                flippage();
 
                 draw_end();
 
@@ -435,8 +428,6 @@ int init_program(int argc, char *argv[], char *pal) {
     }
 
     preread_datafile(datfile_name);
-
-    main_info.pobs.init(screen_pitch * screen_height);
 
     player_anims = {
             {0, {{ 0, 0x7fff}}},

@@ -19,6 +19,4 @@ void leftovers_t::draw() {
         put_pob(this->pobs[c1].position.x, this->pobs[c1].position.y, this->pobs[c1].image,
                 *this->pobs[c1].pob_data, 1);
 
-    this->pobs.clear();
-
 }

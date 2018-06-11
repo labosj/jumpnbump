@@ -219,19 +219,6 @@ void fs_toggle()
 		fprintf(stderr, "SDL ERROR: %s\n", SDL_GetError());
 }
 
-
-void clear_page(int page, int color)
-{
-	int i,j;
-	unsigned char *buf = get_vgaptr(0, 0);
-
-	assert(drawing_enable==1);
-
-	for (i=0; i<screen_height; i++)
-		for (j=0; j<screen_width; j++)
-			*buf++ = color;
-}
-
 void flippage()
 {
 
@@ -261,14 +248,11 @@ void draw_begin(void)
 	assert(drawing_enable==0);
 
 	drawing_enable = 1;
-	if (background_drawn == 0) {
-		if (background) {
-			put_block(0, 0, JNB_WIDTH, JNB_HEIGHT, background);
-		} else {
-			clear_page(0, 0);
-		}
-		background_drawn = 1;
+
+	if (background) {
+		put_block(0, 0, JNB_WIDTH, JNB_HEIGHT, background);
 	}
+
 }
 
 
@@ -631,7 +615,7 @@ void register_background(unsigned char *pixels)
 		free(background);
 		background = NULL;
 	}
-	background_drawn = 0;
+
 	if (!pixels)
 		return;
 

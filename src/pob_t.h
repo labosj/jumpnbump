@@ -17,7 +17,6 @@ struct pob_t {
 
     int image;
     gob_t *pob_data;
-    int back_buf_ofs;
 
     pob_t(const screen_position_t& position, int image, gob_t* pob_data) {
         this->position = position;

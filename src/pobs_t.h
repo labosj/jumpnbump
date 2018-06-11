@@ -17,10 +17,6 @@ public:
     void add(const screen_position_t &position, int image, gob_t *pob_data);
 
     void draw();
-
-
-
-    void init(int size);
 };
 
 

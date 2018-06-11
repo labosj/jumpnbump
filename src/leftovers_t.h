@@ -12,6 +12,7 @@ class screen_position_t;
 
 struct gob_t;
 
+//this are the red gibs of the rabbits
 class leftovers_t {
 private:
     std::vector<pob_t> pobs;

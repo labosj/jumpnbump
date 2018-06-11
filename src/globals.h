@@ -160,7 +160,7 @@ int calib_joy();
 void open_screen(void);
 void draw_begin(void);
 void draw_end(void);
-void flippage(int page);
+void flippage();
 void draw_begin(void);
 void draw_end(void);
 void setpalette(int index, int count, char *palette);
@@ -171,7 +171,7 @@ void put_block(int x, int y, int width, int height, unsigned char *buffer);
 int read_pcx(const std::string& filename, unsigned char *buffer, int buf_len, char *pal);
 void register_background(unsigned char *pixels);
 
-void put_text(int page, int x, int y, const char *text, int align);
+void put_text(int x, int y, const char *text, int align);
 void register_mask(void *pixels);
 
 /* interrpt.c */

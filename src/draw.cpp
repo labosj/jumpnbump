@@ -35,7 +35,7 @@ void draw_pobs(main_info_t &main_info) {
 
 }
 
-void redraw_pob_backgrounds(int page, main_info_t& main_info) {
+void redraw_pob_backgrounds(main_info_t &main_info) {
     int c1;
 
     for (c1 = 0; c1 < main_info.pobs.size() ; c1++)

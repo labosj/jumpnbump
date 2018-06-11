@@ -18,7 +18,6 @@ struct main_info_t {
 	int music_no_sound = 0;
 	bool gore = true;
 	std::string error_str;
-	int draw_page, view_page;
 
 	std::vector<pob_t> pobs;
 

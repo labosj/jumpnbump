@@ -130,8 +130,6 @@ static void game_loop(void) {
 
     main_info.pobs.clear();
 
-    main_info.view_page = 0;
-    main_info.draw_page = 1;
 
     for (i = 0; i < 768; i++) {
         cur_pal[i] = pal[i];
@@ -178,11 +176,11 @@ static void game_loop(void) {
             if (update_count == 1) {
 
 
-                flippage(main_info.draw_page);
+                flippage();
 
                 draw_begin();
 
-                redraw_pob_backgrounds(main_info.draw_page, main_info);
+                redraw_pob_backgrounds(main_info);
 
                 draw_leftovers(leftovers);
 
@@ -577,39 +575,38 @@ int init_program(int argc, char *argv[], char *pal) {
 
     if (main_info.joy_enabled == 1) {
         load_flag = 0;
-        put_text(0, 200, 40, "JOYSTICK CALIBRATION", 2);
-        put_text(0, 200, 100, "Move the joystick to the", 2);
-        put_text(0, 200, 115, "UPPER LEFT", 2);
-        put_text(0, 200, 130, "and press button A", 2);
-        put_text(0, 200, 200, "Or press ESC to use", 2);
-        put_text(0, 200, 215, "previous settings", 2);
+        put_text(200, 40, "JOYSTICK CALIBRATION", 2);
+        put_text(200, 100, "Move the joystick to the", 2);
+        put_text(200, 115, "UPPER LEFT", 2);
+        put_text(200, 130, "and press button A", 2);
+        put_text(200, 200, "Or press ESC to use", 2);
+        put_text(200, 215, "previous settings", 2);
         if (calib_joy() != 0)
             load_flag = 1;
         else {
             register_background(nullptr);
 
-            main_info.view_page = 1;
-            flippage(1);
+            flippage();
 
 
-            put_text(1, 200, 40, "JOYSTICK CALIBRATION", 2);
-            put_text(1, 200, 100, "Move the joystick to the", 2);
-            put_text(1, 200, 115, "LOWER RIGHT", 2);
-            put_text(1, 200, 130, "and press button A", 2);
-            put_text(1, 200, 200, "Or press ESC to use", 2);
-            put_text(1, 200, 215, "previous settings", 2);
+            put_text(200, 40, "JOYSTICK CALIBRATION", 2);
+            put_text(200, 100, "Move the joystick to the", 2);
+            put_text(200, 115, "LOWER RIGHT", 2);
+            put_text(200, 130, "and press button A", 2);
+            put_text(200, 200, "Or press ESC to use", 2);
+            put_text(200, 215, "previous settings", 2);
             if (calib_joy() != 0)
                 load_flag = 1;
             else {
                 register_background(nullptr);
-                flippage(0);
+                flippage();
 
-                put_text(0, 200, 40, "JOYSTICK CALIBRATION", 2);
-                put_text(0, 200, 100, "Move the joystick to the", 2);
-                put_text(0, 200, 115, "CENTER", 2);
-                put_text(0, 200, 130, "and press button A", 2);
-                put_text(0, 200, 200, "Or press ESC to use", 2);
-                put_text(0, 200, 215, "previous settings", 2);
+                put_text(200, 40, "JOYSTICK CALIBRATION", 2);
+                put_text(200, 100, "Move the joystick to the", 2);
+                put_text(200, 115, "CENTER", 2);
+                put_text(200, 130, "and press button A", 2);
+                put_text(200, 200, "Or press ESC to use", 2);
+                put_text(200, 215, "previous settings", 2);
                 if (calib_joy() != 0)
                     load_flag = 1;
                 else {

@@ -231,7 +231,7 @@ void clear_page(int page, int color)
 			*buf++ = color;
 }
 
-void flippage(int page)
+void flippage()
 {
 
 	assert(drawing_enable==0);
@@ -357,7 +357,7 @@ void put_block(int x, int y, int width, int height, unsigned char *buffer)
 }
 
 
-void put_text(int page, int x, int y, const char *text, int align)
+void put_text(int x, int y, const char *text, int align)
 {
 	int c1;
 	int t1;

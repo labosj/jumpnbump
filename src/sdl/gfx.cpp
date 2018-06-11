@@ -47,7 +47,7 @@ static SDL_Texture *jnb_texture;
 static SDL_Surface *jnb_surface;
 static int fullscreen = 0;
 static int vinited = 0;
-static void *screen_buffer[2];
+static void *screen_buffer;
 static int drawing_enable = 0;
 static unsigned char *background = nullptr;
 static int background_drawn;
@@ -146,7 +146,7 @@ unsigned char *get_vgaptr(int page, int x, int y)
 {
 	assert(drawing_enable==1);
 
-	return (unsigned char *)screen_buffer[page] + (y*screen_pitch)+(x);
+	return (unsigned char *)screen_buffer + (y*screen_pitch)+(x);
 }
 
 void open_screen(void)
@@ -200,8 +200,8 @@ void open_screen(void)
 	vinited = 1;
 
 
-	screen_buffer[0]=malloc(screen_width*screen_height);
-	screen_buffer[1]=malloc(screen_width*screen_height);
+	screen_buffer=malloc(screen_width*screen_height);
+
 
 
 	return;
@@ -244,7 +244,7 @@ void flippage(int page)
 		return;
 	}
 
-	memcpy(jnb_surface->pixels, screen_buffer[page], screen_width * screen_height);
+	memcpy(jnb_surface->pixels, screen_buffer, screen_width * screen_height);
 
 	SDL_UnlockSurface(jnb_surface);
 
@@ -265,10 +265,8 @@ void draw_begin(void)
 	if (background_drawn == 0) {
 		if (background) {
 			put_block(0, 0, 0, JNB_WIDTH, JNB_HEIGHT, background);
-			put_block(1, 0, 0, JNB_WIDTH, JNB_HEIGHT, background);
 		} else {
 			clear_page(0, 0);
-			clear_page(1, 0);
 		}
 		background_drawn = 1;
 	}

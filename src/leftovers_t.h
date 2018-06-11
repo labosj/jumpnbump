@@ -12,10 +12,11 @@ class screen_position_t;
 
 struct gob_t;
 
-struct leftovers_t {
-
+class leftovers_t {
+private:
     std::vector<pob_t> pobs;
 
+public:
     void add(const screen_position_t &position, int image, gob_t *pob_data);
 
     void draw();

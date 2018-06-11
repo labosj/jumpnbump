@@ -23,7 +23,7 @@ struct gob_t{
 	std::vector<image_t> images;
 };
 
-void put_pob(int page, int x, int y, int image, gob_t& gob, int mask);
+void put_pob(int x, int y, int image, gob_t &gob, int mask);
 [[deprecated]]
 int pob_width(int image, gob_t& gob);
 [[deprecated]]

@@ -39,7 +39,6 @@ SDL_Surface *icon;
 int screen_width=400;
 int screen_height=256;
 int screen_pitch=400;
-int scale_up=0;
 
 static SDL_Window *sdlWindow;
 static SDL_Renderer *sdlRenderer;
@@ -52,7 +51,6 @@ static int drawing_enable = 0;
 static unsigned char *background = nullptr;
 static int background_drawn;
 static void *mask = NULL;
-static int dirty_blocks[2][25*16*2];
 
 static SDL_Surface *load_xpm_from_array(char **xpm)
 {
@@ -142,7 +140,7 @@ static SDL_Surface *load_xpm_from_array(char **xpm)
 	return surface;
 }
 
-unsigned char *get_vgaptr(int page, int x, int y)
+unsigned char *get_vgaptr(int x, int y)
 {
 	assert(drawing_enable==1);
 
@@ -224,7 +222,7 @@ void fs_toggle()
 void clear_page(int page, int color)
 {
 	int i,j;
-	unsigned char *buf = get_vgaptr(page, 0, 0);
+	unsigned char *buf = get_vgaptr(0, 0);
 
 	assert(drawing_enable==1);
 
@@ -264,7 +262,7 @@ void draw_begin(void)
 	drawing_enable = 1;
 	if (background_drawn == 0) {
 		if (background) {
-			put_block(0, 0, 0, JNB_WIDTH, JNB_HEIGHT, background);
+			put_block(0, 0, JNB_WIDTH, JNB_HEIGHT, background);
 		} else {
 			clear_page(0, 0);
 		}
@@ -297,19 +295,12 @@ void setpalette(int index, int count, char *palette)
 	SDL_SetPaletteColors(jnb_surface->format->palette, &colors[index], index, count);
 }
 
-void get_block(int page, int x, int y, int width, int height, unsigned char *buffer)
+void get_block(int x, int y, int width, int height, unsigned char *buffer)
 {
 	unsigned char *buffer_ptr, *vga_ptr;
 	int h;
 
 	assert(drawing_enable==1);
-
-	if (scale_up) {
-		x *= 2;
-		y *= 2;
-		width *= 2;
-		height *= 2;
-	}
 
 	if (x < 0)
 		x = 0;
@@ -324,7 +315,7 @@ void get_block(int page, int x, int y, int width, int height, unsigned char *buf
 	if(height<=0)
 		return;
 
-	vga_ptr = get_vgaptr(page, x, y);
+	vga_ptr = get_vgaptr(x, y);
 	buffer_ptr = buffer;
 	for (h = 0; h < height; h++) {
 		memcpy(buffer_ptr, vga_ptr, width);
@@ -335,19 +326,13 @@ void get_block(int page, int x, int y, int width, int height, unsigned char *buf
 }
 
 
-void put_block(int page, int x, int y, int width, int height, unsigned char *buffer)
+void put_block(int x, int y, int width, int height, unsigned char *buffer)
 {
 	int h;
 	unsigned char *vga_ptr, *buffer_ptr;
 
 	assert(drawing_enable==1);
 
-	if (scale_up) {
-		x *= 2;
-		y *= 2;
-		width *= 2;
-		height *= 2;
-	}
 
 	if (x < 0)
 		x = 0;
@@ -362,7 +347,7 @@ void put_block(int page, int x, int y, int width, int height, unsigned char *buf
 	if(height<=0)
 		return;
 
-	vga_ptr = get_vgaptr(page, x, y);
+	vga_ptr = get_vgaptr(x, y);
 	buffer_ptr = buffer;
 	for (h = 0; h < height; h++) {
 		memcpy(vga_ptr, buffer_ptr, width);
@@ -498,13 +483,13 @@ void put_text(int page, int x, int y, const char *text, int align)
 
 		else
 			continue;
-		put_pob(page, cur_x, y, image, font_gobs, 1);
+		put_pob(cur_x, y, image, font_gobs, 1);
 		cur_x += pob_width(image, font_gobs) + 1;
 	}
 }
 
 
-void put_pob(int page, int x, int y, int image, gob_t &gob, int use_mask)
+void put_pob(int x, int y, int image, gob_t &gob, int use_mask)
 {
 	int c1, c2;
 	int pob_x, pob_y;
@@ -546,7 +531,7 @@ void put_pob(int page, int x, int y, int image, gob_t &gob, int use_mask)
 	if ((y + height) > screen_height)
 		draw_height -= y + height - screen_height;
 
-	vga_ptr = get_vgaptr(page, x, y);
+	vga_ptr = get_vgaptr(x, y);
 	pob_ptr = ((unsigned char *)gob.images[image].data) + ((pob_y * width) + pob_x);
 	mask_ptr = ((unsigned char *)mask) + ((y * screen_pitch) + (x));
 	for (c1 = 0; c1 < draw_height; c1++) {

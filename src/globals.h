@@ -165,8 +165,8 @@ void draw_begin(void);
 void draw_end(void);
 void setpalette(int index, int count, char *palette);
 
-void get_block(int page, int x, int y, int width, int height, unsigned char *buffer);
-void put_block(int page, int x, int y, int width, int height, unsigned char *buffer);
+void get_block(int x, int y, int width, int height, unsigned char *buffer);
+void put_block(int x, int y, int width, int height, unsigned char *buffer);
 
 int read_pcx(const std::string& filename, unsigned char *buffer, int buf_len, char *pal);
 void register_background(unsigned char *pixels);

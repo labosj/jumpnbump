@@ -169,7 +169,7 @@ static void game_loop(void) {
 
                 draw_begin();
 
-                draw_pobs(main_info.draw_page, main_info);
+                draw_pobs(main_info);
 
 
                 draw_end();

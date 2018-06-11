@@ -402,8 +402,6 @@ int init_program(int argc, char *argv[], char *pal) {
     if (hook_keyb_handler() != 0)
         return 1;
 
-    //memset(&main_info, 0, sizeof(main_info));
-
     std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
 
     if (argc > 1) {

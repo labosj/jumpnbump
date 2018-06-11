@@ -128,6 +128,11 @@ static void game_loop(void) {
 
     endscore_reached = 0;
 
+    main_info.page_info[0].pobs.clear();
+    main_info.page_info[1].pobs.clear();
+    main_info.view_page = 0;
+    main_info.draw_page = 1;
+
     for (i = 0; i < 768; i++) {
         cur_pal[i] = pal[i];
     }
@@ -173,12 +178,7 @@ static void game_loop(void) {
             if (update_count == 1) {
 
 
-                main_info.draw_page ^= 1;
-                main_info.view_page ^= 1;
-
-                flippage(main_info.view_page);
-
-                wait_vrt();
+                flippage(main_info.draw_page);
 
                 draw_begin();
 
@@ -187,6 +187,8 @@ static void game_loop(void) {
                 draw_leftovers(main_info.draw_page, leftovers);
 
                 draw_end();
+
+
             }
 
             update_count--;
@@ -213,10 +215,6 @@ static int menu_loop() {
 
         bunnies_in_space = jetpack = pogostick = blood_is_thicker_than_water = 0;
         //blood_is_thicker_than_water = 1; HERE IS TO MOD THE CHEATS
-        main_info.page_info[0].pobs.clear();
-        main_info.page_info[1].pobs.clear();
-        main_info.view_page = 0;
-        main_info.draw_page = 1;
 
         game_loop();
 
@@ -601,7 +599,6 @@ int init_program(int argc, char *argv[], char *pal) {
             main_info.view_page = 1;
             flippage(1);
 
-            wait_vrt();
 
             put_text(1, 200, 40, "JOYSTICK CALIBRATION", 2);
             put_text(1, 200, 100, "Move the joystick to the", 2);
@@ -614,8 +611,6 @@ int init_program(int argc, char *argv[], char *pal) {
             else {
                 register_background(nullptr);
                 flippage(0);
-
-                wait_vrt();
 
                 put_text(0, 200, 40, "JOYSTICK CALIBRATION", 2);
                 put_text(0, 200, 100, "Move the joystick to the", 2);
@@ -654,7 +649,6 @@ int init_program(int argc, char *argv[], char *pal) {
             joy.calib_data.y2 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
             handle += 4;
             joy.calib_data.y3 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
         }
     }
 

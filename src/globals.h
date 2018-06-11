@@ -158,7 +158,6 @@ int calib_joy();
 /* gfx.c */
 
 void open_screen(void);
-void wait_vrt();
 void draw_begin(void);
 void draw_end(void);
 void flippage(int page);

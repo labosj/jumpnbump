@@ -221,21 +221,12 @@ void fs_toggle()
 }
 
 
-void wait_vrt()
-{
-	return;
-}
-
-
 void clear_page(int page, int color)
 {
 	int i,j;
 	unsigned char *buf = get_vgaptr(page, 0, 0);
 
 	assert(drawing_enable==1);
-
-	for (i=0; i<(25*16); i++)
-		dirty_blocks[page][i] = 1;
 
 	for (i=0; i<screen_height; i++)
 		for (j=0; j<screen_width; j++)

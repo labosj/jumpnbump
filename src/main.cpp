@@ -106,10 +106,10 @@ void serverSendKillPacket(int killer, int victim) {
             endscore_reached = 1;
         }
         s1 = players[c1].bumps % 100;
-        add_leftovers(0, screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs, leftovers);
-        add_leftovers(1, screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs, leftovers);
-        add_leftovers(0, screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
-        add_leftovers(1, screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
+        add_leftovers(screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs, leftovers);
+        add_leftovers(screen_position_t{360, 34 + c1 * 64}, s1 / 10, &number_gobs, leftovers);
+        add_leftovers(screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
+        add_leftovers(screen_position_t{376, 34 + c1 * 64}, s1 - (s1 / 10) * 10, &number_gobs, leftovers);
     }
 }
 
@@ -184,7 +184,7 @@ static void game_loop(void) {
 
                 redraw_pob_backgrounds(main_info.draw_page, main_info);
 
-                draw_leftovers(main_info.draw_page, leftovers);
+                draw_leftovers(leftovers);
 
                 draw_end();
 
@@ -315,10 +315,10 @@ int init_level(char *pal) {
     for (c1 = 0; c1 < players.size(); c1++) {
             players[c1].reset_kills();
             position_player(players[c1]);
-            add_leftovers(0, screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
-            add_leftovers(1, screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
-            add_leftovers(0, screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
-            add_leftovers(1, screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
+        add_leftovers(screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
+        add_leftovers(screen_position_t{360, 34 + c1 * 64}, 0, &number_gobs, leftovers);
+        add_leftovers(screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
+        add_leftovers(screen_position_t{376, 34 + c1 * 64}, 0, &number_gobs, leftovers);
     }
 
     for (auto& object : objects)

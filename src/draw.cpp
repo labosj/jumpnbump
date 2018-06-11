@@ -54,21 +54,21 @@ void redraw_pob_backgrounds(int page, main_info_t& main_info) {
 
 }
 
-int add_leftovers(int page, const screen_position_t&  position, int image, gob_t *pob_data, leftovers_t& leftovers) {
+int add_leftovers(const screen_position_t &position, int image, gob_t *pob_data, leftovers_t &leftovers) {
 
-    leftovers.page[page].pobs.emplace_back(position, image, pob_data);
+    leftovers.pobs.emplace_back(position, image, pob_data);
 
     return 0;
 
 }
 
-void draw_leftovers(int page, leftovers_t& leftovers) {
+void draw_leftovers(leftovers_t &leftovers) {
     int c1;
 
-    for (c1 = leftovers.page[page].pobs.size() - 1; c1 >= 0; c1--)
-        put_pob(page, leftovers.page[page].pobs[c1].position.x, leftovers.page[page].pobs[c1].position.y,
-                leftovers.page[page].pobs[c1].image, *leftovers.page[page].pobs[c1].pob_data, 1);
+    for (c1 = leftovers.pobs.size() - 1; c1 >= 0; c1--)
+        put_pob(0, leftovers.pobs[c1].position.x, leftovers.pobs[c1].position.y,
+                leftovers.pobs[c1].image, *leftovers.pobs[c1].pob_data, 1);
 
-    leftovers.page[page].pobs.clear();
+    leftovers.pobs.clear();
 
 }

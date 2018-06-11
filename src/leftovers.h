@@ -12,8 +12,6 @@ struct pob_t;
 
 struct leftovers_t {
 
-    struct {
         std::vector<pob_t> pobs;
-    } page[2];
 };
 #endif //JUMPNBUMP_LEFTOVERS_H

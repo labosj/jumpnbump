@@ -226,9 +226,9 @@ void object_t::update_flesh() {
                 } else {
                     if (rnd(100) < 10) {
                         int s1 = rnd(4) - 2;
-                        add_leftovers(0, screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
+                        add_leftovers(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
                                       this->anim_handler.frame, &object_gobs, leftovers);
-                        add_leftovers(1, screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
+                        add_leftovers(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
                                       this->anim_handler.frame, &object_gobs, leftovers);
                     }
                     this->used = 0;

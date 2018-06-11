@@ -55,7 +55,6 @@ public:
 
     int get_width() const { return this->width; }
     int get_height() const { return this->height; }
-    void flip();
 };
 
 extern ban_map_t ban_map;

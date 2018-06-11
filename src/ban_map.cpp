@@ -92,8 +92,3 @@ bool ban_map_t::read_from_file(const std::string& filename) {
     return true;
 
 }
-
-void ban_map_t::flip() {
-    for ( auto &row : this->map )
-        std::reverse(row.begin(), row.end());
-}

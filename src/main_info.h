@@ -7,7 +7,7 @@
 
 #include <string>
 #include <vector>
-#include "pob_t.h"
+#include "pobs_t.h"
 
 struct gob_t;
 
@@ -19,9 +19,7 @@ struct main_info_t {
 	bool gore = true;
 	std::string error_str;
 
-	std::vector<pob_t> pobs;
-
-	void *pob_backbuf;
+	pobs_t pobs;
 };
 
 extern main_info_t main_info;

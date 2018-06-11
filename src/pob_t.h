@@ -26,7 +26,4 @@ struct pob_t {
     }
 };
 
-
-int add_pob(const screen_position_t &position, int image, gob_t *pob_data);
-
 #endif //JUMPNBUMP_POB_T_H

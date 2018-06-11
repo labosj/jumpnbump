@@ -7,7 +7,6 @@
 #include "ban_map.h"
 #include "util.h"
 #include "globals.h"
-#include "draw.h"
 #include "gob_t.h"
 #include "leftovers_t.h"
 

@@ -30,7 +30,6 @@
 #include "anim_t.h"
 #include "leftovers_t.h"
 #include "util.h"
-#include "draw.h"
 #include "player_t.h"
 #include "data.h"
 #include "ban_map.h"
@@ -128,8 +127,6 @@ static void game_loop(void) {
 
     endscore_reached = 0;
 
-    main_info.pobs.clear();
-
 
     for (i = 0; i < 768; i++) {
         cur_pal[i] = pal[i];
@@ -161,28 +158,20 @@ static void game_loop(void) {
                 int c2 = 0;
 
                 for (i = 0, c2 = 0; i < players.size(); i++) {
-                    add_pob(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
+                    main_info.pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
                         c2++;
                 }
 
                 draw_begin();
 
-                draw_pobs(main_info);
-
-
-                draw_end();
-            }
-
-            if (update_count == 1) {
-
+                main_info.pobs.draw();
 
                 flippage();
 
-                draw_begin();
-
-                redraw_pob_backgrounds(main_info);
+                main_info.pobs.redraw_backgrounds();
 
                 leftovers.draw();
+
 
                 draw_end();
 
@@ -245,23 +234,23 @@ void update_objects() {
                 case OBJ_SPRING:
                     object.update_spring();
                     if (object.is_used() )
-                        add_pob(object.get_position(), object.anim_handler.image, &object_gobs);
+                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
                 case OBJ_SPLASH:
                     object.update_splash();
                     if (object.is_used() )
-                        add_pob(object.get_position(), object.anim_handler.image, &object_gobs);
+                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
                 case OBJ_SMOKE:
                     object.update_smoke();
                     if (object.is_used() )
-                        add_pob(object.get_position(), object.anim_handler.image, &object_gobs);
+                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
                 case OBJ_YEL_BUTFLY:
                 case OBJ_PINK_BUTFLY:
                     object.update_butterfly();
                     if (object.is_used() )
-                        add_pob(object.get_position(), object.anim_handler.image, &object_gobs);
+                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
                 case OBJ_FUR:
                     object.update_fur();
@@ -273,19 +262,19 @@ void update_objects() {
                             s1 = 0;
                         if (s1 > 7)
                             s1 = 7;
-                        add_pob(object.get_position(), object.anim_handler.frame + s1, &object_gobs);
+                        main_info.pobs.add(object.get_position(), object.anim_handler.frame + s1, &object_gobs);
                     }
                     break;
                 case OBJ_FLESH:
                     object.update_flesh();
                     if (object.is_used())
-                        add_pob(object.get_position(), object.anim_handler.frame, &object_gobs);
+                        main_info.pobs.add(object.get_position(), object.anim_handler.frame, &object_gobs);
                     break;
                 case OBJ_FLESH_TRACE:
                     object.update_flesh_trace();
 
                     if (object.is_used() )
-                        add_pob(object.get_position(), object.anim_handler.image, &object_gobs);
+                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
             }
         }
@@ -447,7 +436,7 @@ int init_program(int argc, char *argv[], char *pal) {
 
     preread_datafile(datfile_name);
 
-    main_info.pob_backbuf = malloc(screen_pitch * screen_height);
+    main_info.pobs.init(screen_pitch * screen_height);
 
     player_anims = {
             {0, {{ 0, 0x7fff}}},

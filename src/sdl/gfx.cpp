@@ -29,6 +29,7 @@
 #include "SDL_endian.h"
 #include <SDL.h>
 #include <fstream>
+#include "gfx.h"
 
 
 #include "jumpnbump64.xpm"

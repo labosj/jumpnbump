@@ -23,19 +23,6 @@ struct gob_t{
 	std::vector<image_t> images;
 };
 
-void put_pob(int x, int y, int image, gob_t &gob, int mask);
-[[deprecated]]
-int pob_width(int image, gob_t& gob);
-[[deprecated]]
-int pob_height(int image, gob_t& gob);
-[[deprecated]]
-int pob_hs_x(int image, gob_t& gob);
-[[deprecated]]
-int pob_hs_y(int image, gob_t& gob);
-[[deprecated]]
-int register_gob(unsigned char *handle, gob_t &gob, int len);
-
-
 extern gob_t rabbit_gobs;
 extern gob_t font_gobs;
 extern gob_t object_gobs;

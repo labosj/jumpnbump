@@ -21,15 +21,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef JNB_DJ
+#define JNB_DJ
 
-#define DJ_SFX_TYPE_SMP 2
 
-
-typedef struct sfx_data {
+struct sfx_data {
     unsigned long length;
   char loop;
     unsigned char *buf;
-} sfx_data;
+};
 
 
 extern char dj_init(main_info_t&);
@@ -50,3 +50,4 @@ extern void dj_stop_mod(main_info_t&);
 extern void dj_set_mod_volume(main_info_t&, char volume);
 
 
+#endif

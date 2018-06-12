@@ -134,11 +134,9 @@ static void game_loop(void) {
 
 
             if (update_count == 1) {
-                int c2 = 0;
 
-                for (i = 0, c2 = 0; i < players.size(); i++) {
+                for (int i = 0 ; i < players.size(); i++) {
                     main_info.pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
-                        c2++;
                 }
 
                 draw_begin();

@@ -34,6 +34,7 @@
 
 #include "jumpnbump64.xpm"
 #include "src/gob_t.h"
+#include "src/pob_t.h"
 
 SDL_Surface *icon;
 
@@ -312,8 +313,10 @@ void put_block(int x, int y, int width, int height, unsigned char *buffer)
 
 
 
-void put_pob(int x, int y, int image, gob_t &gob, int use_mask)
+void put_pob(const pob_t& pob, int use_mask)
 {
+
+
 	int c1, c2;
 	int pob_x, pob_y;
 	int width, height;
@@ -323,14 +326,16 @@ void put_pob(int x, int y, int image, gob_t &gob, int use_mask)
 	unsigned char *pob_ptr;
 	unsigned char *mask_ptr;
 
+	int x = pob.position.x;
+	int y = pob.position.y;
 	assert(drawing_enable==1);
 	assert(gob);
 	assert(image>=0);
 
-		width = draw_width = gob.images[image].width;
-		height = draw_height = gob.images[image].height;
-		x -= gob.images[image].hs_x;
-		y -= gob.images[image].hs_y;
+		width = draw_width =  pob.pob_data->images[pob.image].width;
+		height = draw_height = pob.pob_data->images[pob.image].height;
+		x -= pob.pob_data->images[pob.image].hs_x;
+		y -= pob.pob_data->images[pob.image].hs_y;
 
 	if ((x + width) <= 0 || x >= screen_width)
 		return;
@@ -355,7 +360,7 @@ void put_pob(int x, int y, int image, gob_t &gob, int use_mask)
 		draw_height -= y + height - screen_height;
 
 	vga_ptr = get_vgaptr(x, y);
-	pob_ptr = ((unsigned char *)gob.images[image].data) + ((pob_y * width) + pob_x);
+	pob_ptr = ((unsigned char *)pob.pob_data->images[pob.image].data) + ((pob_y * width) + pob_x);
 	mask_ptr = ((unsigned char *)mask) + ((y * screen_pitch) + (x));
 	for (c1 = 0; c1 < draw_height; c1++) {
 		for (c2 = 0; c2 < draw_width; c2++) {

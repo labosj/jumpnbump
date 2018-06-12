@@ -12,10 +12,9 @@ void pobs_t::add(const screen_position_t &position, int image, gob_t *pob_data) 
 
 void pobs_t::draw() {
 
-    for (auto& pob : this->pobs) {
+    for (const auto& pob : this->pobs) {
 
-        put_pob(pob.position.x, pob.position.y, pob.image,
-                *pob.pob_data, 1);
+        put_pob(pob, 1);
     }
 
     this->pobs.clear();

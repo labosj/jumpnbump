@@ -7,6 +7,8 @@
 
 #include <string>
 
+class pob_t;
+
 struct gob_t;
 
 #ifdef USE_SDL
@@ -14,7 +16,7 @@ void fs_toggle();
 int intr_sysupdate();
 #endif
 
-void put_pob(int x, int y, int image, gob_t &gob, int mask);
+void put_pob(const pob_t& pob, int mask);
 [[deprecated]]
 int register_gob(unsigned char *handle, gob_t &gob, int len);
 
@@ -33,5 +35,4 @@ void register_background(unsigned char *pixels);
 
 void register_mask(void *pixels);
 
-void put_block(int x, int y, int width, int height, unsigned char *buffer);
 #endif //JUMPNBUMP_GFX_H

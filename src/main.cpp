@@ -89,7 +89,7 @@ void serverSendKillPacket(int killer, int victim) {
                 objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
-        dj_play_sfx(main_info, SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
+        dj_play_sfx(SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
 
 
         players[c1].count_kill(c2);
@@ -105,10 +105,10 @@ static void game_loop(void) {
     int end_loop_flag = 0;
     int i;
 
-    dj_ready_mod(main_info, datafile_buffer);
-    dj_set_mod_volume(main_info, (char) 30);
-    dj_set_sfx_volume(main_info, (char) 64);
-    dj_start_mod(main_info);
+    dj_ready_mod(datafile_buffer);
+    dj_set_mod_volume((char) 30);
+    dj_set_sfx_volume((char) 64);
+    dj_start_mod();
 
     intr_sysupdate();
 
@@ -175,7 +175,7 @@ static int menu_loop() {
 
         game_loop();
 
-        dj_stop_sfx_channel(main_info, 4);
+        dj_stop_sfx_channel(4);
 
         deinit_level();
 
@@ -248,7 +248,7 @@ int init_level() {
 
 void deinit_level(void) {
 
-    dj_stop_mod(main_info);
+    dj_stop_mod();
 }
 
 
@@ -375,20 +375,20 @@ int init_program(int argc, char *argv[]) {
     }
 
     open_screen();
-    dj_init(main_info);
+    dj_init();
 
     if (main_info.no_sound == 0) {
 
         dj_set_mixing_freq(20000);
 
         dj_set_num_sfx_channels(5);
-        dj_set_sfx_volume(main_info, 64);
+        dj_set_sfx_volume(64);
 
         if ((handle = dat_open("jump.smp", datafile_buffer)) == 0) {
             main_info.error_str = "Error loading 'jump.smp', aborting...\n";
             return 1;
         }
-        if (dj_load_sfx(main_info, handle, 0, dat_filelen("jump.smp", datafile_buffer), SFX_JUMP) != 0) {
+        if (dj_load_sfx(handle, dat_filelen("jump.smp", datafile_buffer), SFX_JUMP) != 0) {
             main_info.error_str = "Error loading 'jump.smp', aborting...\n";
             return 1;
         }
@@ -397,7 +397,7 @@ int init_program(int argc, char *argv[]) {
             main_info.error_str = "Error loading 'death.smp', aborting...\n";
             return 1;
         }
-        if (dj_load_sfx(main_info, handle, 0, dat_filelen("death.smp", datafile_buffer), SFX_DEATH) != 0) {
+        if (dj_load_sfx(handle, dat_filelen("death.smp", datafile_buffer), SFX_DEATH) != 0) {
             main_info.error_str = "Error loading 'death.smp', aborting...\n";
             return 1;
         }
@@ -406,7 +406,7 @@ int init_program(int argc, char *argv[]) {
             main_info.error_str = "Error loading 'spring.smp', aborting...\n";
             return 1;
         }
-        if (dj_load_sfx(main_info, handle, 0, dat_filelen("spring.smp", datafile_buffer), SFX_SPRING) != 0) {
+        if (dj_load_sfx(handle, dat_filelen("spring.smp", datafile_buffer), SFX_SPRING) != 0) {
             main_info.error_str = "Error loading 'spring.smp', aborting...\n";
             return 1;
         }
@@ -415,7 +415,7 @@ int init_program(int argc, char *argv[]) {
             main_info.error_str = "Error loading 'splash.smp', aborting...\n";
             return 1;
         }
-        if (dj_load_sfx(main_info, handle, 0, dat_filelen("splash.smp", datafile_buffer), SFX_SPLASH) != 0) {
+        if (dj_load_sfx(handle, dat_filelen("splash.smp", datafile_buffer), SFX_SPLASH) != 0) {
             main_info.error_str = "Error loading 'splash.smp', aborting...\n";
             return 1;
         }

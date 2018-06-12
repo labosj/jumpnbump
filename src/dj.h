@@ -32,22 +32,22 @@ struct sfx_data {
 };
 
 
-extern char dj_init(main_info_t&);
+extern char dj_init();
 
 extern unsigned short dj_set_mixing_freq(unsigned short freq);
 
 extern char dj_set_num_sfx_channels(char num_channels);
-extern void dj_set_sfx_volume(main_info_t&, char volume);
+extern void dj_set_sfx_volume(char volume);
 extern void
-dj_play_sfx(main_info_t &, unsigned char sfx_num, unsigned short freq, char volume, char panning, char channel);
-extern void dj_stop_sfx_channel(main_info_t&, char channel_num);
+dj_play_sfx(unsigned char sfx_num, unsigned short freq, char volume, char panning, char channel);
+extern void dj_stop_sfx_channel(char channel_num);
 extern char
-dj_load_sfx(main_info_t &, unsigned char *file_handle, char *filename, int file_length, unsigned char sfx_num);
+dj_load_sfx(unsigned char *file_handle, int file_length, unsigned char sfx_num);
 
-extern char dj_ready_mod(main_info_t&, unsigned char* datafile_buffer);
-extern char dj_start_mod(main_info_t&);
-extern void dj_stop_mod(main_info_t&);
-extern void dj_set_mod_volume(main_info_t&, char volume);
+extern char dj_ready_mod(unsigned char* datafile_buffer);
+extern char dj_start_mod();
+extern void dj_stop_mod();
+extern void dj_set_mod_volume(char volume);
 
 
 #endif

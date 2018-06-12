@@ -251,14 +251,11 @@ void mix_sound(Uint8 *stream, int len)
 
 /* misc handling */
 
-char dj_init(main_info_t& main_info)
+char dj_init()
 {
 	Uint16 audio_format = MIX_DEFAULT_FORMAT;
 	int audio_channels = 2;
 	int audio_buffers = 4096;
-
-	if (main_info.no_sound)
-		return 0;
 
 	audio_buffers = SAMPLECOUNT*audio_rate/11025;
 
@@ -286,23 +283,6 @@ char dj_init(main_info_t& main_info)
 	return 0;
 }
 
-void dj_deinit(main_info_t& main_info)
-{
-	if (main_info.no_sound)
-		return;
-
-#ifndef NO_SDL_MIXER
-	Mix_HaltMusic();
-	if (current_music)
-		Mix_FreeMusic(current_music);
-	current_music = nullptr;
-
-	Mix_CloseAudio();
-#endif
-
-	SDL_Quit();
-}
-
 unsigned short dj_set_mixing_freq(unsigned short freq)
 {
 	return freq;
@@ -315,23 +295,18 @@ char dj_set_num_sfx_channels(char num_channels)
 	return num_channels;
 }
 
-void dj_set_sfx_volume(main_info_t& main_info, char volume)
+void dj_set_sfx_volume(char volume)
 {
-	if (main_info.no_sound)
-		return;
-
 	SDL_LockAudio();
 	global_sfx_volume = volume*2;
 	SDL_UnlockAudio();
 }
 
-void dj_play_sfx(main_info_t &main_info, unsigned char sfx_num, unsigned short freq, char volume, char panning,
+void dj_play_sfx(unsigned char sfx_num, unsigned short freq, char volume, char panning,
 				 char channel)
 {
 	int slot;
 
-	if (main_info.music_no_sound || main_info.no_sound)
-		return;
 
 	if (channel<0) {
 		for (slot=0; slot<MAX_CHANNELS; slot++)
@@ -348,17 +323,15 @@ void dj_play_sfx(main_info_t &main_info, unsigned char sfx_num, unsigned short f
 	SDL_UnlockAudio();
 }
 
-void dj_stop_sfx_channel(main_info_t& main_info, char channel_num)
+void dj_stop_sfx_channel(char channel_num)
 {
-	if (main_info.no_sound)
-		return;
 
 	SDL_LockAudio();
 	stopchan(channel_num);
 	SDL_UnlockAudio();
 }
 
-char dj_load_sfx(main_info_t &main_info, unsigned char *file_handle, char *filename, int file_length, unsigned char sfx_num)
+char dj_load_sfx(unsigned char *file_handle, int file_length, unsigned char sfx_num)
 {
 	unsigned int i;
 	unsigned char *src;
@@ -382,18 +355,15 @@ char dj_load_sfx(main_info_t &main_info, unsigned char *file_handle, char *filen
 	return 0;
 }
 
-void dj_free_sfx(main_info_t& main_info, unsigned char sfx_num)
+void dj_free_sfx(unsigned char sfx_num)
 {
-	if (main_info.no_sound)
-		return;
-
 	free(sounds[sfx_num].buf);
 	memset(&sounds[sfx_num], 0, sizeof(sfx_data));
 }
 
 /* mod handling */
 
-char dj_ready_mod(main_info_t& main_info, unsigned char *datafile_buffer)
+char dj_ready_mod(unsigned char *datafile_buffer)
 {
 #ifndef NO_SDL_MIXER
 	FILE *tmp;
@@ -401,9 +371,6 @@ char dj_ready_mod(main_info_t& main_info, unsigned char *datafile_buffer)
 	char* filename;
 	unsigned char *fp;
 	int len;
-
-	if (main_info.no_sound)
-		return 0;
 
 		fp = dat_open("bump.mod", datafile_buffer);
 		len = dat_filelen("bump.mod", datafile_buffer);
@@ -464,11 +431,9 @@ char dj_ready_mod(main_info_t& main_info, unsigned char *datafile_buffer)
 	return 0;
 }
 
-char dj_start_mod(main_info_t& main_info)
+char dj_start_mod()
 {
 #ifndef NO_SDL_MIXER
-	if (main_info.no_sound)
-		return 0;
 
 	Mix_VolumeMusic(0);
 	Mix_PlayMusic(current_music, -1);
@@ -477,21 +442,17 @@ char dj_start_mod(main_info_t& main_info)
 	return 0;
 }
 
-void dj_stop_mod(main_info_t& main_info)
+void dj_stop_mod()
 {
 #ifndef NO_SDL_MIXER
-	if (main_info.no_sound)
-		return;
 
 	Mix_HaltMusic();
 #endif
 }
 
-void dj_set_mod_volume(main_info_t& main_info, char volume)
+void dj_set_mod_volume(char volume)
 {
 #ifndef NO_SDL_MIXER
-	if (main_info.no_sound)
-		return;
 
 	Mix_VolumeMusic(volume);
 #endif

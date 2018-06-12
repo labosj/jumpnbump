@@ -46,7 +46,7 @@ extern char
 dj_load_sfx(main_info_t &, unsigned char *file_handle, char *filename, int file_length, unsigned char sfx_num);
 extern void dj_free_sfx(main_info_t&, unsigned char sfx_num);
 
-extern char dj_ready_mod(main_info_t&, char mod_num, unsigned char* datafile_buffer);
+extern char dj_ready_mod(main_info_t&, unsigned char* datafile_buffer);
 extern char dj_start_mod(main_info_t&);
 extern void dj_stop_mod(main_info_t&);
 extern void dj_set_mod_volume(main_info_t&, char volume);

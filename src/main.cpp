@@ -111,7 +111,7 @@ static void game_loop(void) {
     int end_loop_flag = 0;
     int i;
 
-    dj_ready_mod(main_info, MOD_GAME, datafile_buffer);
+    dj_ready_mod(main_info, datafile_buffer);
     dj_set_mod_volume(main_info, (char) 30);
     dj_set_sfx_volume(main_info, (char) 64);
     dj_start_mod(main_info);

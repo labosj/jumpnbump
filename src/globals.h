@@ -109,10 +109,6 @@ extern int screen_pitch;
 #define OBJ_ANIM_PINK_BUTFLY_LEFT 6
 #define OBJ_ANIM_FLESH_TRACE 7
 
-#define MOD_MENU 0
-#define MOD_GAME 1
-#define MOD_SCORES 2
-
 #define SFX_JUMP 0
 #define SFX_DEATH 2
 #define SFX_SPRING 3

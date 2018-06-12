@@ -420,7 +420,7 @@ char dj_ready_mod(main_info_t& main_info, unsigned char *datafile_buffer)
 		current_music = NULL;
 	}
 
-	if (fp == NULL) {
+	if (fp == nullptr) {
 		return 0;
 	}
 

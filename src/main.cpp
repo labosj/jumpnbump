@@ -267,7 +267,6 @@ void update_objects() {
 
 
 int init_level(char *pal) {
-    int c1, c2;
 
 
     if (read_pcx("/home/edwin/Projects/jumpnbump/data/level.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
@@ -282,16 +281,16 @@ int init_level(char *pal) {
     }
     register_mask(mask_pic);
 
-    for (c1 = 0; c1 < players.size(); c1++) {
-            players[c1].reset_kills();
-            position_player(players[c1]);
+    for (auto& player : players) {
+            player.reset_kills();
+            position_player(player);
     }
 
     for (auto& object : objects)
         object.used = 0;
 
-    for (c1 = 0; c1 < ban_map.get_height(); c1++) {
-        for (c2 = 0; c2 < ban_map.get_width() ; c2++) {
+    for (int c1 = 0; c1 < ban_map.get_height(); c1++) {
+        for (int c2 = 0; c2 < ban_map.get_width() ; c2++) {
             if (ban_map.get(map_position_t{c2, c1}) == ban_map_t::Type::SPRING)
                 add_object(OBJ_SPRING, map_position_t{c2, c1}, 0, 0, OBJ_ANIM_SPRING, 5);
         }

@@ -198,7 +198,7 @@ static int menu_loop() {
 int main(int argc, char *argv[]) {
     int result;
 
-    if (init_program(argc, argv, cur_pal) != 0)
+    if (init_program(argc, argv) != 0)
         deinit_program();
 
     result = menu_loop();
@@ -358,7 +358,7 @@ static void preread_datafile(const std::string& fname) {
 }
 
 
-int init_program(int argc, char *argv[], char *pal) {
+int init_program(int argc, char *argv[]) {
     unsigned char *handle = nullptr;
     int load_flag = 0;
     main_info.music_no_sound =0;
@@ -419,11 +419,6 @@ int init_program(int argc, char *argv[], char *pal) {
             {0, {{8, 5}}}
     };
 
-
-    if (read_pcx("/home/edwin/Projects/jumpnbump/data/menu.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
-        main_info.error_str = "Error loading 'menu.pcx', aborting...\n";
-        return 1;
-    }
 
     if ((handle = dat_open("rabbit.gob", datafile_buffer)) == nullptr) {
         main_info.error_str = "Error loading 'rabbit.gob', aborting...\n";

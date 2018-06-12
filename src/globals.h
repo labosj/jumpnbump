@@ -86,7 +86,6 @@ void tellServerPlayerMoved(int playerid, int movement_type, int newval);
 extern int screen_width;
 extern int screen_height;
 extern int screen_pitch;
-extern int scale_up;
 
 #define KEY_PL1_LEFT	SDL_SCANCODE_LEFT
 #define KEY_PL1_RIGHT	SDL_SCANCODE_RIGHT
@@ -148,7 +147,7 @@ void update_player_actions();
 
 int init_level(char *pal);
 void deinit_level(void);
-int init_program(int argc, char *argv[], char *pal);
+int init_program(int argc, char *argv[]);
 void deinit_program(void);
 /* input.c */
 

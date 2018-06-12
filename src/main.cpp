@@ -375,24 +375,6 @@ int init_program(int argc, char *argv[]) {
         return 1;
     }
 
-    if ((handle = dat_open("font.gob", datafile_buffer)) == nullptr) {
-        main_info.error_str = "Error loading 'font.gob', aborting...\n";
-        return 1;
-    }
-    if (register_gob(handle, font_gobs, dat_filelen("font.gob", datafile_buffer))) {
-        /* error */
-        return 1;
-    }
-
-    if ((handle = dat_open("numbers.gob", datafile_buffer)) == nullptr) {
-        main_info.error_str = "Error loading 'numbers.gob', aborting...\n";
-        return 1;
-    }
-    if (register_gob(handle, number_gobs, dat_filelen("numbers.gob", datafile_buffer))) {
-        /* error */
-        return 1;
-    }
-
     if (!ban_map.read_from_file("/home/edwin/Projects/jumpnbump/data/levelmap.txt")) {
         main_info.error_str = "Error loading 'levelmap.txt', aborting...\n";
         return 1;

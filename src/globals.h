@@ -132,7 +132,6 @@ extern char datfile_name[2048];
 extern unsigned char *background_pic;
 extern unsigned char *mask_pic;
 
-void update_objects(void);
 void update_player_actions();
 
 int init_level(char *pal);

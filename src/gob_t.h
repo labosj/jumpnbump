@@ -24,8 +24,6 @@ struct gob_t{
 };
 
 extern gob_t rabbit_gobs;
-extern gob_t font_gobs;
 extern gob_t object_gobs;
-extern gob_t number_gobs;
 
 #endif //JUMPNBUMP_GOB_H

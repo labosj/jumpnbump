@@ -155,27 +155,6 @@ void deinit_program(void);
 void init_inputs(main_info_t&);
 int calib_joy();
 
-/* gfx.c */
-
-void open_screen(void);
-void draw_begin(void);
-void draw_end(void);
-void flippage();
-void draw_begin(void);
-void draw_end(void);
-void setpalette(int index, int count, char *palette);
-
-void put_block(int x, int y, int width, int height, unsigned char *buffer);
-
-int read_pcx(const std::string& filename, unsigned char *buffer, int buf_len, char *pal);
-void register_background(unsigned char *pixels);
-
-void register_mask(void *pixels);
-
-/* interrpt.c */
-
-int hook_keyb_handler(void);
-
 int key_pressed(int key);
 int addkey(unsigned int key);
 

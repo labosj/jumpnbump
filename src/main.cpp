@@ -466,6 +466,7 @@ int init_program(int argc, char *argv[], char *pal) {
         return 1;
     }
 
+    open_screen();
     dj_init(main_info);
 
     if (main_info.no_sound == 0) {
@@ -518,15 +519,6 @@ int init_program(int argc, char *argv[], char *pal) {
         return 1;
     memset(mask_pic, 0, JNB_WIDTH * JNB_HEIGHT);
     register_mask(mask_pic);
-
-    /* fix dark font */
-    for (auto c1 = 0; c1 < 16; c1++) {
-        pal[(240 + c1) * 3 + 0] = c1 << 2;
-        pal[(240 + c1) * 3 + 1] = c1 << 2;
-        pal[(240 + c1) * 3 + 2] = c1 << 2;
-    }
-
-    setpalette(0, 256, pal);
 
     init_inputs(main_info);
 

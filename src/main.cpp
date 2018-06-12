@@ -544,12 +544,7 @@ int init_program(int argc, char *argv[], char *pal) {
 
     if (main_info.joy_enabled == 1) {
         load_flag = 0;
-        put_text(200, 40, "JOYSTICK CALIBRATION", 2);
-        put_text(200, 100, "Move the joystick to the", 2);
-        put_text(200, 115, "UPPER LEFT", 2);
-        put_text(200, 130, "and press button A", 2);
-        put_text(200, 200, "Or press ESC to use", 2);
-        put_text(200, 215, "previous settings", 2);
+
         if (calib_joy() != 0)
             load_flag = 1;
         else {
@@ -558,24 +553,13 @@ int init_program(int argc, char *argv[], char *pal) {
             flippage();
 
 
-            put_text(200, 40, "JOYSTICK CALIBRATION", 2);
-            put_text(200, 100, "Move the joystick to the", 2);
-            put_text(200, 115, "LOWER RIGHT", 2);
-            put_text(200, 130, "and press button A", 2);
-            put_text(200, 200, "Or press ESC to use", 2);
-            put_text(200, 215, "previous settings", 2);
+
             if (calib_joy() != 0)
                 load_flag = 1;
             else {
                 register_background(nullptr);
                 flippage();
 
-                put_text(200, 40, "JOYSTICK CALIBRATION", 2);
-                put_text(200, 100, "Move the joystick to the", 2);
-                put_text(200, 115, "CENTER", 2);
-                put_text(200, 130, "and press button A", 2);
-                put_text(200, 200, "Or press ESC to use", 2);
-                put_text(200, 215, "previous settings", 2);
                 if (calib_joy() != 0)
                     load_flag = 1;
                 else {

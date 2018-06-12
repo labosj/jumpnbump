@@ -50,7 +50,6 @@ static int vinited = 0;
 static void *screen_buffer;
 static int drawing_enable = 0;
 static unsigned char *background = nullptr;
-static int background_drawn;
 static void *mask = NULL;
 
 static SDL_Surface *load_xpm_from_array(char **xpm)
@@ -280,37 +279,6 @@ void setpalette(int index, int count, char *palette)
 	SDL_SetPaletteColors(jnb_surface->format->palette, &colors[index], index, count);
 }
 
-void get_block(int x, int y, int width, int height, unsigned char *buffer)
-{
-	unsigned char *buffer_ptr, *vga_ptr;
-	int h;
-
-	assert(drawing_enable==1);
-
-	if (x < 0)
-		x = 0;
-	if (y < 0)
-		y = 0;
-	if (y + height >= screen_height)
-		height = screen_height - y;
-	if (x + width >= screen_width)
-		width = screen_width - x;
-	if (width<=0)
-		return;
-	if(height<=0)
-		return;
-
-	vga_ptr = get_vgaptr(x, y);
-	buffer_ptr = buffer;
-	for (h = 0; h < height; h++) {
-		memcpy(buffer_ptr, vga_ptr, width);
-		vga_ptr += screen_pitch;
-		buffer_ptr += width;
-	}
-
-}
-
-
 void put_block(int x, int y, int width, int height, unsigned char *buffer)
 {
 	int h;
@@ -342,136 +310,6 @@ void put_block(int x, int y, int width, int height, unsigned char *buffer)
 }
 
 
-void put_text(int x, int y, const char *text, int align)
-{
-	int c1;
-	int t1;
-	int width;
-	int cur_x;
-	int image;
-
-	assert(drawing_enable==1);
-
-	if (text == nullptr || strlen(text) == 0)
-		return;
-	if (font_gobs.images.size() == 0)
-		return;
-
-	width = 0;
-	c1 = 0;
-	while (text[c1] != 0) {
-		t1 = text[c1];
-		c1++;
-		if (t1 == ' ') {
-			width += 5;
-			continue;
-		}
-		if (t1 >= 33 && t1 <= 34)
-			image = t1 - 33;
-
-		else if (t1 >= 39 && t1 <= 41)
-			image = t1 - 37;
-
-		else if (t1 >= 44 && t1 <= 59)
-			image = t1 - 39;
-
-		else if (t1 >= 64 && t1 <= 90)
-			image = t1 - 43;
-
-		else if (t1 >= 97 && t1 <= 122)
-			image = t1 - 49;
-
-		else if (t1 == '~')
-			image = 74;
-
-		else if (t1 == 0x84)
-			image = 75;
-
-		else if (t1 == 0x86)
-			image = 76;
-
-		else if (t1 == 0x8e)
-			image = 77;
-
-		else if (t1 == 0x8f)
-			image = 78;
-
-		else if (t1 == 0x94)
-			image = 79;
-
-		else if (t1 == 0x99)
-			image = 80;
-
-		else
-			continue;
-		width += font_gobs.images[image].width + 1;
-	}
-
-	switch (align) {
-	case 0:
-		cur_x = x;
-		break;
-	case 1:
-		cur_x = x - width;
-		break;
-	case 2:
-		cur_x = x - width / 2;
-		break;
-	default:
-		cur_x = 0;	/* this should cause error? -Chuck */
-		break;
-	}
-	c1 = 0;
-
-	while (text[c1] != 0) {
-		t1 = text[c1];
-		c1++;
-		if (t1 == ' ') {
-			cur_x += 5;
-			continue;
-		}
-		if (t1 >= 33 && t1 <= 34)
-			image = t1 - 33;
-
-		else if (t1 >= 39 && t1 <= 41)
-			image = t1 - 37;
-
-		else if (t1 >= 44 && t1 <= 59)
-			image = t1 - 39;
-
-		else if (t1 >= 64 && t1 <= 90)
-			image = t1 - 43;
-
-		else if (t1 >= 97 && t1 <= 122)
-			image = t1 - 49;
-
-		else if (t1 == '~')
-			image = 74;
-
-		else if (t1 == 0x84)
-			image = 75;
-
-		else if (t1 == 0x86)
-			image = 76;
-
-		else if (t1 == 0x8e)
-			image = 77;
-
-		else if (t1 == 0x8f)
-			image = 78;
-
-		else if (t1 == 0x94)
-			image = 79;
-
-		else if (t1 == 0x99)
-			image = 80;
-
-		else
-			continue;
-		put_pob(cur_x, y, image, font_gobs, 1);
-		cur_x += pob_width(image, font_gobs) + 1;
-	}
-}
 
 
 void put_pob(int x, int y, int image, gob_t &gob, int use_mask)
@@ -539,41 +377,6 @@ void put_pob(int x, int y, int image, gob_t &gob, int use_mask)
 
 }
 
-[[deprecated]]
-int pob_width(int image, gob_t &gob)
-{
-	assert(gob);
-	assert(image>=0);
-	assert(image<gob.images.size());
-	return gob.images[image].width;
-}
-
-[[deprecated]]
-int pob_height(int image, gob_t& gob)
-{
-	assert(gob);
-	assert(image>=0);
-	assert(image<gob.images.size());
-	return gob.images[image].height;
-}
-
-[[deprecated]]
-int pob_hs_x(int image, gob_t& gob)
-{
-	assert(gob);
-	assert(image>=0);
-	assert(image<gob. images.size());
-	return gob.images[image].hs_x;
-}
-
-[[deprecated]]
-int pob_hs_y(int image, gob_t& gob)
-{
-	assert(gob);
-	assert(image>=0);
-	assert(image<gob.images.size());
-	return gob.images[image].hs_y;
-}
 
 int read_pcx(const std::string& filename, unsigned char *buf, int buf_len, char *pal)
 {

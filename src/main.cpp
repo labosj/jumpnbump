@@ -57,7 +57,6 @@ char datfile_name[2048];
 
 unsigned char *background_pic;
 unsigned char *mask_pic;
-char pal[768];
 char cur_pal[768];
 
 leftovers_t leftovers;
@@ -70,7 +69,6 @@ void serverSendKillPacket(int killer, int victim) {
     int c1 = killer;
     int c2 = victim;
     int c4 = 0;
-    int s1 = 0;
 
     players[c1].y_add = -players[c1].y_add;
     if (players[c1].y_add > -262144L)
@@ -122,10 +120,6 @@ static void game_loop(void) {
 
     endscore_reached = 0;
 
-
-    for (i = 0; i < 768; i++) {
-        cur_pal[i] = pal[i];
-    }
     setpalette(0, 256, cur_pal);
 
     //set_blood_is_thicker_than_water();
@@ -182,7 +176,7 @@ static int menu_loop() {
         init_players();
         objects.clear();
 
-        if (init_level(pal) != 0) {
+        if (init_level(cur_pal) != 0) {
             deinit_level();
             deinit_program();
         }
@@ -203,7 +197,7 @@ static int menu_loop() {
 int main(int argc, char *argv[]) {
     int result;
 
-    if (init_program(argc, argv, pal) != 0)
+    if (init_program(argc, argv, cur_pal) != 0)
         deinit_program();
 
     result = menu_loop();
@@ -571,7 +565,6 @@ int init_program(int argc, char *argv[], char *pal) {
                         joy.calib_data.y1 -= 10;
                     if (joy.calib_data.y3 == joy.calib_data.y2)
                         joy.calib_data.y3 += 10;
-                    write_calib_data();
                 }
             }
         }

@@ -100,15 +100,6 @@ extern int screen_pitch;
 #define KEY_PL4_RIGHT	SDL_SCANCODE_KP_6
 #define KEY_PL4_JUMP	SDL_SCANCODE_KP_8
 
-#define OBJ_SPRING 0
-#define OBJ_SPLASH 1
-#define OBJ_SMOKE 2
-#define OBJ_YEL_BUTFLY 3
-#define OBJ_PINK_BUTFLY 4
-#define OBJ_FUR 5
-#define OBJ_FLESH 6
-#define OBJ_FLESH_TRACE 7
-
 #define OBJ_ANIM_SPRING 0
 #define OBJ_ANIM_SPLASH 1
 #define OBJ_ANIM_SMOKE 2
@@ -134,7 +125,6 @@ extern int screen_pitch;
 #define SFX_SPRING_FREQ 15000
 #define SFX_SPLASH_FREQ 12000
 
-extern std::vector<object_t> objects;
 extern joy_t joy;
 
 extern char datfile_name[2048];

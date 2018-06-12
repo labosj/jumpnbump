@@ -41,7 +41,7 @@
 #include "anim_t.h"
 #include "joy_t.h"
 #include "main_info.h"
-
+#include "objects_t.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
@@ -51,7 +51,6 @@ int endscore_reached;
 
 unsigned char *datafile_buffer = nullptr;
 
-std::vector<object_t> objects;
 joy_t joy;
 
 char datfile_name[2048];
@@ -81,19 +80,19 @@ void serverSendKillPacket(int killer, int victim) {
         if (main_info.gore ) {
             auto screen_position = screen_position_t{players[victim].get_position()} + screen_position_t{6 + rnd(5), 6 + rnd(5)};
             for (c4 = 0; c4 < 6; c4++)
-                add_object(OBJ_FUR, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(object_t::Type::FUR, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
             for (c4 = 0; c4 < 6; c4++)
-                add_object(OBJ_FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 76);
             for (c4 = 0; c4 < 6; c4++)
-                add_object(OBJ_FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 77);
             for (c4 = 0; c4 < 8; c4++)
-                add_object(OBJ_FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 78);
             for (c4 = 0; c4 < 10; c4++)
-                add_object(OBJ_FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
         dj_play_sfx(main_info, SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
@@ -139,7 +138,7 @@ static void game_loop(void) {
             collision_check();
 
 
-            update_objects();
+            objects.update();
 
 
             if (update_count == 1) {
@@ -175,7 +174,6 @@ static void game_loop(void) {
 static int menu_loop() {
 
         init_players();
-        objects.clear();
 
         if (init_level(cur_pal) != 0) {
             deinit_level();
@@ -208,64 +206,6 @@ int main(int argc, char *argv[]) {
     return result;
 }
 
-void update_objects() {
-
-    for (auto& object : objects) {
-
-        if (object.is_used()) {
-            switch (object.type) {
-                case OBJ_SPRING:
-                    object.update_spring();
-                    if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
-                    break;
-                case OBJ_SPLASH:
-                    object.update_splash();
-                    if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
-                    break;
-                case OBJ_SMOKE:
-                    object.update_smoke();
-                    if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
-                    break;
-                case OBJ_YEL_BUTFLY:
-                case OBJ_PINK_BUTFLY:
-                    object.update_butterfly();
-                    if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
-                    break;
-                case OBJ_FUR:
-                    object.update_fur();
-                    if (object.is_used() ) {
-                        int s1 = (int) (atan2(object.y_add, object.x_add) * 4 / M_PI);
-                        if (s1 < 0)
-                            s1 += 8;
-                        if (s1 < 0)
-                            s1 = 0;
-                        if (s1 > 7)
-                            s1 = 7;
-                        main_info.pobs.add(object.get_position(), object.anim_handler.frame + s1, &object_gobs);
-                    }
-                    break;
-                case OBJ_FLESH:
-                    object.update_flesh();
-                    if (object.is_used())
-                        main_info.pobs.add(object.get_position(), object.anim_handler.frame, &object_gobs);
-                    break;
-                case OBJ_FLESH_TRACE:
-                    object.update_flesh_trace();
-
-                    if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
-                    break;
-            }
-        }
-    }
-
-}
-
-
 int init_level(char *pal) {
 
 
@@ -286,26 +226,23 @@ int init_level(char *pal) {
             position_player(player);
     }
 
-    for (auto& object : objects)
-        object.used = 0;
-
     for (int c1 = 0; c1 < ban_map.get_height(); c1++) {
         for (int c2 = 0; c2 < ban_map.get_width() ; c2++) {
             if (ban_map.get(map_position_t{c2, c1}) == ban_map_t::Type::SPRING)
-                add_object(OBJ_SPRING, map_position_t{c2, c1}, 0, 0, OBJ_ANIM_SPRING, 5);
+                objects.add(object_t::Type::SPRING, map_position_t{c2, c1}, 0, 0, OBJ_ANIM_SPRING, 5);
         }
     }
 
     for ( int i = 0 ; i < 2 ; i++ ) {
         auto new_pos = ban_map.get_random_available_position();
-        add_object(OBJ_YEL_BUTFLY, screen_position_t{8, 8} + new_pos , (rnd(65535) - 32768) * 2,
+        objects.add(object_t::Type::YEL_BUTFLY, screen_position_t{8, 8} + new_pos , (rnd(65535) - 32768) * 2,
                    (rnd(65535) - 32768) * 2,
                    0, 0);
     }
 
     for ( int i = 0 ; i < 2 ; i++ ) {
         auto new_pos = ban_map.get_random_available_position();
-        add_object(OBJ_PINK_BUTFLY,  screen_position_t{8, 8} + new_pos, (rnd(65535) - 32768) * 2,
+        objects.add(object_t::Type::PINK_BUTFLY,  screen_position_t{8, 8} + new_pos, (rnd(65535) - 32768) * 2,
                    (rnd(65535) - 32768) * 2, 0, 0);
     }
 

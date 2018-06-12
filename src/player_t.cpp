@@ -8,6 +8,7 @@
 #include "anim_t.h"
 #include "util.h"
 #include <iostream>
+#include "objects_t.h"
 
 std::vector<player_t> players;
 
@@ -49,7 +50,7 @@ void player_action_left(player_t &player) {
         if (player.x_add > 0) {
             player.x_add -= 16384;
             if (player.x_add > -98304L && player.in_water == 0 && below == ban_map_t::Type::SOLID)
-                add_object(OBJ_SMOKE, player.get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
+                objects.add(object_t::Type::SMOKE, player.get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
             player.x_add -= 12288;
@@ -84,7 +85,7 @@ void player_action_right(player_t &player) {
         if (player.x_add < 0) {
             player.x_add += 16384;
             if (player.x_add < 98304L && player.in_water == 0 && below == ban_map_t::Type::SOLID)
-                add_smoke(player);
+                objects.add_smoke(player);
         } else
             player.x_add += 12288;
     }
@@ -115,7 +116,7 @@ void player_no_action(player_t &player) {
                 player.x_add = 0;
         }
         if (player.x_add != 0 && below == ban_map_t::Type::SOLID)
-            add_smoke(player);
+            objects.add_smoke(player);
     }
     if ( player.anim_handler.anim == 1 )
         player.set_anim(0);
@@ -161,9 +162,9 @@ void player_t::check_spring_jump() {
          * this code just animate a spring
          * this can be simplified a lot
          */
-        for (auto &object : objects) {
+        for (auto &object : objects.objects) {
             screen_position_t screen_position = position;
-            if (object.used == 1 && object.type == OBJ_SPRING) {
+            if (object.used == 1 && object.type == object_t::Type::SPRING) {
                 if (ban_map.get(screen_position + screen_position_t{8, 15}) == ban_map_t::Type::SPRING) {
                     if ((object.position.x >> 20) == ((screen_position.x + 8) >> 4) &&
                         (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
@@ -289,7 +290,7 @@ void steer_players() {
                         if (ban_map.is_in_water(player.get_position()))
                             player.in_water = 0;
                         if (rnd(100) < 50)
-                            add_jetpack_smoke(player);
+                            objects.add_jetpack_smoke(player);
                     }
                 }
 
@@ -321,7 +322,7 @@ void steer_players() {
                         if (player.y_add >= 32768) {
                             screen_position_t screen_position = player.get_position();
                             screen_position.y &= 0xfff0;
-                            add_object(OBJ_SPLASH,
+                            objects.add(object_t::Type::SPLASH,
                                        screen_position
                                        + screen_position_t{9, 15}, 0, 0,
                                        OBJ_ANIM_SPLASH, 0);

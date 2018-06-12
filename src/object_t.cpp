@@ -9,10 +9,11 @@
 #include "globals.h"
 #include "gob_t.h"
 #include "leftovers_t.h"
+#include "objects_t.h"
 
 extern leftovers_t leftovers;
 
-object_t::object_t(int type, const position_t &position, int x_add, int y_add, int anim, int frame) {
+object_t::object_t(object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame) {
     this->used = 1;
     this->type = type;
 
@@ -132,7 +133,7 @@ void object_t::update_butterfly() {
         this->y_add = -this->y_add >> 2;
         this->y_acc = 0;
     }
-    if (this->type == OBJ_YEL_BUTFLY) {
+    if (this->type == object_t::Type::YEL_BUTFLY) {
         if (this->x_add < 0 && this->anim_handler.anim != OBJ_ANIM_YEL_BUTFLY_LEFT) {
             this->set_anim(OBJ_ANIM_YEL_BUTFLY_LEFT, 0);
         } else if (this->x_add > 0 && this->anim_handler.anim != OBJ_ANIM_YEL_BUTFLY_RIGHT) {
@@ -162,13 +163,13 @@ void object_t::update_butterfly() {
 void object_t::update_flesh() {
     if (rnd(100) < 30) {
         if (this->anim_handler.frame == 76)
-            add_object(OBJ_FLESH_TRACE, this->get_position(), 0, 0,
+            objects.add(object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 1);
         else if (this->anim_handler.frame == 77)
-            add_object(OBJ_FLESH_TRACE, this->get_position(), 0, 0,
+            objects.add(object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 2);
         else if (this->anim_handler.frame == 78)
-            add_object(OBJ_FLESH_TRACE, this->get_position(), 0, 0,
+            objects.add(object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 3);
     }
     if (ban_map.get(this->get_position()) == ban_map_t::Type::VOID) {
@@ -250,7 +251,7 @@ void object_t::update_flesh() {
 
 void object_t::update_fur() {
     if (rnd(100) < 30)
-        add_object(OBJ_FLESH_TRACE, this->get_position(), 0, 0,
+        objects.add(object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
                    OBJ_ANIM_FLESH_TRACE, 0);
     if (ban_map.get(this->get_position()) == ban_map_t::Type::VOID) {
         this->y_add += 3072;
@@ -318,29 +319,4 @@ void object_t::update_fur() {
         this->x_add = -16384;
     if (this->x_add > 0 && this->x_add < 16384)
         this->x_add = 16384;
-}
-
-void add_smoke(const player_t &player) {
-    add_object(OBJ_SMOKE,
-               player.get_position() +
-               screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
-               -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
-}
-
-void add_jetpack_smoke(const player_t &player) {
-    add_object(OBJ_SMOKE, player.get_position() + screen_position_t{6 + rnd(5), 10 + rnd(5)},
-               0, 16384 + rnd(8192), OBJ_ANIM_SMOKE, 0);
-}
-
-void add_object(int type, const position_t &position, int x_add, int y_add, int anim, int frame) {
-
-    for (auto &object : objects) {
-        if (object.used == 0) {
-            object = object_t{type, position, x_add, y_add, anim, frame};
-            return;
-        }
-    }
-
-    objects.emplace_back(type, position, x_add, y_add, anim, frame);
-
 }

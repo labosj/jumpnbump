@@ -11,12 +11,23 @@ class player_t;
 #include "anim_t.h"
 #include "anim_handler_t.h"
 
-void add_smoke(const player_t& player);
-void add_jetpack_smoke(const player_t& player);
-void add_object(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
-
 struct object_t{
-	int used, type;
+
+	enum class Type {
+		SPRING = 0,
+		SPLASH = 1,
+		SMOKE = 2,
+		YEL_BUTFLY = 3,
+		PINK_BUTFLY = 4,
+		FUR = 5,
+		FLESH = 6,
+		FLESH_TRACE = 7
+	};
+
+	int used;
+
+	Type type;
+
 
 
 	position_t position;
@@ -26,7 +37,7 @@ struct object_t{
 
 	anim_handler_t anim_handler;
 
-	object_t(int type, const position_t& position, int x_add, int y_add, int anim, int frame);
+	object_t(object_t::Type type, const position_t& position, int x_add, int y_add, int anim, int frame);
 
 
 	/**

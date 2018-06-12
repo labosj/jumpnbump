@@ -363,9 +363,6 @@ char dj_load_sfx(main_info_t &main_info, unsigned char *file_handle, char *filen
 	unsigned int i;
 	unsigned char *src;
 	unsigned short *dest;
-	
-	if (main_info.no_sound)
-		return 0;
 
 	sounds[sfx_num].buf = reinterpret_cast<unsigned char*>(malloc(file_length));
 

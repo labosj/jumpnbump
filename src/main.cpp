@@ -438,38 +438,6 @@ int init_program(int argc, char *argv[]) {
 
 
     if (main_info.joy_enabled == 1) {
-        load_flag = 0;
-
-        if (calib_joy() != 0)
-            load_flag = 1;
-        else {
-            register_background(nullptr);
-
-            flippage();
-
-
-
-            if (calib_joy() != 0)
-                load_flag = 1;
-            else {
-                register_background(nullptr);
-                flippage();
-
-                if (calib_joy() != 0)
-                    load_flag = 1;
-                else {
-                    if (joy.calib_data.x1 == joy.calib_data.x2)
-                        joy.calib_data.x1 -= 10;
-                    if (joy.calib_data.x3 == joy.calib_data.x2)
-                        joy.calib_data.x3 += 10;
-                    if (joy.calib_data.y1 == joy.calib_data.y2)
-                        joy.calib_data.y1 -= 10;
-                    if (joy.calib_data.y3 == joy.calib_data.y2)
-                        joy.calib_data.y3 += 10;
-                }
-            }
-        }
-        if (load_flag == 1) {
             if ((handle = dat_open("calib.dat", datafile_buffer)) == 0) {
                 main_info.error_str = "Error loading 'calib.dat', aborting...\n";
                 return 1;
@@ -485,7 +453,6 @@ int init_program(int argc, char *argv[]) {
             joy.calib_data.y2 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
             handle += 4;
             joy.calib_data.y3 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-        }
     }
 
     return 0;

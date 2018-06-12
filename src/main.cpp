@@ -53,8 +53,6 @@ unsigned char *datafile_buffer = nullptr;
 
 joy_t joy;
 
-char datfile_name[2048];
-
 unsigned char *background_pic;
 unsigned char *mask_pic;
 char cur_pal[768];
@@ -120,8 +118,6 @@ static void game_loop(void) {
 
     endscore_reached = 0;
 
-    setpalette(0, 256, cur_pal);
-
     //set_blood_is_thicker_than_water();
     while (true) {
         while (update_count) {
@@ -175,7 +171,7 @@ static int menu_loop() {
 
         init_players();
 
-        if (init_level(cur_pal) != 0) {
+        if (init_level() != 0) {
             deinit_level();
             deinit_program();
         }
@@ -206,16 +202,16 @@ int main(int argc, char *argv[]) {
     return result;
 }
 
-int init_level(char *pal) {
+int init_level() {
 
 
-    if (read_pcx("/home/edwin/Projects/jumpnbump/data/level.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
+    if (read_pcx("/home/edwin/Projects/jumpnbump/data/level.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT) != 0) {
         main_info.error_str = "Error loading 'level.pcx', aborting...\n";
         return 1;
     }
     register_background(background_pic);
 
-    if (read_pcx("/home/edwin/Projects/jumpnbump/data/mask.pcx", mask_pic, JNB_WIDTH * JNB_HEIGHT, 0) != 0) {
+    if (read_pcx("/home/edwin/Projects/jumpnbump/data/mask.pcx", mask_pic, JNB_WIDTH * JNB_HEIGHT) != 0) {
         main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
         return 1;
     }

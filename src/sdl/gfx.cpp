@@ -263,7 +263,7 @@ void draw_end(void)
 	drawing_enable = 0;
 }
 
-
+/*
 void setpalette(int index, int count, char *palette)
 {
 	SDL_Color colors[256];
@@ -279,7 +279,7 @@ void setpalette(int index, int count, char *palette)
 	}
 	SDL_SetPaletteColors(jnb_surface->format->palette, &colors[index], index, count);
 }
-
+*/
 void put_block(int x, int y, int width, int height, unsigned char *buffer)
 {
 	int h;
@@ -383,7 +383,7 @@ void put_pob(const pob_t& pob, int use_mask)
 }
 
 
-int read_pcx(const std::string& filename, unsigned char *buf, int buf_len, char *pal)
+int read_pcx(const std::string& filename, unsigned char *buf, int buf_len)
 {
 	auto t = std::ifstream{filename};
 	std::string str((std::istreambuf_iterator<char>(t)),
@@ -407,11 +407,6 @@ int read_pcx(const std::string& filename, unsigned char *buf, int buf_len, char 
 					buffer[ofs1++] = (char) b;
 			} else
 				buffer[ofs1++] = (char) a;
-		}
-		if (pal != 0) {
-			handle++;
-			for (c1 = 0; c1 < 768; c1++)
-				pal[c1] = *(handle++) /*fgetc(handle)*/ >> 2;
 		}
 	}
 	return 0;

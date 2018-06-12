@@ -170,7 +170,6 @@ void put_block(int x, int y, int width, int height, unsigned char *buffer);
 int read_pcx(const std::string& filename, unsigned char *buffer, int buf_len, char *pal);
 void register_background(unsigned char *pixels);
 
-void put_text(int x, int y, const char *text, int align);
 void register_mask(void *pixels);
 
 /* interrpt.c */

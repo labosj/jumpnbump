@@ -53,10 +53,6 @@ unsigned char *datafile_buffer = nullptr;
 
 joy_t joy;
 
-char datfile_name[2048];
-
-unsigned char *background_pic;
-unsigned char *mask_pic;
 char cur_pal[768];
 
 leftovers_t leftovers;
@@ -177,7 +173,6 @@ static int menu_loop() {
 
         if (init_level(cur_pal) != 0) {
             deinit_level();
-            deinit_program();
         }
 
 
@@ -196,18 +191,21 @@ static int menu_loop() {
 int main(int argc, char *argv[]) {
     int result;
 
-    if (init_program(argc, argv) != 0)
-        deinit_program();
+    if (init_program(argc, argv) == 0) {
 
-    result = menu_loop();
+        result = menu_loop();
 
-    deinit_program();
+    }
 
     return result;
 }
 
 int init_level(char *pal) {
 
+    unsigned char *background_pic = reinterpret_cast<unsigned char *>(malloc(JNB_WIDTH * JNB_HEIGHT));
+    unsigned char *mask_pic = reinterpret_cast<unsigned char *>(malloc(JNB_WIDTH * JNB_HEIGHT));
+
+    memset(mask_pic, 0, JNB_WIDTH * JNB_HEIGHT);
 
     if (read_pcx("/home/edwin/Projects/jumpnbump/data/level.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, pal) != 0) {
         main_info.error_str = "Error loading 'level.pcx', aborting...\n";
@@ -220,6 +218,8 @@ int init_level(char *pal) {
         return 1;
     }
     register_mask(mask_pic);
+    free(background_pic);
+    free(mask_pic);
 
     for (auto& player : players) {
             player.reset_kills();
@@ -427,13 +427,6 @@ int init_program(int argc, char *argv[]) {
         }
     }
 
-    if ((background_pic = reinterpret_cast<unsigned char *>(malloc(JNB_WIDTH * JNB_HEIGHT))) == nullptr)
-        return 1;
-    if ((mask_pic = reinterpret_cast<unsigned char *>(malloc(JNB_WIDTH * JNB_HEIGHT))) == nullptr)
-        return 1;
-    memset(mask_pic, 0, JNB_WIDTH * JNB_HEIGHT);
-    register_mask(mask_pic);
-
     init_inputs(main_info);
 
 
@@ -459,25 +452,5 @@ int init_program(int argc, char *argv[]) {
 
 }
 
-void deinit_program() {
-
-    dj_free_sfx(main_info, SFX_DEATH);
-    dj_free_sfx(main_info, SFX_SPRING);
-    dj_free_sfx(main_info, SFX_SPLASH);
-    dj_deinit(main_info);
-
-    if (background_pic != 0)
-        free(background_pic);
-    if (mask_pic != 0)
-        free(mask_pic);
-
-
-    if (!main_info.error_str.empty()) {
-        printf("%s", main_info.error_str.c_str());
-        exit(1);
-    } else
-        exit(0);
-
-}
 
 

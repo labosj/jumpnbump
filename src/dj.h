@@ -33,7 +33,6 @@ typedef struct sfx_data {
 
 
 extern char dj_init(main_info_t&);
-extern void dj_deinit(main_info_t&);
 
 extern unsigned short dj_set_mixing_freq(unsigned short freq);
 
@@ -44,7 +43,6 @@ dj_play_sfx(main_info_t &, unsigned char sfx_num, unsigned short freq, char volu
 extern void dj_stop_sfx_channel(main_info_t&, char channel_num);
 extern char
 dj_load_sfx(main_info_t &, unsigned char *file_handle, char *filename, int file_length, unsigned char sfx_num);
-extern void dj_free_sfx(main_info_t&, unsigned char sfx_num);
 
 extern char dj_ready_mod(main_info_t&, unsigned char* datafile_buffer);
 extern char dj_start_mod(main_info_t&);

@@ -20,6 +20,8 @@ struct main_info_t {
 	std::string error_str;
 
 	pobs_t pobs;
+
+	~main_info_t();
 };
 
 extern main_info_t main_info;

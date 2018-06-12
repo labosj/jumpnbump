@@ -366,9 +366,6 @@ int init_program(int argc, char *argv[], char *pal) {
 
     srand(time(NULL));
 
-    if (hook_keyb_handler() != 0)
-        return 1;
-
     std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
 
     if (argc > 1) {
@@ -382,8 +379,6 @@ int init_program(int argc, char *argv[], char *pal) {
                 main_info.gore = false;
             else if (stricmp(argv[c1], "-nojoy") == 0)
                 main_info.joy_enabled = 0;
-            else if (stricmp(argv[c1], "-fullscreen") == 0)
-                fs_toggle();
              else if (stricmp(argv[c1], "-players") == 0) {
                 if (c1 < (argc - 1)) {
                     if (client_player_num < 0)

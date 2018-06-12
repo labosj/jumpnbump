@@ -40,20 +40,12 @@
 #include "src/sdl/gfx.h"
 
 char keyb[256];
-char last_keys[50];
 
 int addkey(unsigned int key) {
-    int c1;
-
     if (!(key & 0x8000)) {
         keyb[key & 0x7fff] = 1;
     } else
         keyb[key & 0x7fff] = 0;
-    return 0;
-}
-
-int hook_keyb_handler() {
-
     return 0;
 }
 

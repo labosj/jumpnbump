@@ -123,7 +123,6 @@ extern int screen_pitch;
 
 extern joy_t joy;
 
-extern char datfile_name[2048];
 
 extern unsigned char *background_pic;
 extern unsigned char *mask_pic;
@@ -137,7 +136,6 @@ void deinit_program(void);
 /* input.c */
 
 void init_inputs(main_info_t&);
-int calib_joy();
 
 int key_pressed(int key);
 int addkey(unsigned int key);

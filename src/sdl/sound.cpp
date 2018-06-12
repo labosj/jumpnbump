@@ -25,6 +25,7 @@
 
 #include "src/globals.h"
 #include <limits.h>
+#include "src/main_info.h"
 #ifndef _WIN32
 #include <unistd.h>
 #endif

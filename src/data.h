@@ -15,8 +15,5 @@ unsigned char *dat_open(const std::string &file_name, unsigned char *datafile_bu
 [[deprecated]]
 int dat_filelen(const std::string & file_name, unsigned char *datafile_buffer);
 
-void write_calib_data(void);
-
-#include <src/main_info.h>
 
 #endif //JUMPNBUMP_DATA_H

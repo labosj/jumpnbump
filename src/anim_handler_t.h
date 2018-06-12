@@ -10,8 +10,8 @@ class anim_handler_t {
 public:
     int anim;
     int frame;
-    int frame_tick;
     int image;
+    int frame_tick;
 };
 
 

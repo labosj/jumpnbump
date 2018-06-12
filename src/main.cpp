@@ -40,6 +40,7 @@
 #include "object_t.h"
 #include "anim_t.h"
 #include "joy_t.h"
+#include "main_info.h"
 
 
 #ifndef M_PI

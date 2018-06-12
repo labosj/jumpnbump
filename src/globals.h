@@ -124,15 +124,12 @@ extern int screen_pitch;
 extern joy_t joy;
 
 
-extern unsigned char *background_pic;
-extern unsigned char *mask_pic;
-
 void update_player_actions();
 
-int init_level(char *pal);
+int init_level();
 void deinit_level(void);
 int init_program(int argc, char *argv[]);
-void deinit_program(void);
+
 /* input.c */
 
 void init_inputs(main_info_t&);

@@ -383,13 +383,14 @@ void put_pob(const pob_t& pob, int use_mask)
 }
 
 
-int read_pcx(const std::string& filename, unsigned char *buf, int buf_len, char *pal)
+int read_pcx(const std::string& filename, unsigned char *buf, int buf_len, bool palette_load)
 {
 	auto t = std::ifstream{filename};
 	std::string str((std::istreambuf_iterator<char>(t)),
 					std::istreambuf_iterator<char>());
 
 
+	char* palette = nullptr;
 	const unsigned char* handle = reinterpret_cast<const unsigned char*>(str.c_str());
 	unsigned char *buffer=buf;
 	short c1;
@@ -408,12 +409,20 @@ int read_pcx(const std::string& filename, unsigned char *buf, int buf_len, char 
 			} else
 				buffer[ofs1++] = (char) a;
 		}
-		if (pal != 0) {
+		if (palette_load != 0) {
+			palette = reinterpret_cast<char*>(malloc(256 * 3 * sizeof(char)));
 			handle++;
 			for (c1 = 0; c1 < 768; c1++)
-				pal[c1] = *(handle++) /*fgetc(handle)*/ >> 2;
+				palette[c1] = *(handle++) >> 2;
+
+			free(palette);
 		}
 	}
+
+	if ( palette_load ) {
+		setpalette(0, 256, palette);
+	}
+
 	return 0;
 }
 

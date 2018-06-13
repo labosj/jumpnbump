@@ -4,6 +4,7 @@
 
 #include "level_t.h"
 #include "globals.h"
+#include "util.h"
 
 level_t* external_level = nullptr;
 
@@ -26,36 +27,43 @@ void level_t::play_music() {
     this->music.play();
 }
 
+void level_t::play_sfx_spring() {
+    auto sound = sf::Sound{this->spring_buffer};
+    //less scale make sound more grave
+    auto scale = 0.9f;
+    sound.setPitch( scale * (0.9f + rnd(100) * 0.002f));
+    this->play_sfx(sound);
+}
 
-void level_t::play_sfx(int index) {
+void level_t::play_sfx_jump() {
+    auto sound = sf::Sound{this->jump_buffer};
+    sound.setPitch( 0.9f + rnd(100) * 0.002f);
+    this->play_sfx(sound);
+}
 
-    auto& buffer = ([this, index]() -> auto& {
-        if ( index == SFX_JUMP ) {
-            return this->jump_buffer;
-        } else if ( index == SFX_DEATH ) {
-            return this->death_buffer;
-        } else if ( index == SFX_SPRING ) {
-            return this->spring_buffer;
-        } else {
-            return this->splash_buffer;
-        }
-    })();
+void level_t::play_sfx_death() {
+    auto sound = sf::Sound{this->death_buffer};
+    sound.setPitch( 0.9f + rnd(100) * 0.002f);
+    this->play_sfx(sound);
+}
 
+void level_t::play_sfx_splash() {
+    auto sound = sf::Sound{this->splash_buffer};
+    //less scale make sound more grave
+    auto scale = 0.5f;
+    sound.setPitch( scale *( 0.9f + rnd(100) * 0.002f));
+    this->play_sfx(sound);
+}
+
+void level_t::play_sfx(const sf::Sound& new_sound) {
     for ( auto& sound : this->sounds ) {
         if ( sound.getStatus() == sf::Sound::Stopped ) {
-            sound.setBuffer(buffer);
+            sound = new_sound;
             sound.play();
             return;
         }
     }
 
-    this->sounds.emplace_back(buffer);
+    this->sounds.emplace_back(new_sound);
     this->sounds.back().play();
-
-
-
-
-
-
-
 }

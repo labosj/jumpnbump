@@ -94,8 +94,7 @@ void serverSendKillPacket(int killer, int victim) {
                 objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
-        external_level->play_sfx(SFX_DEATH);
-        //dj_play_sfx(SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
+        external_level->play_sfx_death();
 
 
         players[c1].count_kill(c2);

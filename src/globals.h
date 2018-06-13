@@ -105,18 +105,6 @@ extern int screen_pitch;
 #define OBJ_ANIM_PINK_BUTFLY_LEFT 6
 #define OBJ_ANIM_FLESH_TRACE 7
 
-#define SFX_JUMP 0
-#define SFX_DEATH 2
-#define SFX_SPRING 3
-#define SFX_SPLASH 4
-
-#define NUM_SFX 6
-
-#define SFX_JUMP_FREQ 15000
-#define SFX_DEATH_FREQ 20000
-#define SFX_SPRING_FREQ 15000
-#define SFX_SPLASH_FREQ 12000
-
 extern joy_t joy;
 
 

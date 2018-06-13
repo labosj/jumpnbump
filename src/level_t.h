@@ -24,7 +24,12 @@ public:
     void load_sfx();
 
     void play_music();
-    void play_sfx(int index);
+
+    void play_sfx(const sf::Sound& new_sound);
+    void play_sfx_spring();
+    void play_sfx_jump();
+    void play_sfx_death();
+    void play_sfx_splash();
 };
 
 [[deprecated]]

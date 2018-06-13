@@ -186,6 +186,28 @@ static int menu_loop() {
 
 
 int main(int argc, char *argv[]) {
+
+    sf::RenderWindow window(sf::VideoMode(200, 200), "Jump N Bump");
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear();
+        window.draw(shape);
+        window.display();
+    }
+
+    return 0;
+/*
+
     int result;
 
     if (init_program(argc, argv) == 0) {
@@ -195,6 +217,7 @@ int main(int argc, char *argv[]) {
     }
 
     return result;
+*/
 }
 
 int init_level() {
@@ -294,52 +317,12 @@ static void preread_datafile(const std::string& fname) {
 
 int init_program(int argc, char *argv[]) {
     unsigned char *handle = nullptr;
-    int load_flag = 0;
     main_info.music_no_sound =0;
     main_info.no_sound = 0;
 
     srand(time(NULL));
 
     std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
-
-    if (argc > 1) {
-        for (auto c1 = 1; c1 < argc; c1++) {
-            if (stricmp(argv[c1], "-nosound") == 0)
-                main_info.no_sound = 1;
-            else if (stricmp(argv[c1], "-musicnosound") == 0)
-                main_info.music_no_sound = 1;
-            else if (stricmp(argv[c1], "-nomusic") == 0);
-            else if (stricmp(argv[c1], "-nogore") == 0)
-                main_info.gore = false;
-            else if (stricmp(argv[c1], "-nojoy") == 0)
-                main_info.joy_enabled = 0;
-             else if (stricmp(argv[c1], "-players") == 0) {
-                if (c1 < (argc - 1)) {
-                    if (client_player_num < 0)
-                        client_player_num = atoi(argv[c1 + 1]);
-                }
-            } else if (strstr(argv[1], "-v")) {
-                printf("jumpnbump %s compiled with", JNB_VERSION);
-                printf(" network support.\n");
-                return 1;
-            } else if (strstr(argv[1], "-h")) {
-                printf("Usage: jumpnbump [OPTION]...\n");
-                printf("\n");
-                printf("  -h                       this help\n");
-                printf("  -v                       print version\n");
-                printf("  -dat level.dat           play a different level\n");
-                printf("  -players num              set main players to num (0-3). Needed for networking\n");
-                printf("  -fullscreen              run in fullscreen mode\n");
-                printf("  -nosound                 play without sound\n");
-                printf("  -nogore                  play without blood\n");
-                printf("  -mirror                  play with mirrored level\n");
-                printf("  -scaleup                 play with doubled resolution (800x512)\n");
-                printf("  -musicnosound            play with music but without sound\n");
-                printf("\n");
-                return 1;
-            }
-        }
-    }
 
     preread_datafile(datfile_name);
 

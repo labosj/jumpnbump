@@ -8,7 +8,7 @@ else()
     message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
 endif()
 
-set(CMAKE_MODULE_PATH "/usr/share/SFML/cmake/Modules" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 
 find_package(SFML 2.4 COMPONENTS system window graphics audio)
 find_package(SDL2 REQUIRED)
@@ -41,3 +41,4 @@ target_include_directories(jumpnbump PRIVATE ${SDL2_INCLUDE_DIRS})
 target_include_directories(jumpnbump PRIVATE ${CMAKE_SOURCE_DIR})
 
 target_link_libraries(jumpnbump PRIVATE ${SDL2_LIBRARIES})
+target_link_libraries(jumpnbump PRIVATE ${SFML_LIBRARIES})

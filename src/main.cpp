@@ -384,38 +384,22 @@ int init_program(int argc, char *argv[]) {
         dj_set_num_sfx_channels(5);
         dj_set_sfx_volume(64);
 
-        if ((handle = dat_open("jump.smp", datafile_buffer)) == 0) {
-            main_info.error_str = "Error loading 'jump.smp', aborting...\n";
-            return 1;
-        }
-        if (dj_load_sfx(handle, dat_filelen("jump.smp", datafile_buffer), SFX_JUMP) != 0) {
+        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/jump.smp", SFX_JUMP) != 0) {
             main_info.error_str = "Error loading 'jump.smp', aborting...\n";
             return 1;
         }
 
-        if ((handle = dat_open("death.smp", datafile_buffer)) == 0) {
-            main_info.error_str = "Error loading 'death.smp', aborting...\n";
-            return 1;
-        }
-        if (dj_load_sfx(handle, dat_filelen("death.smp", datafile_buffer), SFX_DEATH) != 0) {
+        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/death.smp", SFX_DEATH) != 0) {
             main_info.error_str = "Error loading 'death.smp', aborting...\n";
             return 1;
         }
 
-        if ((handle = dat_open("spring.smp", datafile_buffer)) == 0) {
-            main_info.error_str = "Error loading 'spring.smp', aborting...\n";
-            return 1;
-        }
-        if (dj_load_sfx(handle, dat_filelen("spring.smp", datafile_buffer), SFX_SPRING) != 0) {
+        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/spring.smp", SFX_SPRING) != 0) {
             main_info.error_str = "Error loading 'spring.smp', aborting...\n";
             return 1;
         }
 
-        if ((handle = dat_open("splash.smp", datafile_buffer)) == 0) {
-            main_info.error_str = "Error loading 'splash.smp', aborting...\n";
-            return 1;
-        }
-        if (dj_load_sfx(handle, dat_filelen("splash.smp", datafile_buffer), SFX_SPLASH) != 0) {
+        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/splash.smp", SFX_SPLASH) != 0) {
             main_info.error_str = "Error loading 'splash.smp', aborting...\n";
             return 1;
         }

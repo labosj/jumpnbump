@@ -41,8 +41,7 @@ extern void dj_set_sfx_volume(char volume);
 extern void
 dj_play_sfx(unsigned char sfx_num, unsigned short freq, char volume, char panning, char channel);
 extern void dj_stop_sfx_channel(char channel_num);
-extern char
-dj_load_sfx(unsigned char *file_handle, int file_length, unsigned char sfx_num);
+extern char dj_load_sfx(const std::string& filename, unsigned char sfx_num);
 
 extern char dj_ready_mod(unsigned char* datafile_buffer);
 extern char dj_start_mod();

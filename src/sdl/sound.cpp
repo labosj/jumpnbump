@@ -28,6 +28,8 @@
 #include "src/main_info.h"
 #ifndef _WIN32
 #include <unistd.h>
+#include <fstream>
+
 #endif
 #include "SDL.h"
 
@@ -331,17 +333,25 @@ void dj_stop_sfx_channel(char channel_num)
 	SDL_UnlockAudio();
 }
 
-char dj_load_sfx(unsigned char *file_handle, int file_length, unsigned char sfx_num)
+char dj_load_sfx(const std::string& filename, unsigned char sfx_num)
 {
 	unsigned int i;
 	unsigned char *src;
 	unsigned short *dest;
 
-	sounds[sfx_num].buf = reinterpret_cast<unsigned char*>(malloc(file_length));
 
-	memcpy(sounds[sfx_num].buf, file_handle, file_length);
+    auto t = std::ifstream{filename};
+    std::string str((std::istreambuf_iterator<char>(t)),
+                    std::istreambuf_iterator<char>());
 
-	sounds[sfx_num].length = file_length / 2;
+
+    const unsigned char* handle = reinterpret_cast<const unsigned char*>(str.c_str());
+
+	sounds[sfx_num].buf = reinterpret_cast<unsigned char*>(malloc(str.size()));
+
+	memcpy(sounds[sfx_num].buf, handle, str.size());
+
+	sounds[sfx_num].length = str.size() / 2;
 	src = sounds[sfx_num].buf;
 	dest = (unsigned short *)sounds[sfx_num].buf;
 	for (i=0; i<sounds[sfx_num].length; i++)

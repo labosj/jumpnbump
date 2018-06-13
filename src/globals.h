@@ -43,8 +43,6 @@ struct gob_t;
 #endif
 #include <time.h>
 #include <math.h>
-#include <src/dj.h>
-
 
 #ifdef _WIN32
 # define WIN32_LEAN_AND_MEAN
@@ -64,9 +62,7 @@ struct gob_t;
 #include "object_t.h"
 #include "joy_t.h"
 
-#  if USE_SDL_MIXER
-#   include "SDL_mixer.h"
-#  endif
+
 # endif
 #endif
 

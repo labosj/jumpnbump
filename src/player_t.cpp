@@ -9,6 +9,7 @@
 #include "util.h"
 #include <iostream>
 #include "objects_t.h"
+#include "level_t.h"
 
 std::vector<player_t> players;
 
@@ -195,7 +196,8 @@ void player_t::check_spring_jump() {
         this->set_anim(2);
         this->jump_ready = 0;
         this->jump_abort = 0;
-        dj_play_sfx(SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
+        external_level->play_sfx(SFX_SPRING);
+        /*dj_play_sfx(SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
     }
 }
 
@@ -255,12 +257,18 @@ void steer_players() {
                             player.set_anim(2);
                             player.jump_ready = 0;
                             player.jump_abort = 1;
-                            if (pogostick == 0)
-                                dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
-                                            64, 0, -1);
-                            else
-                                dj_play_sfx(SFX_SPRING,
-                                            (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
+                            if (pogostick == 0) {
+                                external_level->play_sfx(SFX_JUMP);
+                                /*
+                                    dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
+                                                64, 0, -1);
+                                                */
+                            } else {
+                                external_level->play_sfx(SFX_SPRING);
+
+                             /*   dj_play_sfx(SFX_SPRING,
+                                            (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
+                            }
                         }
                         /* jump out of water */
                         if (ban_map.is_in_water(player.get_position())) {
@@ -269,12 +277,16 @@ void steer_players() {
                             player.set_anim(2);
                             player.jump_ready = 0;
                             player.jump_abort = 1;
-                            if (pogostick == 0)
-                                dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
-                                            64, 0, -1);
-                            else
+                            if (pogostick == 0) {
+                                external_level->play_sfx(SFX_JUMP);
+                                /*dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
+                                            64, 0, -1);*/
+                            } else
+                                external_level->play_sfx(SFX_SPRING);
+                            /*
                                 dj_play_sfx(SFX_SPRING,
                                             (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
+                                            */
                         }
                     }
                     /* fall down by gravity */
@@ -326,12 +338,16 @@ void steer_players() {
                                        screen_position
                                        + screen_position_t{9, 15}, 0, 0,
                                        OBJ_ANIM_SPLASH, 0);
-                            if (blood_is_thicker_than_water == 0)
-                                dj_play_sfx(SFX_SPLASH,
-                                            (unsigned short) (SFX_SPLASH_FREQ + rnd(2000) - 1000), 64, 0, -1);
-                            else
-                                dj_play_sfx(SFX_SPLASH,
+                            if (blood_is_thicker_than_water == 0) {
+                                external_level->play_sfx(SFX_SPLASH);
+
+                                /*dj_play_sfx(SFX_SPLASH,
+                                            (unsigned short) (SFX_SPLASH_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
+                            } else
+                                external_level->play_sfx(SFX_SPLASH);
+                            /*dj_play_sfx(SFX_SPLASH,
                                             (unsigned short) (SFX_SPLASH_FREQ + rnd(2000) - 5000), 64, 0, -1);
+                                            */
                         }
                     }
                     /* slowly move up to water surface */

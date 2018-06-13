@@ -25,6 +25,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include "level_t.h"
 #include "globals.h"
 #include "gob_t.h"
 #include "anim_t.h"
@@ -42,6 +43,7 @@
 #include "joy_t.h"
 #include "main_info.h"
 #include "objects_t.h"
+#include "level_t.h"
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -92,7 +94,8 @@ void serverSendKillPacket(int killer, int victim) {
                 objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
-        dj_play_sfx(SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
+        external_level->play_sfx(SFX_DEATH);
+        //dj_play_sfx(SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
 
 
         players[c1].count_kill(c2);
@@ -107,8 +110,6 @@ static void game_loop(void) {
     int update_count = 1;
     int end_loop_flag = 0;
 
-
-    dj_set_sfx_volume((char) 64);
 
     intr_sysupdate();
 
@@ -166,13 +167,13 @@ static int menu_loop() {
         init_players();
 
 
-    sf::SoundBuffer buffer;
-    if (!buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/bump.ogg"))
-        return -1;
+    level_t level;
 
-    sf::Sound sound;
-    sound.setBuffer(buffer);
-    sound.play();
+    external_level = &level;
+
+    level.load_sfx();
+    level.load_music();
+    level.play_music();
 
         if (init_level() != 0) {
             deinit_level();
@@ -184,7 +185,6 @@ static int menu_loop() {
 
         game_loop();
 
-        dj_stop_sfx_channel(4);
 
         deinit_level();
 
@@ -323,8 +323,6 @@ static void preread_datafile(const std::string& fname) {
 
 int init_program(int argc, char *argv[]) {
     unsigned char *handle = nullptr;
-    main_info.music_no_sound =0;
-    main_info.no_sound = 0;
 
     srand(time(NULL));
 
@@ -367,35 +365,6 @@ int init_program(int argc, char *argv[]) {
     }
 
     open_screen();
-    dj_init();
-
-    if (main_info.no_sound == 0) {
-
-        dj_set_mixing_freq(20000);
-
-        dj_set_num_sfx_channels(5);
-        dj_set_sfx_volume(64);
-
-        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/jump.smp", SFX_JUMP) != 0) {
-            main_info.error_str = "Error loading 'jump.smp', aborting...\n";
-            return 1;
-        }
-
-        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/death.smp", SFX_DEATH) != 0) {
-            main_info.error_str = "Error loading 'death.smp', aborting...\n";
-            return 1;
-        }
-
-        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/spring.smp", SFX_SPRING) != 0) {
-            main_info.error_str = "Error loading 'spring.smp', aborting...\n";
-            return 1;
-        }
-
-        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/splash.smp", SFX_SPLASH) != 0) {
-            main_info.error_str = "Error loading 'splash.smp', aborting...\n";
-            return 1;
-        }
-    }
 
     init_inputs(main_info);
 

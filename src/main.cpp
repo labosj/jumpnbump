@@ -106,12 +106,9 @@ static void game_loop(void) {
 
     int update_count = 1;
     int end_loop_flag = 0;
-    int i;
 
-    dj_ready_mod(datafile_buffer);
-    dj_set_mod_volume((char) 30);
+
     dj_set_sfx_volume((char) 64);
-    dj_start_mod();
 
     intr_sysupdate();
 
@@ -168,6 +165,15 @@ static int menu_loop() {
 
         init_players();
 
+
+    sf::SoundBuffer buffer;
+    if (!buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/bump.ogg"))
+        return -1;
+
+    sf::Sound sound;
+    sound.setBuffer(buffer);
+    sound.play();
+
         if (init_level() != 0) {
             deinit_level();
         }
@@ -186,6 +192,8 @@ static int menu_loop() {
 
 
 int main(int argc, char *argv[]) {
+/*
+    "/home/edwin/Projects/jumpnbump/data/level.pcx"
 
     sf::RenderWindow window(sf::VideoMode(200, 200), "Jump N Bump");
     sf::CircleShape shape(100.f);
@@ -205,8 +213,8 @@ int main(int argc, char *argv[]) {
         window.display();
     }
 
-    return 0;
-/*
+    return 0;*/
+
 
     int result;
 
@@ -217,7 +225,7 @@ int main(int argc, char *argv[]) {
     }
 
     return result;
-*/
+
 }
 
 int init_level() {
@@ -273,8 +281,6 @@ int init_level() {
 
 
 void deinit_level(void) {
-
-    dj_stop_mod();
 }
 
 

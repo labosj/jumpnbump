@@ -43,6 +43,9 @@
 #include "main_info.h"
 #include "objects_t.h"
 
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
+
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif

@@ -8,6 +8,9 @@ else()
     message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
 endif()
 
+set(CMAKE_MODULE_PATH "/usr/share/SFML/cmake/Modules" ${CMAKE_MODULE_PATH})
+
+find_package(SFML 2.4 COMPONENTS system window graphics audio)
 find_package(SDL2 REQUIRED)
 
 ## This must be set because a bug in ubuntu cmake config file.

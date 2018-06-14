@@ -153,7 +153,7 @@ void open_screen(void)
 	int lval = 0;
 	int flags;
 
-	lval = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
+	lval = SDL_Init( SDL_INIT_JOYSTICK);
 	if (lval < 0) {
 		fprintf(stderr, "SDL ERROR: %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
@@ -182,19 +182,7 @@ void open_screen(void)
 		exit(EXIT_FAILURE);
 	}
 
-	if(fullscreen)
-		SDL_ShowCursor(0);
-	else
-		SDL_ShowCursor(1);
-
-	SDL_SetWindowTitle(sdlWindow, "Jump 'n Bump");
-
 	icon=load_xpm_from_array(const_cast<char **>(jumpnbump_xpm));
-	if (icon==NULL) {
-	    printf("Couldn't load icon\n");
-	} else {
-	    SDL_SetWindowIcon(sdlWindow, icon);
-	}
 
 	vinited = 1;
 

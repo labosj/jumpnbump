@@ -14,13 +14,13 @@ void sound_manager_t::load_music() {
 }
 
 void sound_manager_t::load_sfx() {
-    this->jump_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/jump.ogg"); //SFX_JUMP) != 0)
+    this->jump_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/jump.ogg");
 
-    this->death_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/death.ogg"); //SFX_DEATH) != 0)
+    this->death_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/death.ogg");
 
-    this->spring_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/spring.ogg"); //SFX_SPRING) != 0)
+    this->spring_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/spring.ogg");
 
-    this->splash_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/splash.ogg"); //SFX_SPLASH) != 0) {
+    this->splash_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/splash.ogg");
 }
 
 void sound_manager_t::play_music() {

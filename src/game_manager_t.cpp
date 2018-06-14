@@ -8,6 +8,7 @@
 #include "player_t.h"
 #include "main_info.h"
 #include <SFML/Window.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 std::unique_ptr<game_manager_t> external_game_manager = nullptr;
 
@@ -27,8 +28,9 @@ void game_manager_t::init_textures() {
 
 void game_manager_t::draw() {
     this->window.clear();
+    sf::Sprite background(this->background_texture);
 
-    //window.draw(shape);
+    this->window.draw(background);
 
 
     for (int i = 0 ; i < players.size(); i++) {
@@ -38,6 +40,8 @@ void game_manager_t::draw() {
     main_info.pobs.draw();
     leftovers.draw();
 
+    sf::Sprite foreground(this->foreground_texture);
+    this->window.draw(foreground);
 
     this->window.display();
 

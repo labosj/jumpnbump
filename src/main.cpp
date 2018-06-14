@@ -111,8 +111,8 @@ static void game_loop(void) {
     int update_count = 1;
     int end_loop_flag = 0;
 
-    game_manager_t game_manager;
-    game_manager.reset_frames();
+    external_game_manager.reset(new game_manager_t);
+    external_game_manager->reset_frames();
 
     intr_sysupdate();
 
@@ -143,13 +143,10 @@ static void game_loop(void) {
                     main_info.pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
                 }
 
-                draw_begin();
+
 
                 main_info.pobs.draw();
                 leftovers.draw();
-                flippage();
-
-                draw_end();
 
 
             }
@@ -157,8 +154,8 @@ static void game_loop(void) {
             update_count--;
         }
 
-        update_count = intr_sysupdate();
-        update_count = game_manager.get_elapsed_frames();
+        intr_sysupdate();
+        update_count = external_game_manager->get_elapsed_frames();
 
 
         if (end_loop_flag == 1)
@@ -172,17 +169,16 @@ static int menu_loop() {
         init_players();
 
 
-    sound_manager_t level;
 
-    external_sound_manager = &level;
+    external_sound_manager.reset(new sound_manager_t);
 
-    level.load_sfx();
-    level.load_music();
-    level.play_music();
+    external_sound_manager->load_sfx();
+    external_sound_manager->load_music();
+    external_sound_manager->play_music();
 
-        if (init_level() != 0) {
-            deinit_level();
-        }
+        init_level();
+        printf("hola como te va");
+
 
 
         bunnies_in_space = jetpack = pogostick = 0;
@@ -190,8 +186,6 @@ static int menu_loop() {
 
         game_loop();
 
-
-        deinit_level();
 
 }
 
@@ -235,24 +229,9 @@ int main(int argc, char *argv[]) {
 
 int init_level() {
 
-    unsigned char *background_pic = reinterpret_cast<unsigned char *>(malloc(JNB_WIDTH * JNB_HEIGHT));
-    unsigned char *mask_pic = reinterpret_cast<unsigned char *>(malloc(JNB_WIDTH * JNB_HEIGHT));
+    external_game_manager->init_window();
+    external_game_manager->init_textures();
 
-    memset(mask_pic, 0, JNB_WIDTH * JNB_HEIGHT);
-
-    if (read_pcx("/home/edwin/Projects/jumpnbump/data/level.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, true) != 0) {
-        main_info.error_str = "Error loading 'level.pcx', aborting...\n";
-        return 1;
-    }
-    register_background(background_pic);
-
-    if (read_pcx("/home/edwin/Projects/jumpnbump/data/mask.pcx", mask_pic, JNB_WIDTH * JNB_HEIGHT) != 0) {
-        main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
-        return 1;
-    }
-    register_mask(mask_pic);
-    free(background_pic);
-    free(mask_pic);
 
     for (auto& player : players) {
             player.reset_kills();
@@ -283,11 +262,6 @@ int init_level() {
     return 0;
 
 }
-
-
-void deinit_level(void) {
-}
-
 
 #ifndef PATH_MAX
 #define PATH_MAX 1024
@@ -368,8 +342,6 @@ int init_program(int argc, char *argv[]) {
         main_info.error_str = "Error loading 'levelmap.txt', aborting...\n";
         return 1;
     }
-
-    open_screen();
 
     init_inputs(main_info);
 

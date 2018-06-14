@@ -3,15 +3,21 @@
 //
 
 #include "game_manager_t.h"
+#include <SFML/Window.hpp>
 
+std::unique_ptr<game_manager_t> external_game_manager = nullptr;
+
+void game_manager_t::init_window() {
+    this->window.create(sf::VideoMode(400, 256), "My window");
+}
 
 void game_manager_t::init_textures() {
-    /*
+
     this->object_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/objects.png");
     this->background_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/level.png");
     this->foreground_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/mask.png");
     this->rabbit_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/rabbit.png");
-*/
+
 
 }
 

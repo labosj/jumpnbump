@@ -42,234 +42,13 @@ int screen_width=400;
 int screen_height=256;
 int screen_pitch=400;
 
-static SDL_Window *sdlWindow;
-static SDL_Renderer *sdlRenderer;
-static SDL_Texture *jnb_texture;
-static SDL_Surface *jnb_surface;
-static int fullscreen = 0;
-static int vinited = 0;
-static void *screen_buffer;
 static int drawing_enable = 0;
-static unsigned char *background = nullptr;
+
 static void *mask = NULL;
-
-static SDL_Surface *load_xpm_from_array(char **xpm)
-{
-#define NEXT_TOKEN { \
-	while ((*p != ' ') && (*p != '\t')) p++; \
-	while ((*p == ' ') || (*p == '\t')) p++; }
-
-	SDL_Surface *surface;
-	char *p;
-	int width;
-	int height;
-	int colors;
-	int images;
-	int color;
-	int pal[256];
-	int x,y;
-
-	p = *xpm++;
-
-	width = atoi(p);
-	if (width <= 0)
-		return NULL;
-	NEXT_TOKEN;
-
-	height = atoi(p);
-	if (height <= 0)
-		return NULL;
-	NEXT_TOKEN;
-
-	colors = atoi(p);
-	if (colors <= 0)
-		return NULL;
-	NEXT_TOKEN;
-
-	images = atoi(p);
-	if (images <= 0)
-		return NULL;
-
-	surface = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-	if (!surface)
-		return NULL;
-
-	SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGBA(surface->format, 0, 0, 0, 0));
-	while (colors--) {
-		p = *xpm++;
-
-		color = *p++;
-		NEXT_TOKEN;
-
-		if (*p++ != 'c') {
-			SDL_FreeSurface(surface);
-			return NULL;
-		}
-		NEXT_TOKEN;
-
-		if (*p == '#')
-			pal[color] = strtoul(++p, NULL, 16) | 0xff000000;
-		else
-			pal[color] = 0;
-	}
-
-	y = 0;
-	while (y < height) {
-		int *pixels;
-
-		p = *xpm++;
-
-		pixels = (int *)&((char *)surface->pixels)[y++ * surface->pitch];
-		x = 0;
-		while (x < width) {
-			Uint8 r,g,b,a;
-
-			if (*p == '\0') {
-				SDL_FreeSurface(surface);
-				return NULL;
-			}
-			r = (pal[(int)*p] >> 16) & 0xff;
-			b = (pal[(int)*p] & 0xff);
-			g = (pal[(int)*p] >> 8) & 0xff;
-			a = (pal[(int)*p] >> 24) & 0xff;
-			pixels[x] = SDL_MapRGBA(surface->format, r, g, b, a);
-			x++;
-			p++;
-		}
-	}
-
-	return surface;
-}
-
-unsigned char *get_vgaptr(int x, int y)
-{
-	assert(drawing_enable==1);
-
-	return (unsigned char *)screen_buffer + (y*screen_pitch)+(x);
-}
-
-void open_screen(void)
-{
-	int lval = 0;
-	int flags;
-
-	lval = SDL_Init( SDL_INIT_JOYSTICK);
-	if (lval < 0) {
-		fprintf(stderr, "SDL ERROR: %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-
-	flags = SDL_WINDOW_RESIZABLE;
-	if (fullscreen)
-		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-	SDL_CreateWindowAndRenderer(screen_width, screen_height, flags, &sdlWindow, &sdlRenderer);
-
-	if (!sdlWindow || !sdlRenderer) {
-		fprintf(stderr, "SDL ERROR: %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-	SDL_RenderSetLogicalSize(sdlRenderer, screen_width, screen_height);
-
-	jnb_texture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, screen_width, screen_height);
-	if (!jnb_texture) {
-		fprintf(stderr, "SDL ERROR: %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-
-	jnb_surface = SDL_CreateRGBSurface(0, screen_width, screen_height, 8, 0, 0, 0, 0);
-	if (!jnb_surface) {
-		fprintf(stderr, "SDL ERROR: %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-
-	icon=load_xpm_from_array(const_cast<char **>(jumpnbump_xpm));
-
-	vinited = 1;
-
-
-	screen_buffer=malloc(screen_width*screen_height);
-
-
-
-	return;
-}
-
-
-void fs_toggle()
-{
-	if (!vinited) {
-		fullscreen ^= 1;
-		return;
-	}
-	if (SDL_SetWindowFullscreen(sdlWindow, (fullscreen?0:SDL_WINDOW_FULLSCREEN_DESKTOP)) == 0)
-		fullscreen ^= 1;
-	else
-		fprintf(stderr, "SDL ERROR: %s\n", SDL_GetError());
-}
-
-void flippage()
-{
-
-	assert(drawing_enable==0);
-
-	SDL_LockSurface(jnb_surface);
-	if (!jnb_surface->pixels) {
-
-		return;
-	}
-
-	memcpy(jnb_surface->pixels, screen_buffer, screen_width * screen_height);
-
-	SDL_UnlockSurface(jnb_surface);
-
-	auto surface = SDL_ConvertSurfaceFormat(jnb_surface, SDL_PIXELFORMAT_RGB888, 0);
-	SDL_UpdateTexture(jnb_texture, NULL, surface->pixels, screen_width*sizeof(Uint32));
-	SDL_FreeSurface(surface);
-	SDL_RenderClear(sdlRenderer);
-	SDL_RenderCopy(sdlRenderer, jnb_texture, NULL, NULL);
-	SDL_RenderPresent(sdlRenderer);
-}
-
-
-void draw_begin(void)
-{
-	assert(drawing_enable==0);
-
-	drawing_enable = 1;
-
-	if (background) {
-		put_block(0, 0, JNB_WIDTH, JNB_HEIGHT, background);
-	}
-
-}
-
-
-void draw_end(void)
-{
-	assert(drawing_enable==1);
-
-	drawing_enable = 0;
-}
-
-
-void setpalette(int index, int count, char *palette)
-{
-	SDL_Color colors[256];
-	int i;
-
-	assert(drawing_enable==0);
-
-	for (i = 0; i < count; i++) {
-		colors[i+index].r = palette[i * 3 + 0] << 2;
-		colors[i+index].g = palette[i * 3 + 1] << 2;
-		colors[i+index].b = palette[i * 3 + 2] << 2;
-		colors[i+index].a = 255;
-	}
-	SDL_SetPaletteColors(jnb_surface->format->palette, &colors[index], index, count);
-}
 
 void put_block(int x, int y, int width, int height, unsigned char *buffer)
 {
+/*
 	int h;
 	unsigned char *vga_ptr, *buffer_ptr;
 
@@ -296,6 +75,7 @@ void put_block(int x, int y, int width, int height, unsigned char *buffer)
 		vga_ptr += screen_pitch;
 		buffer_ptr += width;
 	}
+ */
 }
 
 
@@ -303,7 +83,7 @@ void put_block(int x, int y, int width, int height, unsigned char *buffer)
 
 void put_pob(const pob_t& pob, int use_mask)
 {
-
+/*
 
 	int c1, c2;
 	int pob_x, pob_y;
@@ -367,70 +147,12 @@ void put_pob(const pob_t& pob, int use_mask)
 		vga_ptr += (screen_width - c2);
 		mask_ptr += (screen_width - c2);
 	}
-
-}
-
-
-int read_pcx(const std::string& filename, unsigned char *buf, int buf_len, bool palette_load)
-{
-	auto t = std::ifstream{filename};
-	std::string str((std::istreambuf_iterator<char>(t)),
-					std::istreambuf_iterator<char>());
-
-
-	char* palette = nullptr;
-	const unsigned char* handle = reinterpret_cast<const unsigned char*>(str.c_str());
-	unsigned char *buffer=buf;
-	short c1;
-	short a, b;
-	long ofs1;
-	if (buffer != 0) {
-		handle += 128;
-		ofs1 = 0;
-		while (ofs1 < buf_len) {
-			a = *(handle++);
-			if ((a & 0xc0) == 0xc0) {
-				b = *(handle++);
-				a &= 0x3f;
-				for (c1 = 0; c1 < a && ofs1 < buf_len; c1++)
-					buffer[ofs1++] = (char) b;
-			} else
-				buffer[ofs1++] = (char) a;
-		}
-		if (palette_load != 0) {
-			palette = reinterpret_cast<char*>(malloc(256 * 3 * sizeof(char)));
-			handle++;
-			for (c1 = 0; c1 < 768; c1++)
-				palette[c1] = *(handle++) >> 2;
-
-			free(palette);
-		}
-	}
-
-	if ( palette_load ) {
-		setpalette(0, 256, palette);
-	}
-
-	return 0;
-}
-
-void register_background(unsigned char *pixels)
-{
-	if (background) {
-		free(background);
-		background = NULL;
-	}
-
-	if (!pixels)
-		return;
-
-		background = reinterpret_cast<unsigned char*>(malloc(JNB_WIDTH*JNB_HEIGHT));
-		assert(background);
-		memcpy(background, pixels, JNB_WIDTH*JNB_HEIGHT);
+*/
 }
 
 int register_gob(unsigned char *handle, gob_t &gob, int len)
 {
+	/*
 	unsigned char *gob_data;
 	int i;
 
@@ -462,18 +184,5 @@ int register_gob(unsigned char *handle, gob_t &gob, int len)
 	}
 	free(gob_data);
 	return 0;
-}
-
-
-void register_mask(void *pixels)
-{
-	if (mask) {
-		free(mask);
-		mask = NULL;
-	}
-	assert(pixels);
-
-		mask = malloc(JNB_WIDTH*JNB_HEIGHT);
-		assert(mask);
-		memcpy(mask, pixels, JNB_WIDTH*JNB_HEIGHT);
+	 */
 }

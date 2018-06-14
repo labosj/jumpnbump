@@ -112,11 +112,6 @@ int intr_sysupdate() {
                             exit(1);
                         }
                         break;
-                    case SDL_SCANCODE_F10:
-                        if (e.type == SDL_KEYDOWN) {
-                            fs_toggle();
-                        }
-                        break;
                     case SDL_SCANCODE_1:
                         /* Release keys, otherwise it will continue moving that way */
                         addkey((KEY_PL1_LEFT & 0x7fff) | 0x8000);

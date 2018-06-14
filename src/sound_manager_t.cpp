@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "util.h"
 
-sound_manager_t* external_sound_manager = nullptr;
+std::unique_ptr<sound_manager_t> external_sound_manager;
 
 void sound_manager_t::load_music() {
     this->music.openFromFile("/home/edwin/Projects/jumpnbump/data/bump.ogg");

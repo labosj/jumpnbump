@@ -33,7 +33,7 @@ public:
 };
 
 [[deprecated]]
-extern sound_manager_t* external_sound_manager;
+extern std::unique_ptr<sound_manager_t> external_sound_manager;
 
 
 #endif //JUMPNBUMP_LEVEL_T_H

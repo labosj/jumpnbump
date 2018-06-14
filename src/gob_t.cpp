@@ -28,17 +28,20 @@ int gob_t::add(unsigned char *handle, int len, sf::Texture& texture)
     for (i=0; i< num_images; i++) {
 
         auto offset = (gob_data[i*4+2]) + (gob_data[i*4+3] << 8) + (gob_data[i*4+4] << 16) + (gob_data[i*4+5] << 24);
-/*
-        sf::Sprite sprite;
-        sprite.setTexture(texture);
-        sprite()
-*/
 
         auto image = image_t{};
         image.width = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
         image.height = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
         image.hs_x = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
         image.hs_y = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
+
+/*
+        sf::Sprite sprite;
+        sprite.setTexture(texture);
+        sprite.setTextureRect(sf::IntRect(image.width, image.height));
+*/
+
+
 
 
         auto image_size = image.width * image.height;

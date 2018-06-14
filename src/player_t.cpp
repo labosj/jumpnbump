@@ -9,7 +9,7 @@
 #include "util.h"
 #include <iostream>
 #include "objects_t.h"
-#include "level_t.h"
+#include "sound_manager_t.h"
 
 std::vector<player_t> players;
 
@@ -196,7 +196,7 @@ void player_t::check_spring_jump() {
         this->set_anim(2);
         this->jump_ready = 0;
         this->jump_abort = 0;
-        external_level->play_sfx_spring();
+        external_sound_manager->play_sfx_spring();
         /*dj_play_sfx(SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
     }
 }
@@ -258,14 +258,14 @@ void steer_players() {
                             player.jump_ready = 0;
                             player.jump_abort = 1;
                             if (pogostick == 0) {
-                                external_level->play_sfx_jump();
+                                external_sound_manager->play_sfx_jump();
                                 /*
                                     dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
                                                 64, 0, -1);
                                                 */
                             } else {
-                                //external_level->play_sfx(SFX_SPRING);
-                                external_level->play_sfx_spring();
+                                //external_sound_manager->play_sfx(SFX_SPRING);
+                                external_sound_manager->play_sfx_spring();
 
                              /*   dj_play_sfx(SFX_SPRING,
                                             (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
@@ -279,10 +279,10 @@ void steer_players() {
                             player.jump_ready = 0;
                             player.jump_abort = 1;
                             if (pogostick == 0) {
-                                external_level->play_sfx_jump();
+                                external_sound_manager->play_sfx_jump();
 
                             } else {
-                                external_level->play_sfx_spring();
+                                external_sound_manager->play_sfx_spring();
                             }
 
                         }
@@ -336,7 +336,7 @@ void steer_players() {
                                        screen_position
                                        + screen_position_t{9, 15}, 0, 0,
                                        OBJ_ANIM_SPLASH, 0);
-                            external_level->play_sfx_splash();
+                            external_sound_manager->play_sfx_splash();
                         }
                     }
                     /* slowly move up to water surface */

@@ -7,7 +7,7 @@
 
 #include <SFML/Audio.hpp>
 
-class level_t {
+class sound_manager_t {
 public:
     sf::SoundBuffer jump_buffer;
     sf::SoundBuffer death_buffer;
@@ -33,7 +33,7 @@ public:
 };
 
 [[deprecated]]
-extern level_t* external_level;
+extern sound_manager_t* external_sound_manager;
 
 
 #endif //JUMPNBUMP_LEVEL_T_H

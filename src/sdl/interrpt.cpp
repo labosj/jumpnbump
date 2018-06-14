@@ -56,8 +56,6 @@ int key_pressed(int key) {
 int intr_sysupdate() {
     SDL_Event e;
     int i = 0;
-    static int last_time = 0;
-    int now, time_diff;
 
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
@@ -164,21 +162,4 @@ int intr_sysupdate() {
         i++;
     }
 
-    SDL_Delay(1);
-    now = SDL_GetTicks();
-    time_diff = now - last_time;
-    if (time_diff > 0) {
-        i = time_diff / (1000 / 60);
-        if (i) {
-            last_time = now;
-        } else {
-            int tmp;
-
-            tmp = (1000 / 60) - i - 10;
-            if (tmp > 0)
-                SDL_Delay(tmp);
-        }
-    }
-
-    return i;
 }

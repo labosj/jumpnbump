@@ -25,7 +25,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "level_t.h"
+#include "sound_manager_t.h"
 #include "globals.h"
 #include "gob_t.h"
 #include "anim_t.h"
@@ -43,10 +43,12 @@
 #include "joy_t.h"
 #include "main_info.h"
 #include "objects_t.h"
-#include "level_t.h"
+#include "sound_manager_t.h"
+#include "game_manager_t.h"
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include "game_manager_t.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
@@ -60,7 +62,7 @@ joy_t joy;
 
 leftovers_t leftovers;
 
-int pogostick, bunnies_in_space, jetpack, blood_is_thicker_than_water;
+int pogostick, bunnies_in_space, jetpack;
 
 int client_player_num = -1;
 
@@ -94,7 +96,7 @@ void serverSendKillPacket(int killer, int victim) {
                 objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
-        external_level->play_sfx_death();
+        external_sound_manager->play_sfx_death();
 
 
         players[c1].count_kill(c2);
@@ -109,6 +111,8 @@ static void game_loop(void) {
     int update_count = 1;
     int end_loop_flag = 0;
 
+    game_manager_t game_manager;
+    game_manager.reset_frames();
 
     intr_sysupdate();
 
@@ -154,6 +158,8 @@ static void game_loop(void) {
         }
 
         update_count = intr_sysupdate();
+        update_count = game_manager.get_elapsed_frames();
+
 
         if (end_loop_flag == 1)
             break;
@@ -166,9 +172,9 @@ static int menu_loop() {
         init_players();
 
 
-    level_t level;
+    sound_manager_t level;
 
-    external_level = &level;
+    external_sound_manager = &level;
 
     level.load_sfx();
     level.load_music();
@@ -179,7 +185,7 @@ static int menu_loop() {
         }
 
 
-        bunnies_in_space = jetpack = pogostick = blood_is_thicker_than_water = 0;
+        bunnies_in_space = jetpack = pogostick = 0;
         //blood_is_thicker_than_water = 1; HERE IS TO MOD THE CHEATS
 
         game_loop();

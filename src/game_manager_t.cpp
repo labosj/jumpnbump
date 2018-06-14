@@ -3,6 +3,10 @@
 //
 
 #include "game_manager_t.h"
+#include "gob_t.h"
+#include "leftovers_t.h"
+#include "player_t.h"
+#include "main_info.h"
 #include <SFML/Window.hpp>
 
 std::unique_ptr<game_manager_t> external_game_manager = nullptr;
@@ -21,6 +25,23 @@ void game_manager_t::init_textures() {
 
 }
 
+void game_manager_t::draw() {
+    this->window.clear();
+
+    //window.draw(shape);
+
+
+    for (int i = 0 ; i < players.size(); i++) {
+        main_info.pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
+    }
+
+    main_info.pobs.draw();
+    leftovers.draw();
+
+
+    this->window.display();
+
+}
 
 void game_manager_t::reset_frames() {
     this->clock.restart();

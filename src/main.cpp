@@ -60,8 +60,6 @@ unsigned char *datafile_buffer = nullptr;
 
 joy_t joy;
 
-leftovers_t leftovers;
-
 int pogostick, bunnies_in_space, jetpack;
 
 int client_player_num = -1;
@@ -111,7 +109,6 @@ static void game_loop(void) {
     int update_count = 1;
     int end_loop_flag = 0;
 
-    external_game_manager.reset(new game_manager_t);
     external_game_manager->reset_frames();
 
     intr_sysupdate();
@@ -119,7 +116,7 @@ static void game_loop(void) {
     endscore_reached = 0;
 
     //set_blood_is_thicker_than_water();
-    while (true) {
+    while (external_game_manager->window.isOpen()) {
         while (update_count) {
 
             if (endscore_reached || (key_pressed(1) == 1)) {
@@ -138,15 +135,9 @@ static void game_loop(void) {
 
 
             if (update_count == 1) {
-
-                for (int i = 0 ; i < players.size(); i++) {
-                    main_info.pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
-                }
+                external_game_manager->draw();
 
 
-
-                main_info.pobs.draw();
-                leftovers.draw();
 
 
             }
@@ -191,9 +182,9 @@ static int menu_loop() {
 
 
 int main(int argc, char *argv[]) {
-/*
-    "/home/edwin/Projects/jumpnbump/data/level.pcx"
 
+//    "/home/edwin/Projects/jumpnbump/data/level.pcx"
+/*
     sf::RenderWindow window(sf::VideoMode(200, 200), "Jump N Bump");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
@@ -212,13 +203,14 @@ int main(int argc, char *argv[]) {
         window.display();
     }
 
-    return 0;*/
+    return 0;
+    */
 
 
     int result;
-
+    printf("holahola");
     if (init_program(argc, argv) == 0) {
-
+        printf("holahola");
         result = menu_loop();
 
     }
@@ -303,6 +295,8 @@ static void preread_datafile(const std::string& fname) {
 int init_program(int argc, char *argv[]) {
     unsigned char *handle = nullptr;
 
+    external_game_manager.reset(new game_manager_t);
+
     srand(time(NULL));
 
     std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
@@ -321,16 +315,16 @@ int init_program(int argc, char *argv[]) {
 
 
     if ((handle = dat_open("rabbit.gob", datafile_buffer)) == nullptr) {
-        main_info.error_str = "Error loading 'rabbit.gob', aborting...\n";
+        printf("Error loading 'rabbit.gob1', aborting...\n");
         return 1;
     }
     if (register_gob(handle, rabbit_gobs, dat_filelen("rabbit.gob", datafile_buffer))) {
-        /* error */
+        printf("Error loading 'rabbit.gob1', aborting...\n");
         return 1;
     }
 
     if ((handle = dat_open("objects.gob", datafile_buffer)) == nullptr) {
-        main_info.error_str = "Error loading 'objects.gob', aborting...\n";
+        printf("Error loading 'rabbit.gob', aborting...\n");
         return 1;
     }
     if (register_gob(handle, object_gobs, dat_filelen("objects.gob", datafile_buffer))) {
@@ -339,7 +333,7 @@ int init_program(int argc, char *argv[]) {
     }
 
     if (!ban_map.read_from_file("/home/edwin/Projects/jumpnbump/data/levelmap.txt")) {
-        main_info.error_str = "Error loading 'levelmap.txt', aborting...\n";
+        printf("Error loading 'rabbit.gob', aborting...\n");
         return 1;
     }
 
@@ -348,7 +342,7 @@ int init_program(int argc, char *argv[]) {
 
     if (main_info.joy_enabled == 1) {
             if ((handle = dat_open("calib.dat", datafile_buffer)) == 0) {
-                main_info.error_str = "Error loading 'calib.dat', aborting...\n";
+                printf("Error loading 'rabbit.gob', aborting...\n");
                 return 1;
             }
             joy.calib_data.x1 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);

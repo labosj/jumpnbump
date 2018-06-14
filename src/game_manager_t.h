@@ -22,11 +22,12 @@ public:
     sf::Texture background_texture;
     sf::Texture foreground_texture;
 
-
     void init_window();
 
     void init_textures();
 
+
+    void draw();
     void reset_frames();
     int get_elapsed_frames();
 };

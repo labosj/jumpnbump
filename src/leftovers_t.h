@@ -22,4 +22,6 @@ public:
 
     void draw();
 };
+
+extern leftovers_t leftovers;
 #endif //JUMPNBUMP_LEFTOVERS_H

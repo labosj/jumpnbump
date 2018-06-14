@@ -152,7 +152,7 @@ void put_pob(const pob_t& pob, int use_mask)
 
 int register_gob(unsigned char *handle, gob_t &gob, int len)
 {
-	/*
+
 	unsigned char *gob_data;
 	int i;
 
@@ -184,5 +184,5 @@ int register_gob(unsigned char *handle, gob_t &gob, int len)
 	}
 	free(gob_data);
 	return 0;
-	 */
+
 }

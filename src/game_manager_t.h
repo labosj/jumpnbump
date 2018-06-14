@@ -26,6 +26,8 @@ public:
 
     void init_textures();
 
+    void init_deprecated_data();
+
 
     void draw();
     void reset_frames();

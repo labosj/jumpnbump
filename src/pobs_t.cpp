@@ -14,7 +14,7 @@ void pobs_t::draw() {
 
     for (const auto& pob : this->pobs) {
 
-        put_pob(pob, 1);
+        put_pob(pob);
     }
 
     this->pobs.clear();

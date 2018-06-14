@@ -16,6 +16,6 @@ void leftovers_t::add(const screen_position_t &position, int image, gob_t *pob_d
 
 void leftovers_t::draw() {
     for (const auto& pob : this->pobs)
-        put_pob(pob, 1);
+        put_pob(pob);
 
 }

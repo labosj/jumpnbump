@@ -35,8 +35,6 @@
 #include "data.h"
 #include "ban_map.h"
 #include <string>
-#include <fcntl.h>
-#include <unistd.h>
 #include "sdl/gfx.h"
 #include "object_t.h"
 #include "anim_t.h"
@@ -55,14 +53,9 @@
 #endif
 int endscore_reached;
 
-
-unsigned char *datafile_buffer = nullptr;
-
 joy_t joy;
 
 int pogostick, bunnies_in_space, jetpack;
-
-int client_player_num = -1;
 
 void serverSendKillPacket(int killer, int victim) {
     int c1 = killer;
@@ -157,9 +150,6 @@ static void game_loop(void) {
 
 static int menu_loop() {
 
-        init_players();
-
-
 
     external_sound_manager.reset(new sound_manager_t);
 
@@ -223,7 +213,8 @@ int init_level() {
 
     external_game_manager->init_window();
     external_game_manager->init_textures();
-
+    external_game_manager->init_deprecated_data();
+    init_players();
 
     for (auto& player : players) {
             player.reset_kills();
@@ -258,105 +249,15 @@ int init_level() {
 #ifndef PATH_MAX
 #define PATH_MAX 1024
 #endif
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
-static void preread_datafile(const std::string& fname) {
-    int fd = 0;
-    int len;
-
-
-    fd = open(fname.c_str(), O_RDONLY | O_BINARY);
-    if (fd == -1) {
-        fprintf(stderr, "can't open %s:", fname.c_str());
-        perror("");
-        exit(42);
-    }
-
-    len = filelength(fd);
-    datafile_buffer = (unsigned char *) malloc(len);
-    if (datafile_buffer == nullptr) {
-        perror("malloc()");
-        close(fd);
-        exit(42);
-    }
-
-    if (read(fd, datafile_buffer, len) != len) {
-        perror("read()");
-        close(fd);
-        exit(42);
-    }
-
-    close(fd);
-}
-
 
 int init_program(int argc, char *argv[]) {
-    unsigned char *handle = nullptr;
+
 
     external_game_manager.reset(new game_manager_t);
 
     srand(time(NULL));
 
-    std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
-
-    preread_datafile(datfile_name);
-
-    player_anims = {
-            {0, {{ 0, 0x7fff}}},
-            {0, {{0, 4}, {1, 4}, {2, 4}, {3, 4}}},
-            {0, {{4, 0x7fff}}},
-            {2, {{5, 8}, {6, 10}, {7, 3}, {6, 3}}},
-            {0, {{6, 0x7fff}}},
-            {1, {{5, 8}, {4, 0x7fff}}},
-            {0, {{8, 5}}}
-    };
-
-
-    if ((handle = dat_open("rabbit.gob", datafile_buffer)) == nullptr) {
-        printf("Error loading 'rabbit.gob1', aborting...\n");
-        return 1;
-    }
-    if (register_gob(handle, rabbit_gobs, dat_filelen("rabbit.gob", datafile_buffer))) {
-        printf("Error loading 'rabbit.gob1', aborting...\n");
-        return 1;
-    }
-
-    if ((handle = dat_open("objects.gob", datafile_buffer)) == nullptr) {
-        printf("Error loading 'rabbit.gob', aborting...\n");
-        return 1;
-    }
-    if (register_gob(handle, object_gobs, dat_filelen("objects.gob", datafile_buffer))) {
-        /* error */
-        return 1;
-    }
-
-    if (!ban_map.read_from_file("/home/edwin/Projects/jumpnbump/data/levelmap.txt")) {
-        printf("Error loading 'rabbit.gob', aborting...\n");
-        return 1;
-    }
-
     init_inputs(main_info);
-
-
-    if (main_info.joy_enabled == 1) {
-            if ((handle = dat_open("calib.dat", datafile_buffer)) == 0) {
-                printf("Error loading 'rabbit.gob', aborting...\n");
-                return 1;
-            }
-            joy.calib_data.x1 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.x2 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.x3 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.y1 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.y2 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.y3 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-    }
 
     return 0;
 

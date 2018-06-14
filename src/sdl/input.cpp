@@ -52,7 +52,7 @@ void update_player_actions()
 {
 	int tmp;
 
-	if (client_player_num < 0) {
+	if (true) {
 		tmp = (key_pressed(KEY_PL1_LEFT) == 1) || JOY_LEFT(3);
 		if (tmp != players[0].action_left)
 			tellServerPlayerMoved(0, MOVEMENT_LEFT, tmp);

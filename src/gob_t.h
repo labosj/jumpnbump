@@ -6,6 +6,8 @@
 #define JUMPNBUMP_GOB_H
 
 #include <vector>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 class image_t {
 public:
@@ -21,6 +23,8 @@ public:
  */
 struct gob_t{
 	std::vector<image_t> images;
+
+	int add(unsigned char *handle, int len, sf::Texture& texture);
 };
 
 extern gob_t rabbit_gobs;

@@ -46,45 +46,14 @@ static int drawing_enable = 0;
 
 static void *mask = NULL;
 
-void put_block(int x, int y, int width, int height, unsigned char *buffer)
+
+
+
+
+void put_pob(const pob_t& pob)
 {
+
 /*
-	int h;
-	unsigned char *vga_ptr, *buffer_ptr;
-
-	assert(drawing_enable==1);
-
-
-	if (x < 0)
-		x = 0;
-	if (y < 0)
-		y = 0;
-	if (y + height >= screen_height)
-		height = screen_height - y;
-	if (x + width >= screen_width)
-		width = screen_width - x;
-	if (width<=0)
-		return;
-	if(height<=0)
-		return;
-
-	vga_ptr = get_vgaptr(x, y);
-	buffer_ptr = buffer;
-	for (h = 0; h < height; h++) {
-		memcpy(vga_ptr, buffer_ptr, width);
-		vga_ptr += screen_pitch;
-		buffer_ptr += width;
-	}
- */
-}
-
-
-
-
-void put_pob(const pob_t& pob, int use_mask)
-{
-/*
-
 	int c1, c2;
 	int pob_x, pob_y;
 	int width, height;
@@ -150,39 +119,3 @@ void put_pob(const pob_t& pob, int use_mask)
 */
 }
 
-int register_gob(unsigned char *handle, gob_t &gob, int len)
-{
-
-	unsigned char *gob_data;
-	int i;
-
-	gob_data = reinterpret_cast<unsigned char*>(malloc(len));
-	memcpy(gob_data, handle, len);
-
-	auto num_images = (short)((gob_data[0]) + (gob_data[1] << 8));
-
-	for (i=0; i< num_images; i++) {
-
-		auto offset = (gob_data[i*4+2]) + (gob_data[i*4+3] << 8) + (gob_data[i*4+4] << 16) + (gob_data[i*4+5] << 24);
-
-		auto image = image_t{};
-		image.width = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
-		image.height = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
-		image.hs_x = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
-		image.hs_y = (short)((gob_data[offset]) + (gob_data[offset+1] << 8)); offset += 2;
-
-
-		auto image_size = image.width * image.height;
-		image.orig_data =  malloc(image_size);
-
-		memcpy(image.orig_data, &gob_data[offset], image_size);
-
-		image.data = (unsigned short *)image.orig_data;
-
-		gob.images.push_back(image);
-
-	}
-	free(gob_data);
-	return 0;
-
-}

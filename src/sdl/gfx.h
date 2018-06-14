@@ -13,10 +13,7 @@ struct gob_t;
 
 int intr_sysupdate();
 
-void put_pob(const pob_t& pob, int mask);
-[[deprecated]]
-int register_gob(unsigned char *handle, gob_t &gob, int len);
-
+void put_pob(const pob_t& pob);
 
 
 #endif //JUMPNBUMP_GFX_H

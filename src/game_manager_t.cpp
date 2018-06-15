@@ -32,10 +32,6 @@ void game_manager_t::init_textures() {
 void game_manager_t::init_deprecated_data() {
     std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
 
-    unsigned char *datafile_buffer = nullptr;
-
-    preread_datafile(datfile_name, &datafile_buffer);
-
     player_anims = {
             {0, {{ 0, 0x7fff}}},
             {0, {{0, 4}, {1, 4}, {2, 4}, {3, 4}}},
@@ -46,48 +42,17 @@ void game_manager_t::init_deprecated_data() {
             {0, {{8, 5}}}
     };
 
-    unsigned char *handle = nullptr;
 
 
+    rabbit_gobs.add("/home/edwin/Projects/jumpnbump/data/rabbit.json", this->rabbit_texture);
 
-    if ((handle = dat_open("rabbit.gob", datafile_buffer)) == nullptr) {
-        printf("Error loading 'rabbit.gob1', aborting...\n");
-        return;
-    }
-    if (rabbit_gobs.add(handle, dat_filelen("rabbit.gob", datafile_buffer), this->rabbit_texture)) {
-        printf("Error loading 'rabbit.gob2', aborting...\n");
-        return;
-    }
 
-    if ((handle = dat_open("objects.gob", datafile_buffer)) == nullptr) {
-        printf("Error loading 'rabbit.gob3', aborting...\n");
-        return;
-    }
-    if (object_gobs.add(handle, dat_filelen("objects.gob", datafile_buffer), this->object_texture)) {
-        /* error */
-        return;
-    }
+    object_gobs.add("/home/edwin/Projects/jumpnbump/data/objects.json", this->object_texture);
+
 
     if (!ban_map.read_from_file("/home/edwin/Projects/jumpnbump/data/levelmap.txt")) {
         printf("Error loading 'rabbit.gob', aborting...\n");
         return;
-    }
-    if (main_info.joy_enabled == 1) {
-        if ((handle = dat_open("calib.dat", datafile_buffer)) == 0) {
-            printf("Error loading 'rabbit.gob', aborting...\n");
-            return;
-        }
-        joy.calib_data.x1 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-        handle += 4;
-        joy.calib_data.x2 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-        handle += 4;
-        joy.calib_data.x3 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-        handle += 4;
-        joy.calib_data.y1 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-        handle += 4;
-        joy.calib_data.y2 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-        handle += 4;
-        joy.calib_data.y3 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
     }
 }
 
@@ -112,6 +77,14 @@ void game_manager_t::draw() {
 
 }
 
+void game_manager_t::draw_pob(const pob_t& pob)
+{
+    auto& image = pob.pob_data->images[pob.image];
+    image.setPosition(pob.position.x, pob.position.y);
+    external_game_manager->window.draw(image);
+
+}
+
 void game_manager_t::reset_frames() {
     this->clock.restart();
     this->frame_counter= 0;
@@ -131,6 +104,54 @@ int game_manager_t::get_elapsed_frames() {
         return 0;
     }
 
+}
 
+void game_manager_t::process_input() {
+    sf::Event event;
+    while (this->window.pollEvent(event))
+    {
+        // Close window: exit
+        if (event.type == sf::Event::Closed)
+            this->window.close();
+        if ( event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased ) {
+            if ( event.key.code == sf::Keyboard::Key::Escape ) {
+                this->window.close();
+            } else {
+                if (event.type == sf::Event::KeyReleased)
+                    addkey(event.key.code | 0x8000);
+                else {
+                    addkey(event.key.code | 0x7fff);
+                }
+            }
+        }
+    }
+/*
+        while (SDL_PollEvent(&e)) {
+            switch (e.type) {
+                case SDL_QUIT:
+                    SDL_Quit();
+                    exit(1);
+                    break;
+                case SDL_KEYDOWN:
+                case SDL_KEYUP:
+                    if (e.key.repeat != 0) {
+                        continue;
+                    }
+                    switch (e.key.keysym.scancode) {
+                        default:
+                            e.key.keysym.scancode = static_cast<SDL_Scancode>(e.key.keysym.scancode & 0x7fff);
+                            if (e.type == SDL_KEYUP)
+                                e.key.keysym.scancode = static_cast<SDL_Scancode>(e.key.keysym.scancode | 0x8000);
+                            addkey(e.key.keysym.scancode);
+                            break;
+                            /*
+                    }
+                    break;
+                default:
+                    break;
+            }
+            i++;
+        }
 
+    }*/
 }

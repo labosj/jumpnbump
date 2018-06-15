@@ -10,6 +10,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
 
+class pob_t;
 
 class game_manager_t {
 public:
@@ -30,8 +31,11 @@ public:
 
 
     void draw();
+    void draw_pob(const pob_t& pob);
     void reset_frames();
     int get_elapsed_frames();
+
+    void process_input();
 };
 
 extern std::unique_ptr<game_manager_t> external_game_manager;

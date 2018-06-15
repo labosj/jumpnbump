@@ -35,7 +35,6 @@
 #include "data.h"
 #include "ban_map.h"
 #include <string>
-#include "sdl/gfx.h"
 #include "object_t.h"
 #include "anim_t.h"
 #include "joy_t.h"
@@ -104,11 +103,10 @@ static void game_loop(void) {
 
     external_game_manager->reset_frames();
 
-    intr_sysupdate();
+    external_game_manager->process_input();
 
     endscore_reached = 0;
 
-    //set_blood_is_thicker_than_water();
     while (external_game_manager->window.isOpen()) {
         while (update_count) {
 
@@ -138,7 +136,7 @@ static void game_loop(void) {
             update_count--;
         }
 
-        intr_sysupdate();
+        external_game_manager->process_input();
         update_count = external_game_manager->get_elapsed_frames();
 
 
@@ -173,34 +171,9 @@ static int menu_loop() {
 
 int main(int argc, char *argv[]) {
 
-//    "/home/edwin/Projects/jumpnbump/data/level.pcx"
-/*
-    sf::RenderWindow window(sf::VideoMode(200, 200), "Jump N Bump");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear();
-        window.draw(shape);
-        window.display();
-    }
-
-    return 0;
-    */
-
 
     int result;
-    printf("holahola");
     if (init_program(argc, argv) == 0) {
-        printf("holahola");
         result = menu_loop();
 
     }

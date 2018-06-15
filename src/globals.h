@@ -29,6 +29,7 @@
 #define __GLOBALS_H
 
 #include <SDL.h>
+#include <SFML/Window/Event.hpp>
 
 struct main_info_t;
 struct gob_t;
@@ -68,33 +69,24 @@ struct gob_t;
 
 #define JNB_END_SCORE 100
 
-extern int client_player_num;
+
 void tellServerPlayerMoved(int playerid, int movement_type, int newval);
 #define MOVEMENT_LEFT  1
 #define MOVEMENT_RIGHT 2
 #define MOVEMENT_UP    3
 
-#define JNB_VERSION "1.60"
-
-#define JNB_WIDTH 400
-#define JNB_HEIGHT 256
-
-extern int screen_width;
-extern int screen_height;
-extern int screen_pitch;
-
-#define KEY_PL1_LEFT	SDL_SCANCODE_LEFT
-#define KEY_PL1_RIGHT	SDL_SCANCODE_RIGHT
-#define KEY_PL1_JUMP	SDL_SCANCODE_UP
-#define KEY_PL2_LEFT	SDL_SCANCODE_A
-#define KEY_PL2_RIGHT	SDL_SCANCODE_D
-#define KEY_PL2_JUMP	SDL_SCANCODE_W
-#define KEY_PL3_LEFT	SDL_SCANCODE_J
-#define KEY_PL3_RIGHT	SDL_SCANCODE_L
-#define KEY_PL3_JUMP	SDL_SCANCODE_I
-#define KEY_PL4_LEFT	SDL_SCANCODE_KP_4
-#define KEY_PL4_RIGHT	SDL_SCANCODE_KP_6
-#define KEY_PL4_JUMP	SDL_SCANCODE_KP_8
+#define KEY_PL1_LEFT	sf::Keyboard::Key::Left
+#define KEY_PL1_RIGHT	sf::Keyboard::Key::Right
+#define KEY_PL1_JUMP	sf::Keyboard::Key::Up
+#define KEY_PL2_LEFT	sf::Keyboard::Key::A
+#define KEY_PL2_RIGHT	sf::Keyboard::Key::D
+#define KEY_PL2_JUMP	sf::Keyboard::Key::W
+#define KEY_PL3_LEFT	sf::Keyboard::Key::J
+#define KEY_PL3_RIGHT	sf::Keyboard::Key::L
+#define KEY_PL3_JUMP	sf::Keyboard::Key::I
+#define KEY_PL4_LEFT	sf::Keyboard::Key::Numpad4
+#define KEY_PL4_RIGHT	sf::Keyboard::Key::Numpad6
+#define KEY_PL4_JUMP	sf::Keyboard::Key::Numpad8
 
 #define OBJ_ANIM_SPRING 0
 #define OBJ_ANIM_SPLASH 1

@@ -28,13 +28,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <SDL.h>
-
-#ifndef _WIN32
-
-#include <unistd.h>
-
-#endif
 
 #include "src/globals.h"
 

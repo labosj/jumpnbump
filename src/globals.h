@@ -28,7 +28,6 @@
 #ifndef __GLOBALS_H
 #define __GLOBALS_H
 
-#include <SDL.h>
 #include <SFML/Window/Event.hpp>
 
 struct main_info_t;
@@ -55,7 +54,6 @@ struct gob_t;
 #  include "SDL_mixer.h"
 # endif
 #else
-# ifdef USE_SDL
 #  include <sys/stat.h>
 #include "player_t.h"
 #include "anim_t.h"
@@ -65,7 +63,6 @@ struct gob_t;
 
 
 # endif
-#endif
 
 #define JNB_END_SCORE 100
 

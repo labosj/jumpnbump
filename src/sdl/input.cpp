@@ -26,69 +26,50 @@
 #include "src/globals.h"
 #include "src/player_t.h"
 #include "src/main_info.h"
-#include <SDL.h>
 
 static int num_joys=0;
-static SDL_Joystick *joys[4];
-
-/* assumes joysticks have at least one button, could check numbuttons first? */
-#define JOY_LEFT(num) (num_joys>num && SDL_JoystickGetAxis(joys[num], 0)<-3200)
-#define JOY_RIGHT(num) (num_joys>num && SDL_JoystickGetAxis(joys[num], 0)>3200)
-/* I find using the vertical axis to be annoying -- dnb */
-#define JOY_JUMP(num) (num_joys>num && SDL_JoystickGetButton(joys[num], 0))
-
-void init_inputs(main_info_t& main_info)
-{
-	int i;
-
-	num_joys = SDL_NumJoysticks();
-	for(i = 0; i < 4 && i < num_joys; ++i)
-		joys[i] = SDL_JoystickOpen(i);
-
-	main_info.joy_enabled = 0;
-}
 
 void update_player_actions()
 {
 	int tmp;
 
-	tmp = (key_pressed(KEY_PL1_LEFT) == 1) || JOY_LEFT(3);
+	tmp = (key_pressed(KEY_PL1_LEFT) == 1);
 	if (tmp != players[0].action_left)
 		tellServerPlayerMoved(0, MOVEMENT_LEFT, tmp);
-	tmp = (key_pressed(KEY_PL1_RIGHT) == 1) || JOY_RIGHT(3);
+	tmp = (key_pressed(KEY_PL1_RIGHT) == 1);
 	if (tmp != players[0].action_right)
 		tellServerPlayerMoved(0, MOVEMENT_RIGHT, tmp);
-	tmp = (key_pressed(KEY_PL1_JUMP) == 1) || JOY_JUMP(3);
+	tmp = (key_pressed(KEY_PL1_JUMP) == 1);
 	if (tmp != players[0].action_up)
 		tellServerPlayerMoved(0, MOVEMENT_UP, tmp);
 
-	tmp = (key_pressed(KEY_PL2_LEFT) == 1) || JOY_LEFT(2);
+	tmp = (key_pressed(KEY_PL2_LEFT) == 1);
 	if (tmp != players[1].action_left)
 		tellServerPlayerMoved(1, MOVEMENT_LEFT, tmp);
-	tmp = (key_pressed(KEY_PL2_RIGHT) == 1) || JOY_RIGHT(2);
+	tmp = (key_pressed(KEY_PL2_RIGHT) == 1);
 	if (tmp != players[1].action_right)
 		tellServerPlayerMoved(1, MOVEMENT_RIGHT, tmp);
-	tmp = (key_pressed(KEY_PL2_JUMP) == 1) || JOY_JUMP(2);
+	tmp = (key_pressed(KEY_PL2_JUMP) == 1);
 	if (tmp != players[1].action_up)
 		tellServerPlayerMoved(1, MOVEMENT_UP, tmp);
 
-	tmp = (key_pressed(KEY_PL3_LEFT) == 1) || JOY_LEFT(1);
+	tmp = (key_pressed(KEY_PL3_LEFT) == 1);
 	if (tmp != players[2].action_left)
 		tellServerPlayerMoved(2, MOVEMENT_LEFT, tmp);
-	tmp = (key_pressed(KEY_PL3_RIGHT) == 1) || JOY_RIGHT(1);
+	tmp = (key_pressed(KEY_PL3_RIGHT) == 1);
 	if (tmp != players[2].action_right)
 		tellServerPlayerMoved(2, MOVEMENT_RIGHT, tmp);
-	tmp = (key_pressed(KEY_PL3_JUMP) == 1) || JOY_JUMP(1);
+	tmp = (key_pressed(KEY_PL3_JUMP) == 1);
 	if (tmp != players[2].action_up)
 		tellServerPlayerMoved(2, MOVEMENT_UP, tmp);
 
-	tmp = (key_pressed(KEY_PL4_LEFT) == 1) || JOY_LEFT(0);
+	tmp = (key_pressed(KEY_PL4_LEFT) == 1);
 	if (tmp != players[3].action_left)
 		tellServerPlayerMoved(3, MOVEMENT_LEFT, tmp);
-	tmp = (key_pressed(KEY_PL4_RIGHT) == 1) || JOY_RIGHT(0);
+	tmp = (key_pressed(KEY_PL4_RIGHT) == 1);
 	if (tmp != players[3].action_right)
 		tellServerPlayerMoved(3, MOVEMENT_RIGHT, tmp);
-	tmp = (key_pressed(KEY_PL4_JUMP) == 1) || JOY_JUMP(0);
+	tmp = (key_pressed(KEY_PL4_JUMP) == 1);
 	if (tmp != players[3].action_up)
 		tellServerPlayerMoved(3, MOVEMENT_UP, tmp);
 }

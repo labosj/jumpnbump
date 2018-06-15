@@ -36,20 +36,6 @@
 #include "src/gob_t.h"
 #include "src/pob_t.h"
 
-SDL_Surface *icon;
-
-int screen_width=400;
-int screen_height=256;
-int screen_pitch=400;
-
-static int drawing_enable = 0;
-
-static void *mask = NULL;
-
-
-
-
-
 void put_pob(const pob_t& pob)
 {
 

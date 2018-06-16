@@ -13,7 +13,6 @@ struct gob_t;
 
 struct main_info_t {
 
-	int joy_enabled;
 	bool gore = true;
 	std::string error_str;
 

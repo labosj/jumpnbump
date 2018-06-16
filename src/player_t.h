@@ -8,6 +8,7 @@
 #include <vector>
 #include "position_t.h"
 #include "anim_handler_t.h"
+#include "player_control_t.h"
 
 struct player_t {
 private:
@@ -50,6 +51,8 @@ public:
 	void check_lateral_walls();
 
 	void set_anim(int anim);
+
+	void update_movement(const player_control_t& control);
 };
 
 void steer_players();

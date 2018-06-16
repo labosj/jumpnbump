@@ -15,7 +15,6 @@ find_package(SFML 2.4 COMPONENTS system window graphics audio)
 
 add_executable(jumpnbump
         src/sdl/input.cpp
-        src/sdl/interrpt.cpp
 
         src/object_t.cpp
         src/util.cpp

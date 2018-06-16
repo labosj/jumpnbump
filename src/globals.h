@@ -94,16 +94,11 @@ void tellServerPlayerMoved(int playerid, int movement_type, int newval);
 #define OBJ_ANIM_PINK_BUTFLY_LEFT 6
 #define OBJ_ANIM_FLESH_TRACE 7
 
-extern joy_t joy;
-
-
 void update_player_actions();
 
 int init_level();
 int init_program(int argc, char *argv[]);
 
-int key_pressed(int key);
-int addkey(unsigned int key);
 
 
 #endif

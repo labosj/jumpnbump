@@ -27,8 +27,6 @@
 #include "src/player_t.h"
 #include "src/main_info.h"
 
-static int num_joys=0;
-
 void update_player_actions()
 {
 	int tmp;

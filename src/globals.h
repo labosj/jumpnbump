@@ -100,12 +100,7 @@ extern joy_t joy;
 void update_player_actions();
 
 int init_level();
-void deinit_level(void);
 int init_program(int argc, char *argv[]);
-
-/* input.c */
-
-void init_inputs(main_info_t&);
 
 int key_pressed(int key);
 int addkey(unsigned int key);

@@ -219,18 +219,12 @@ int init_level() {
 
 }
 
-#ifndef PATH_MAX
-#define PATH_MAX 1024
-#endif
-
 int init_program(int argc, char *argv[]) {
 
 
     external_game_manager.reset(new game_manager_t);
 
     srand(time(NULL));
-
-    init_inputs(main_info);
 
     return 0;
 

@@ -44,7 +44,7 @@ int addkey(unsigned int key) {
 int key_pressed(int key) {
     return keyb[(unsigned char) key];
 }
-
+/*
 int intr_sysupdate() {
     SDL_Event e;
     int i = 0;
@@ -68,26 +68,26 @@ int intr_sysupdate() {
                         }
                         break;
                     case SDL_SCANCODE_1:
-                        /* Release keys, otherwise it will continue moving that way */
+                        // Release keys, otherwise it will continue moving that way
                         addkey((KEY_PL1_LEFT & 0x7fff) | 0x8000);
                         addkey((KEY_PL1_RIGHT & 0x7fff) | 0x8000);
                         addkey((KEY_PL1_JUMP & 0x7fff) | 0x8000);
                         break;
                     case SDL_SCANCODE_2:
 
-                        /* Release keys, otherwise it will continue moving that way */
+                        // Release keys, otherwise it will continue moving that way
                         addkey((KEY_PL2_LEFT & 0x7fff) | 0x8000);
                         addkey((KEY_PL2_RIGHT & 0x7fff) | 0x8000);
                         addkey((KEY_PL2_JUMP & 0x7fff) | 0x8000);
                         break;
                     case SDL_SCANCODE_3:
-                        /* Release keys, otherwise it will continue moving that way */
+                        // Release keys, otherwise it will continue moving that way
                         addkey((KEY_PL3_LEFT & 0x7fff) | 0x8000);
                         addkey((KEY_PL3_RIGHT & 0x7fff) | 0x8000);
                         addkey((KEY_PL3_JUMP & 0x7fff) | 0x8000);
                         break;
                     case SDL_SCANCODE_4:
-                        /* Release keys, otherwise it will continue moving that way */
+                        // Release keys, otherwise it will continue moving that way
                         addkey((KEY_PL4_LEFT & 0x7fff) | 0x8000);
                         addkey((KEY_PL4_RIGHT & 0x7fff) | 0x8000);
                         addkey((KEY_PL4_JUMP & 0x7fff) | 0x8000);
@@ -113,3 +113,4 @@ int intr_sysupdate() {
     }
 
 }
+*/

@@ -117,7 +117,9 @@ void game_manager_t::process_input() {
             if ( event.key.code == sf::Keyboard::Key::Escape ) {
                 this->window.close();
             } else {
-                //here goes the processing
+                for ( auto& player : players) {
+                    player.control.update(event);
+                }
             }
         }
     }

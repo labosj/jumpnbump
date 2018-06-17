@@ -66,6 +66,4 @@ void collision_check(game_manager_t& game_manager);
 
 void position_player(game_manager_t& game_manager, player_t& player);
 
-void init_players(game_manager_t& game_manager);
-
 #endif //JUMPNBUMP_PLAYER_H

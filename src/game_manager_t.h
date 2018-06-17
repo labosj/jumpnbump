@@ -11,6 +11,7 @@
 #include "sound_manager_t.h"
 #include "pobs_t.h"
 #include "player_t.h"
+#include "leftovers_t.h"
 #include <memory>
 
 class pob_t;
@@ -36,10 +37,13 @@ public:
 
     std::vector<player_t> players;
 
+    leftovers_t leftovers;
+
     game_manager_t(sf::RenderWindow& window);
 
     void init_textures();
 
+    void init_players();
     void init_deprecated_data();
 
 

@@ -536,55 +536,6 @@ void player_t::reset_kills(game_manager_t& game_manager) {
     this->bumped = std::vector<int>(game_manager.players.size(), 0);
 }
 
-void init_players(game_manager_t& game_manager)
-{
-
-    game_manager.players.clear();
-    for (auto c1 = 0; c1 < 4; c1++) {
-        //create bunnies randomly in the menu screen
-        auto player = player_t{c1};
-        player.position = screen_position_t{rnd(150), (160L + c1 * 2)};
-        player.x_add = 0;
-        player.y_add = 0;
-        player.direction = rnd(2);
-        player.jump_ready = 1;
-        player.anim_handler.anim = 0;
-        player.anim_handler.frame = 0;
-        player.anim_handler.frame_tick = 0;
-        player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image;
-
-        game_manager.players.push_back(player);
-    }
-
-    {
-        auto& control = game_manager.players[0].control;
-        control.up_key = sf::Keyboard::Key::W;
-        control.left_key = sf::Keyboard::Key::A;
-        control.right_key = sf::Keyboard::Key::D;
-    }
-
-    {
-        auto& control = game_manager.players[1].control;
-        control.up_key = sf::Keyboard::Key::I;
-        control.left_key = sf::Keyboard::Key::J;
-        control.right_key = sf::Keyboard::Key::L;
-    }
-
-    {
-        auto& control = game_manager.players[2].control;
-        control.up_key = sf::Keyboard::Key::Up;
-        control.left_key = sf::Keyboard::Key::Left;
-        control.right_key = sf::Keyboard::Key::Right;
-    }
-
-    {
-        auto& control = game_manager.players[3].control;
-        control.up_key = sf::Keyboard::Key::Numpad8;
-        control.left_key = sf::Keyboard::Key::Numpad4;
-        control.right_key = sf::Keyboard::Key::Numpad6;
-    }
-}
-
 void player_t::kill(game_manager_t& game_manager, int killer, int victim) {
     int c1 = killer;
     int c2 = victim;

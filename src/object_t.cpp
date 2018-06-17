@@ -10,8 +10,8 @@
 #include "gob_t.h"
 #include "leftovers_t.h"
 #include "objects_t.h"
+#include "game_manager_t.h"
 
-extern leftovers_t leftovers;
 
 object_t::object_t(object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame) {
     this->used = 1;
@@ -160,7 +160,7 @@ void object_t::update_butterfly() {
 }
 
 
-void object_t::update_flesh() {
+void object_t::update_flesh(game_manager_t& game_manager) {
     if (rnd(100) < 30) {
         if (this->anim_handler.frame == 76)
             objects.add(object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
@@ -227,9 +227,9 @@ void object_t::update_flesh() {
                 } else {
                     if (rnd(100) < 10) {
                         int s1 = rnd(4) - 2;
-                        leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
+                        game_manager.leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
                                     this->anim_handler.frame, &object_gobs);
-                        leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
+                        game_manager.leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
                                       this->anim_handler.frame, &object_gobs);
                     }
                     this->used = 0;

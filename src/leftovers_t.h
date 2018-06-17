@@ -23,6 +23,4 @@ public:
 
     void draw(game_manager_t& game_manager);
 };
-
-extern leftovers_t leftovers;
 #endif //JUMPNBUMP_LEFTOVERS_H

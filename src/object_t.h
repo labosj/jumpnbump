@@ -11,6 +11,8 @@ class player_t;
 #include "anim_t.h"
 #include "anim_handler_t.h"
 
+class game_manager_t;
+
 struct object_t{
 
 	enum class Type {
@@ -54,7 +56,7 @@ struct object_t{
 	void update_spring();
 	void update_splash();
 	void update_butterfly();
-	void update_flesh();
+	void update_flesh(game_manager_t& game_manager);
 	void update_fur();
 
 	/**

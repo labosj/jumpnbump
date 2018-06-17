@@ -8,7 +8,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 /**
- * Applicatin class
+ * Application class
  *
  * This class holds a application instance
  */

@@ -42,7 +42,7 @@ public:
 	void set_position(const position_t& position);
 	void check_spring_jump(game_manager_t& game_manager);
 
-	void reset_kills();
+	void reset_kills(game_manager_t& game_manager);
 	void count_kill(const player_t& victim) {
 		this->bumps++;
 		this->bumped[victim.get_id()]++;
@@ -62,13 +62,10 @@ public:
 };
 
 void steer_players(game_manager_t &game_manager);
-
-void position_player(player_t& player);
-
 void collision_check(game_manager_t& game_manager);
 
-void init_players();
+void position_player(game_manager_t& game_manager, player_t& player);
 
-extern std::vector<player_t> players;
+void init_players(game_manager_t& game_manager);
 
 #endif //JUMPNBUMP_PLAYER_H

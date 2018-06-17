@@ -10,6 +10,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "sound_manager_t.h"
 #include "pobs_t.h"
+#include "player_t.h"
 #include <memory>
 
 class pob_t;
@@ -32,6 +33,8 @@ public:
 
     sound_manager_t sound_manager;
     pobs_t pobs;
+
+    std::vector<player_t> players;
 
     game_manager_t(sf::RenderWindow& window);
 

@@ -124,11 +124,11 @@ bool game_manager_t::init() {
 
         this->init_textures();
         this->init_deprecated_data();
-        init_players();
+        init_players(*this);
 
-        for (auto& player : players) {
-            player.reset_kills();
-            position_player(player);
+        for (auto& player : this->players) {
+            player.reset_kills(*this);
+            position_player(*this, player);
         }
 
         for (int c1 = 0; c1 < ban_map.get_height(); c1++) {

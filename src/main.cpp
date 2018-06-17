@@ -32,7 +32,6 @@
 #include "leftovers_t.h"
 #include "util.h"
 #include "player_t.h"
-#include "data.h"
 #include "ban_map.h"
 #include <string>
 #include "object_t.h"

@@ -8,7 +8,6 @@
 #include "player_t.h"
 #include "main_info.h"
 #include "anim_t.h"
-#include "data.h"
 #include "globals.h"
 #include "ban_map.h"
 #include <SFML/Window.hpp>

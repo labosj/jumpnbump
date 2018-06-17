@@ -60,12 +60,10 @@ public:
 
 	void set_anim(int anim);
 
-	static void kill(game_manager_t &game_manager, int killer, int victim);
-
 	void update_movement();
 };
 
-void check_collision(game_manager_t& game_manager, player_t &player_1, player_t &player_2);
+void check_collision(player_t &player_1, player_t &player_2);
 
 void steer_players(game_manager_t &game_manager);
 

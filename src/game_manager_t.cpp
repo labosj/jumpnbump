@@ -252,8 +252,47 @@ void game_manager_t::collision_check() {
 
     for (auto i = 0; i < this->players.size(); i++) {
         for (auto j = i + 1; j < this->players.size(); j++) {
-            check_collision(*this, this->players[i], this->players[j]);
+            check_collision(this->players[i], this->players[j]);
 
         }
+    }
+}
+
+void game_manager_t::kill(int killer, int victim) {
+    int c1 = killer;
+    int c2 = victim;
+    int c4 = 0;
+
+    auto& players = this->players;
+
+    players[c1].y_add = -players[c1].y_add;
+    if (players[c1].y_add > -262144L)
+        players[c1].y_add = -262144L;
+    players[c1].jump_abort = 1;
+    players[c2].dead_flag = 1;
+    if (players[c2].anim_handler.anim != 6) {
+        players[c2].set_anim(6);
+        if (this->gore ) {
+            auto screen_position = screen_position_t{players[victim].get_position()} + screen_position_t{6 + rnd(5), 6 + rnd(5)};
+            for (c4 = 0; c4 < 6; c4++)
+                objects.add(*this, object_t::Type::FUR, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
+            for (c4 = 0; c4 < 6; c4++)
+                objects.add(*this, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 76);
+            for (c4 = 0; c4 < 6; c4++)
+                objects.add(*this, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 77);
+            for (c4 = 0; c4 < 8; c4++)
+                objects.add(*this, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 78);
+            for (c4 = 0; c4 < 10; c4++)
+                objects.add(*this, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 79);
+        }
+        this->sound_manager.play_sfx_death();
+
+
+        players[c1].count_kill(players[c2]);
     }
 }

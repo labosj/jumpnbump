@@ -174,7 +174,8 @@ void object_t::update_butterfly() {
 }
 
 
-void object_t::update_flesh(game_manager_t& game_manager) {
+void object_t::update_flesh() {
+    auto& game_manager = this->game_manager;
     auto& ban_map = game_manager.get_stage().get_map();
 
     if (rnd(100) < 30) {

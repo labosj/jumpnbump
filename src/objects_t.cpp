@@ -63,7 +63,7 @@ void objects_t::update(game_manager_t& game_manager) {
                     }
                     break;
                 case object_t::Type::FLESH:
-                    object.update_flesh(game_manager);
+                    object.update_flesh();
                     if (object.is_used())
                         game_manager.pobs.add(object.get_position(), object.anim_handler.frame, &object_gobs);
                     break;

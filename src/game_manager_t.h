@@ -58,6 +58,7 @@ public:
     stage_t& get_stage();
 
     bool init();
+    void kill(int killer, int victim);
 
     void loop();
 };

@@ -486,26 +486,30 @@ void position_player(game_manager_t& game_manager, player_t &player) {
 
 }
 
-void player_kill(game_manager_t &game_manager, player_t &player_1, player_t &player_2) {
+void player_kill(player_t &player_1, player_t &player_2) {
+
+    auto& game_manager =player_1.get_game_manager();
 
     if (player_1.y_add >= 0) {
 
-        player_t::kill(game_manager, player_1.get_id(), player_2.get_id());
+        game_manager.kill(player_1.get_id(), player_2.get_id());
     } else {
         if (player_2.y_add < 0)
             player_2.y_add = 0;
     }
 }
 
-void check_collision(game_manager_t& game_manager, player_t &player_1, player_t &player_2) {
+void check_collision(player_t &player_1, player_t &player_2) {
+
+    auto& game_manager =player_1.get_game_manager();
 
         if (labs(player_1.position.x - player_2.position.x) < (12L << 16) &&
             labs(player_1.position.y - player_2.position.y) < (12L << 16)) {
             if ((labs(player_1.position.y - player_2.position.y) >> 16) > 5) {
                 if (player_1.position.y < player_2.position.y) {
-                    player_kill(game_manager, player_1, player_2);
+                    player_kill(player_1, player_2);
                 } else {
-                    player_kill(game_manager, player_2, player_1);
+                    player_kill(player_2, player_1);
                 }
             } else {
                 if (player_1.position.x < player_2.position.x) {
@@ -548,43 +552,4 @@ void check_collision(game_manager_t& game_manager, player_t &player_1, player_t 
 void player_t::reset_kills() {
     this->bumps = 0;
     this->bumped = std::vector<int>(this->game_manager.players.size(), 0);
-}
-
-void player_t::kill(game_manager_t& game_manager, int killer, int victim) {
-    int c1 = killer;
-    int c2 = victim;
-    int c4 = 0;
-
-    auto& players = game_manager.players;
-
-    players[c1].y_add = -players[c1].y_add;
-    if (players[c1].y_add > -262144L)
-        players[c1].y_add = -262144L;
-    players[c1].jump_abort = 1;
-    players[c2].dead_flag = 1;
-    if (players[c2].anim_handler.anim != 6) {
-        players[c2].set_anim(6);
-        if (game_manager.gore ) {
-            auto screen_position = screen_position_t{players[victim].get_position()} + screen_position_t{6 + rnd(5), 6 + rnd(5)};
-            for (c4 = 0; c4 < 6; c4++)
-                objects.add(game_manager, object_t::Type::FUR, screen_position, (rnd(65535) - 32768) * 3,
-                            (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
-            for (c4 = 0; c4 < 6; c4++)
-                objects.add(game_manager, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
-                            (rnd(65535) - 32768) * 3, 0, 76);
-            for (c4 = 0; c4 < 6; c4++)
-                objects.add(game_manager, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
-                            (rnd(65535) - 32768) * 3, 0, 77);
-            for (c4 = 0; c4 < 8; c4++)
-                objects.add(game_manager, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
-                            (rnd(65535) - 32768) * 3, 0, 78);
-            for (c4 = 0; c4 < 10; c4++)
-                objects.add(game_manager, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
-                            (rnd(65535) - 32768) * 3, 0, 79);
-        }
-        game_manager.sound_manager.play_sfx_death();
-
-
-        players[c1].count_kill(players[c2]);
-    }
 }

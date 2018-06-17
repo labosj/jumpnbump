@@ -54,6 +54,8 @@ public:
 
 	void set_anim(int anim);
 
+	static void kill(int killer, int victim);
+
 	void update_movement();
 };
 

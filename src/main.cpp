@@ -47,49 +47,23 @@
 #include "game_manager_t.h"
 #include "application_t.h"
 
-int endscore_reached;
-
-
 int pogostick, bunnies_in_space, jetpack;
 
-void serverSendKillPacket(int killer, int victim) {
-    int c1 = killer;
-    int c2 = victim;
-    int c4 = 0;
-
-    players[c1].y_add = -players[c1].y_add;
-    if (players[c1].y_add > -262144L)
-        players[c1].y_add = -262144L;
-    players[c1].jump_abort = 1;
-    players[c2].dead_flag = 1;
-    if (players[c2].anim_handler.anim != 6) {
-        players[c2].set_anim(6);
-        if (main_info.gore ) {
-            auto screen_position = screen_position_t{players[victim].get_position()} + screen_position_t{6 + rnd(5), 6 + rnd(5)};
-            for (c4 = 0; c4 < 6; c4++)
-                objects.add(object_t::Type::FUR, screen_position, (rnd(65535) - 32768) * 3,
-                           (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
-            for (c4 = 0; c4 < 6; c4++)
-                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
-                           (rnd(65535) - 32768) * 3, 0, 76);
-            for (c4 = 0; c4 < 6; c4++)
-                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
-                           (rnd(65535) - 32768) * 3, 0, 77);
-            for (c4 = 0; c4 < 8; c4++)
-                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
-                           (rnd(65535) - 32768) * 3, 0, 78);
-            for (c4 = 0; c4 < 10; c4++)
-                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
-                           (rnd(65535) - 32768) * 3, 0, 79);
-        }
-        external_sound_manager->play_sfx_death();
-
-
-        players[c1].count_kill(c2);
-    }
-}
-
 static void game_loop(void) {
+
+
+    external_sound_manager.reset(new sound_manager_t);
+
+    external_sound_manager->load_sfx();
+    external_sound_manager->load_music();
+    external_sound_manager->play_music();
+
+    external_game_manager->init();
+    printf("hola como te va");
+
+
+
+    bunnies_in_space = jetpack = pogostick = 0;
 
     int update_count = 1;
     int end_loop_flag = 0;
@@ -97,8 +71,6 @@ static void game_loop(void) {
     external_game_manager->reset_frames();
 
     external_game_manager->process_input();
-
-    endscore_reached = 0;
 
     while (external_game_manager->window.isOpen()) {
         while (update_count) {
@@ -132,33 +104,7 @@ static void game_loop(void) {
         external_game_manager->process_input();
         update_count = external_game_manager->get_elapsed_frames();
 
-
-        if (end_loop_flag == 1)
-            break;
     }
-}
-
-
-static int menu_loop() {
-
-
-    external_sound_manager.reset(new sound_manager_t);
-
-    external_sound_manager->load_sfx();
-    external_sound_manager->load_music();
-    external_sound_manager->play_music();
-
-        init_level();
-        printf("hola como te va");
-
-
-
-        bunnies_in_space = jetpack = pogostick = 0;
-        //blood_is_thicker_than_water = 1; HERE IS TO MOD THE CHEATS
-
-        game_loop();
-
-
 }
 
 
@@ -168,7 +114,7 @@ int main(int argc, char *argv[]) {
     application_t application;
     int result;
     if (application.init() ) {
-        result = menu_loop();
+        game_loop();
 
     }
 
@@ -176,40 +122,5 @@ int main(int argc, char *argv[]) {
 
 }
 
-int init_level() {
-
-    external_game_manager->init_textures();
-    external_game_manager->init_deprecated_data();
-    init_players();
-
-    for (auto& player : players) {
-            player.reset_kills();
-            position_player(player);
-    }
-
-    for (int c1 = 0; c1 < ban_map.get_height(); c1++) {
-        for (int c2 = 0; c2 < ban_map.get_width() ; c2++) {
-            if (ban_map.get(map_position_t{c2, c1}) == ban_map_t::Type::SPRING)
-                objects.add(object_t::Type::SPRING, map_position_t{c2, c1}, 0, 0, OBJ_ANIM_SPRING, 5);
-        }
-    }
-
-    for ( int i = 0 ; i < 2 ; i++ ) {
-        auto new_pos = ban_map.get_random_available_position();
-        objects.add(object_t::Type::YEL_BUTFLY, screen_position_t{8, 8} + new_pos , (rnd(65535) - 32768) * 2,
-                   (rnd(65535) - 32768) * 2,
-                   0, 0);
-    }
-
-    for ( int i = 0 ; i < 2 ; i++ ) {
-        auto new_pos = ban_map.get_random_available_position();
-        objects.add(object_t::Type::PINK_BUTFLY,  screen_position_t{8, 8} + new_pos, (rnd(65535) - 32768) * 2,
-                   (rnd(65535) - 32768) * 2, 0, 0);
-    }
-
-
-    return 0;
-
-}
 
 

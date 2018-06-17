@@ -13,6 +13,8 @@
 #include "ban_map.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include "objects_t.h"
+#include "util.h"
 
 std::unique_ptr<game_manager_t> external_game_manager = nullptr;
 
@@ -119,4 +121,40 @@ void game_manager_t::process_input() {
             }
         }
     }
+}
+
+bool game_manager_t::init() {
+
+        external_game_manager->init_textures();
+        external_game_manager->init_deprecated_data();
+        init_players();
+
+        for (auto& player : players) {
+            player.reset_kills();
+            position_player(player);
+        }
+
+        for (int c1 = 0; c1 < ban_map.get_height(); c1++) {
+            for (int c2 = 0; c2 < ban_map.get_width() ; c2++) {
+                if (ban_map.get(map_position_t{c2, c1}) == ban_map_t::Type::SPRING)
+                    objects.add(object_t::Type::SPRING, map_position_t{c2, c1}, 0, 0, OBJ_ANIM_SPRING, 5);
+            }
+        }
+
+        for ( int i = 0 ; i < 2 ; i++ ) {
+            auto new_pos = ban_map.get_random_available_position();
+            objects.add(object_t::Type::YEL_BUTFLY, screen_position_t{8, 8} + new_pos , (rnd(65535) - 32768) * 2,
+                        (rnd(65535) - 32768) * 2,
+                        0, 0);
+        }
+
+        for ( int i = 0 ; i < 2 ; i++ ) {
+            auto new_pos = ban_map.get_random_available_position();
+            objects.add(object_t::Type::PINK_BUTFLY,  screen_position_t{8, 8} + new_pos, (rnd(65535) - 32768) * 2,
+                        (rnd(65535) - 32768) * 2, 0, 0);
+        }
+
+
+        return true;
+
 }

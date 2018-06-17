@@ -7,6 +7,11 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
+/**
+ * Applicatin class
+ *
+ * This class holds a application instance
+ */
 class application_t {
 private:
     sf::RenderWindow window;

@@ -22,8 +22,6 @@ void player_t::set_position(const position_t &position) {
     this->position = position;
 }
 
-void serverSendKillPacket(int c1, int c2);
-
 position_t player_t::get_position() const {
     return this->position;
 }
@@ -475,7 +473,7 @@ void player_kill(player_t &player_1, player_t &player_2) {
 
     if (player_1.y_add >= 0) {
 
-        serverSendKillPacket(player_1.get_id(), player_2.get_id());
+        player_t::kill(player_1.get_id(), player_2.get_id());
     } else {
         if (player_2.y_add < 0)
             player_2.y_add = 0;
@@ -591,5 +589,42 @@ void init_players()
         control.up_key = sf::Keyboard::Key::Numpad8;
         control.left_key = sf::Keyboard::Key::Numpad4;
         control.right_key = sf::Keyboard::Key::Numpad6;
+    }
+}
+
+void player_t::kill(int killer, int victim) {
+    int c1 = killer;
+    int c2 = victim;
+    int c4 = 0;
+
+    players[c1].y_add = -players[c1].y_add;
+    if (players[c1].y_add > -262144L)
+        players[c1].y_add = -262144L;
+    players[c1].jump_abort = 1;
+    players[c2].dead_flag = 1;
+    if (players[c2].anim_handler.anim != 6) {
+        players[c2].set_anim(6);
+        if (main_info.gore ) {
+            auto screen_position = screen_position_t{players[victim].get_position()} + screen_position_t{6 + rnd(5), 6 + rnd(5)};
+            for (c4 = 0; c4 < 6; c4++)
+                objects.add(object_t::Type::FUR, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
+            for (c4 = 0; c4 < 6; c4++)
+                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 76);
+            for (c4 = 0; c4 < 6; c4++)
+                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 77);
+            for (c4 = 0; c4 < 8; c4++)
+                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 78);
+            for (c4 = 0; c4 < 10; c4++)
+                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                            (rnd(65535) - 32768) * 3, 0, 79);
+        }
+        external_sound_manager->play_sfx_death();
+
+
+        players[c1].count_kill(c2);
     }
 }

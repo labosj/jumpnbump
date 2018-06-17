@@ -36,6 +36,8 @@ public:
     int get_elapsed_frames();
 
     void process_input();
+
+    bool init();
 };
 
 extern std::unique_ptr<game_manager_t> external_game_manager;

@@ -21,8 +21,8 @@ game_manager_t::game_manager_t(sf::RenderWindow& window) :window(window) {
 void game_manager_t::init_textures() {
 
     this->object_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/objects.png");
-    this->background_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/level.png");
-    this->foreground_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/mask.png");
+    this->foreground_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/maps/default/foreground.png");
+    this->foreground_2_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/maps/default/foreground_2.png");
     this->rabbit_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/rabbit.png");
 
 }
@@ -46,7 +46,7 @@ void game_manager_t::init_deprecated_data() {
     object_gobs.add("/home/edwin/Projects/jumpnbump/data/objects.json", this->object_texture);
 
 
-    if (!ban_map.read_from_file("/home/edwin/Projects/jumpnbump/data/levelmap.txt")) {
+    if (!ban_map.read_from_file("/home/edwin/Projects/jumpnbump/data/maps/default/map.txt")) {
         printf("Error loading 'rabbit.gob', aborting...\n");
         return;
     }
@@ -54,7 +54,7 @@ void game_manager_t::init_deprecated_data() {
 
 void game_manager_t::draw() {
     this->window.clear();
-    sf::Sprite background(this->background_texture);
+    sf::Sprite background(this->foreground_texture);
 
     this->window.draw(background);
 
@@ -66,7 +66,7 @@ void game_manager_t::draw() {
     this->pobs.draw(*this);
     leftovers.draw(*this);
 
-    sf::Sprite foreground(this->foreground_texture);
+    sf::Sprite foreground(this->foreground_2_texture);
     this->window.draw(foreground);
 
     this->window.display();

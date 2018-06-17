@@ -29,8 +29,8 @@ public:
 
     sf::Texture object_texture;
     sf::Texture rabbit_texture;
-    sf::Texture background_texture;
     sf::Texture foreground_texture;
+    sf::Texture foreground_2_texture;
 
     sound_manager_t sound_manager;
     pobs_t pobs;

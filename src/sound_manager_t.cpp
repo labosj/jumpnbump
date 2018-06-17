@@ -7,7 +7,7 @@
 #include "util.h"
 
 void sound_manager_t::load_music() {
-    this->music.openFromFile("/home/edwin/Projects/jumpnbump/data/bump.ogg");
+    this->music.openFromFile("/home/edwin/Projects/jumpnbump/data/maps/default/bgm.ogg");
     this->music.setLoop(true);
 }
 

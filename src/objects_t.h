@@ -18,10 +18,10 @@ public:
 
     void update(game_manager_t& game_manager);
 
-    void add(object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame);
+    void add(game_manager_t& game_manager, object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame);
 
-    void add_smoke(const player_t& player);
-    void add_jetpack_smoke(const player_t& player);
+    void add_smoke(player_t& player);
+    void add_jetpack_smoke(player_t& player);
 };
 
 extern objects_t objects;

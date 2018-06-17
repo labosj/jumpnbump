@@ -10,16 +10,16 @@
 
 objects_t objects;
 
-void objects_t::add(object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame) {
+void objects_t::add(game_manager_t& game_manager, object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame) {
 
     for (auto &object : this->objects) {
         if (object.used == 0) {
-            object = object_t{type, position, x_add, y_add, anim, frame};
+            object = object_t{game_manager, type, position, x_add, y_add, anim, frame};
             return;
         }
     }
 
-    this->objects.emplace_back(type, position, x_add, y_add, anim, frame);
+    this->objects.emplace_back(game_manager, type, position, x_add, y_add, anim, frame);
 
 }
 
@@ -78,15 +78,15 @@ void objects_t::update(game_manager_t& game_manager) {
     }
 }
 
-void objects_t::add_smoke(const player_t &player) {
-    this->add(object_t::Type::SMOKE,
+void objects_t::add_smoke(player_t &player) {
+    this->add(player.get_game_manager(), object_t::Type::SMOKE,
                 player.get_position() +
                 screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
                 -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
 }
 
-void objects_t::add_jetpack_smoke(const player_t &player) {
-    this->add(object_t::Type::SMOKE, player.get_position() + screen_position_t{6 + rnd(5), 10 + rnd(5)},
+void objects_t::add_jetpack_smoke(player_t &player) {
+    this->add(player.get_game_manager(), object_t::Type::SMOKE, player.get_position() + screen_position_t{6 + rnd(5), 10 + rnd(5)},
                 0, 16384 + rnd(8192), OBJ_ANIM_SMOKE, 0);
 }
 

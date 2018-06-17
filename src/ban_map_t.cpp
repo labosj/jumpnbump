@@ -10,9 +10,6 @@
 #include "screen_position_t.h"
 #include "util.h"
 
-ban_map_t ban_map;
-
-
 ban_map_t::Type ban_map_t::get(const map_position_t& pos) const {
     //std::cout << "const[" << pos.x << "," << pos.y << "]\n";
     if ( pos.x < 0) return ban_map_t::Type::VOID;

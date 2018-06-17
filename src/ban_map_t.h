@@ -57,7 +57,5 @@ public:
     int get_height() const { return this->height; }
 };
 
-extern ban_map_t ban_map;
-
 
 #endif //JUMPNBUMP_BAN_MAP_H

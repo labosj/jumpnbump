@@ -22,6 +22,8 @@ private:
 
     sf::Music background_music;
 
+    ban_map_t ban_map;
+
 public:
     void load(const std::string& folder);
 
@@ -29,6 +31,8 @@ public:
     void draw_foreground(sf::RenderTarget& target);
 
     void play_bgm();
+
+    ban_map_t& get_map();
 
 };
 

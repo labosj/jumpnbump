@@ -55,6 +55,7 @@ public:
     int get_elapsed_frames();
 
     void process_input();
+    stage_t& get_stage();
 
     bool init();
 

@@ -22,7 +22,13 @@ position_t player_t::get_position() const {
     return this->position;
 }
 
+game_manager_t& player_t::get_game_manager() {
+    return this->game_manager;
+}
+
 void player_action_left(player_t &player) {
+
+    auto& ban_map = player.get_game_manager().get_stage().get_map();
 
     screen_position_t pixel_pos = player.position;
     auto below_left = ban_map.get(pixel_pos + screen_position_t{0, 16});
@@ -44,7 +50,7 @@ void player_action_left(player_t &player) {
         if (player.x_add > 0) {
             player.x_add -= 16384;
             if (player.x_add > -98304L && player.in_water == 0 && below == ban_map_t::Type::SOLID)
-                objects.add(object_t::Type::SMOKE, player.get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
+                objects.add(player.get_game_manager(), object_t::Type::SMOKE, player.get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
             player.x_add -= 12288;
@@ -59,6 +65,8 @@ void player_action_left(player_t &player) {
 }
 
 void player_action_right(player_t &player) {
+
+    auto& ban_map = player.get_game_manager().get_stage().get_map();
 
     auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
     auto below = ban_map.get(player.get_position() + screen_position_t{8, 16});
@@ -91,6 +99,9 @@ void player_action_right(player_t &player) {
 }
 
 void player_no_action(player_t &player) {
+
+    auto& ban_map = player.get_game_manager().get_stage().get_map();
+
     auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
     auto below = ban_map.get(player.get_position() + screen_position_t{8, 16});
     auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
@@ -145,6 +156,7 @@ void player_t::gravity_fall() {
 void player_t::check_spring_jump() {
     position_t position = this->get_position();
 
+    auto& ban_map = this->game_manager.get_stage().get_map();
 
     if (ban_map.get(this->get_position() + screen_position_t{8, 15}) == ban_map_t::Type::SPRING ||
         ((ban_map.get(this->get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING &&
@@ -196,6 +208,8 @@ void player_t::check_spring_jump() {
 
 void player_t::check_ceiling() {
 
+    auto& ban_map = this->game_manager.get_stage().get_map();
+
     if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
         ban_map.get(this->get_position()) == ban_map_t::Type::ICE ||
         ban_map.get(this->get_position()) == ban_map_t::Type::SPRING ||
@@ -210,6 +224,8 @@ void player_t::check_ceiling() {
 }
 
 void steer_players(game_manager_t& game_manager) {
+
+    auto& ban_map = game_manager.get_stage().get_map();
 
     for ( auto& player : game_manager.players) {
         player.update_movement();
@@ -327,7 +343,7 @@ void steer_players(game_manager_t& game_manager) {
                         if (player.y_add >= 32768) {
                             screen_position_t screen_position = player.get_position();
                             screen_position.y &= 0xfff0;
-                            objects.add(object_t::Type::SPLASH,
+                            objects.add(player.get_game_manager(), object_t::Type::SPLASH,
                                        screen_position
                                        + screen_position_t{9, 15}, 0, 0,
                                        OBJ_ANIM_SPLASH, 0);
@@ -402,6 +418,8 @@ void steer_players(game_manager_t& game_manager) {
 
 void player_t::check_lateral_walls() {
 
+    auto& ban_map = this->get_game_manager().get_stage().get_map();
+
     if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
         ban_map.get(this->get_position()) == ban_map_t::Type::ICE ||
         ban_map.get(this->get_position()) == ban_map_t::Type::SPRING ||
@@ -433,6 +451,9 @@ void player_t::update_movement() {
 }
 
 void position_player(game_manager_t& game_manager, player_t &player) {
+
+    auto& ban_map = player.get_game_manager().get_stage().get_map();
+
     map_position_t position;
 
 
@@ -546,19 +567,19 @@ void player_t::kill(game_manager_t& game_manager, int killer, int victim) {
         if (game_manager.gore ) {
             auto screen_position = screen_position_t{players[victim].get_position()} + screen_position_t{6 + rnd(5), 6 + rnd(5)};
             for (c4 = 0; c4 < 6; c4++)
-                objects.add(object_t::Type::FUR, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(game_manager, object_t::Type::FUR, screen_position, (rnd(65535) - 32768) * 3,
                             (rnd(65535) - 32768) * 3, 0, 44 + c2 * 8);
             for (c4 = 0; c4 < 6; c4++)
-                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(game_manager, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                             (rnd(65535) - 32768) * 3, 0, 76);
             for (c4 = 0; c4 < 6; c4++)
-                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(game_manager, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                             (rnd(65535) - 32768) * 3, 0, 77);
             for (c4 = 0; c4 < 8; c4++)
-                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(game_manager, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                             (rnd(65535) - 32768) * 3, 0, 78);
             for (c4 = 0; c4 < 10; c4++)
-                objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
+                objects.add(game_manager, object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                             (rnd(65535) - 32768) * 3, 0, 79);
         }
         game_manager.sound_manager.play_sfx_death();

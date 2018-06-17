@@ -13,7 +13,7 @@
 #include "game_manager_t.h"
 
 
-object_t::object_t(object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame) {
+object_t::object_t(game_manager_t& game_manager, object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame) : game_manager(game_manager) {
     this->used = 1;
     this->type = type;
 
@@ -23,6 +23,18 @@ object_t::object_t(object_t::Type type, const position_t &position, int x_add, i
     this->x_acc = 0;
     this->y_acc = 0;
     this->set_anim(anim, frame);
+}
+
+void object_t::operator=(const object_t& other) {
+    this->used = other.used;
+    this->type = other.type;
+
+    this->position = other.position;
+    this->x_add = other.x_add;
+    this->y_add = other.y_add;
+    this->x_acc = other.x_acc;
+    this->y_acc = other.y_acc;
+    this->anim_handler = other.anim_handler;
 }
 
 void object_t::set_anim(int anim, int frame) {
@@ -75,6 +87,8 @@ void object_t::update_splash() {
 }
 
 void object_t::update_butterfly() {
+    auto& ban_map = this->game_manager.get_stage().get_map();
+
     this->x_acc += rnd(128) - 64;
     if (this->x_acc < -1024)
         this->x_acc = -1024;
@@ -161,15 +175,17 @@ void object_t::update_butterfly() {
 
 
 void object_t::update_flesh(game_manager_t& game_manager) {
+    auto& ban_map = game_manager.get_stage().get_map();
+
     if (rnd(100) < 30) {
         if (this->anim_handler.frame == 76)
-            objects.add(object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
+            objects.add(game_manager, object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 1);
         else if (this->anim_handler.frame == 77)
-            objects.add(object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
+            objects.add(game_manager, object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 2);
         else if (this->anim_handler.frame == 78)
-            objects.add(object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
+            objects.add(game_manager, object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
                        OBJ_ANIM_FLESH_TRACE, 3);
     }
     if (ban_map.get(this->get_position()) == ban_map_t::Type::VOID) {
@@ -250,8 +266,10 @@ void object_t::update_flesh(game_manager_t& game_manager) {
 }
 
 void object_t::update_fur() {
+    auto& ban_map = this->game_manager.get_stage().get_map();
+
     if (rnd(100) < 30)
-        objects.add(object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
+        objects.add(game_manager, object_t::Type::FLESH_TRACE, this->get_position(), 0, 0,
                    OBJ_ANIM_FLESH_TRACE, 0);
     if (ban_map.get(this->get_position()) == ban_map_t::Type::VOID) {
         this->y_add += 3072;

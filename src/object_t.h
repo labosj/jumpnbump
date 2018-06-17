@@ -30,7 +30,7 @@ struct object_t{
 
 	Type type;
 
-
+	game_manager_t& game_manager;
 
 	position_t position;
 
@@ -39,8 +39,8 @@ struct object_t{
 
 	anim_handler_t anim_handler;
 
-	object_t(object_t::Type type, const position_t& position, int x_add, int y_add, int anim, int frame);
-
+	object_t(game_manager_t& game_manager, object_t::Type type, const position_t& position, int x_add, int y_add, int anim, int frame);
+	void operator=(const object_t& other);
 
 	/**
 	 * Read only

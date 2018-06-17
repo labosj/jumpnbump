@@ -37,6 +37,7 @@ public:
 	player_t(game_manager_t& game_manager, int id);
 
 	int get_id() const { return this->id; }
+	game_manager_t& get_game_manager();
 
 	position_t get_position() const;
 

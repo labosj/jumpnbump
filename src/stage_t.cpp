@@ -15,10 +15,14 @@ void stage_t::load(const std::string& folder) {
     this->background_music.openFromFile(folder + "/bgm.ogg");
     this->background_music.setLoop(true);
 
-    if (!ban_map.read_from_file(folder +  "/map.txt")) {
+    if (!this->ban_map.read_from_file(folder +  "/map.txt")) {
         printf("Error loading 'rabbit.gob', aborting...\n");
         return;
     }
+}
+
+ban_map_t& stage_t::get_map() {
+    return this->ban_map;
 }
 
 void stage_t::draw_background(sf::RenderTarget& target) {

@@ -210,7 +210,7 @@ void game_manager_t::init_players()
     for (auto c1 = 0; c1 < 4; c1++) {
         //create bunnies randomly in the menu screen
         auto player = player_t{c1};
-        player.position = screen_position_t{rnd(150), (160L + c1 * 2)};
+        player.position = screen_position_t{rnd(150), (160 + c1 * 2)};
         player.x_add = 0;
         player.y_add = 0;
         player.direction = rnd(2);

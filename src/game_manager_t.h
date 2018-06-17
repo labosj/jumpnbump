@@ -16,14 +16,14 @@ class game_manager_t {
 public:
     sf::Clock clock;
     int frame_counter = 0;
-    sf::RenderWindow window;
+    sf::RenderWindow& window;
 
     sf::Texture object_texture;
     sf::Texture rabbit_texture;
     sf::Texture background_texture;
     sf::Texture foreground_texture;
 
-    void init_window();
+    game_manager_t(sf::RenderWindow& window);
 
     void init_textures();
 

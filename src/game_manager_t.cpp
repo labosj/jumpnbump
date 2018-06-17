@@ -16,8 +16,7 @@
 
 std::unique_ptr<game_manager_t> external_game_manager = nullptr;
 
-void game_manager_t::init_window() {
-    this->window.create(sf::VideoMode(400, 256), "My window");
+game_manager_t::game_manager_t(sf::RenderWindow& window) :window(window) {
 }
 
 void game_manager_t::init_textures() {

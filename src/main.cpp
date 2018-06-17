@@ -45,6 +45,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "game_manager_t.h"
+#include "application_t.h"
 
 int endscore_reached;
 
@@ -164,8 +165,9 @@ static int menu_loop() {
 int main(int argc, char *argv[]) {
 
 
+    application_t application;
     int result;
-    if (init_program(argc, argv) == 0) {
+    if (application.init() ) {
         result = menu_loop();
 
     }
@@ -176,7 +178,6 @@ int main(int argc, char *argv[]) {
 
 int init_level() {
 
-    external_game_manager->init_window();
     external_game_manager->init_textures();
     external_game_manager->init_deprecated_data();
     init_players();
@@ -210,17 +211,5 @@ int init_level() {
     return 0;
 
 }
-
-int init_program(int argc, char *argv[]) {
-
-
-    external_game_manager.reset(new game_manager_t);
-
-    srand(time(NULL));
-
-    return 0;
-
-}
-
 
 

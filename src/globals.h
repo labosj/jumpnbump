@@ -56,8 +56,6 @@
 #define OBJ_ANIM_FLESH_TRACE 7
 
 int init_level();
-int init_program(int argc, char *argv[]);
-
 
 
 #endif

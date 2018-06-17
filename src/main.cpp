@@ -25,6 +25,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include "sound_manager_t.h"
 #include "globals.h"
 #include "gob_t.h"
 #include "anim_t.h"
@@ -34,30 +35,21 @@
 #include "data.h"
 #include "ban_map.h"
 #include <string>
-#include <fcntl.h>
-#include <unistd.h>
-#include "sdl/gfx.h"
 #include "object_t.h"
 #include "anim_t.h"
-#include "joy_t.h"
 #include "main_info.h"
 #include "objects_t.h"
+#include "sound_manager_t.h"
+#include "game_manager_t.h"
 
-#ifndef M_PI
-#define M_PI		3.14159265358979323846
-#endif
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
+#include "game_manager_t.h"
+
 int endscore_reached;
 
 
-unsigned char *datafile_buffer = nullptr;
-
-joy_t joy;
-
-leftovers_t leftovers;
-
-int pogostick, bunnies_in_space, jetpack, blood_is_thicker_than_water;
-
-int client_player_num = -1;
+int pogostick, bunnies_in_space, jetpack;
 
 void serverSendKillPacket(int killer, int victim) {
     int c1 = killer;
@@ -89,13 +81,10 @@ void serverSendKillPacket(int killer, int victim) {
                 objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                            (rnd(65535) - 32768) * 3, 0, 79);
         }
-        dj_play_sfx(SFX_DEATH, (unsigned short) (SFX_DEATH_FREQ + rnd(2000) - 1000), 64, 0, -1);
+        external_sound_manager->play_sfx_death();
 
 
         players[c1].count_kill(c2);
-        if (players[c1].bumps >= JNB_END_SCORE) {
-            endscore_reached = 1;
-        }
     }
 }
 
@@ -103,25 +92,20 @@ static void game_loop(void) {
 
     int update_count = 1;
     int end_loop_flag = 0;
-    int i;
 
-    dj_ready_mod(datafile_buffer);
-    dj_set_mod_volume((char) 30);
-    dj_set_sfx_volume((char) 64);
-    dj_start_mod();
+    external_game_manager->reset_frames();
 
-    intr_sysupdate();
+    external_game_manager->process_input();
 
     endscore_reached = 0;
 
-    //set_blood_is_thicker_than_water();
-    while (true) {
+    while (external_game_manager->window.isOpen()) {
         while (update_count) {
-
+/*
             if (endscore_reached || (key_pressed(1) == 1)) {
                 end_loop_flag = 1;
             }
-
+*/
 
             steer_players();
 
@@ -134,18 +118,9 @@ static void game_loop(void) {
 
 
             if (update_count == 1) {
+                external_game_manager->draw();
 
-                for (int i = 0 ; i < players.size(); i++) {
-                    main_info.pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
-                }
 
-                draw_begin();
-
-                main_info.pobs.draw();
-                leftovers.draw();
-                flippage();
-
-                draw_end();
 
 
             }
@@ -153,7 +128,9 @@ static void game_loop(void) {
             update_count--;
         }
 
-        update_count = intr_sysupdate();
+        external_game_manager->process_input();
+        update_count = external_game_manager->get_elapsed_frames();
+
 
         if (end_loop_flag == 1)
             break;
@@ -163,57 +140,46 @@ static void game_loop(void) {
 
 static int menu_loop() {
 
-        init_players();
 
-        if (init_level() != 0) {
-            deinit_level();
-        }
+    external_sound_manager.reset(new sound_manager_t);
+
+    external_sound_manager->load_sfx();
+    external_sound_manager->load_music();
+    external_sound_manager->play_music();
+
+        init_level();
+        printf("hola como te va");
 
 
-        bunnies_in_space = jetpack = pogostick = blood_is_thicker_than_water = 0;
+
+        bunnies_in_space = jetpack = pogostick = 0;
         //blood_is_thicker_than_water = 1; HERE IS TO MOD THE CHEATS
 
         game_loop();
 
-        dj_stop_sfx_channel(4);
-
-        deinit_level();
 
 }
 
 
 int main(int argc, char *argv[]) {
+
+
     int result;
-
     if (init_program(argc, argv) == 0) {
-
         result = menu_loop();
 
     }
 
     return result;
+
 }
 
 int init_level() {
 
-    unsigned char *background_pic = reinterpret_cast<unsigned char *>(malloc(JNB_WIDTH * JNB_HEIGHT));
-    unsigned char *mask_pic = reinterpret_cast<unsigned char *>(malloc(JNB_WIDTH * JNB_HEIGHT));
-
-    memset(mask_pic, 0, JNB_WIDTH * JNB_HEIGHT);
-
-    if (read_pcx("/home/edwin/Projects/jumpnbump/data/level.pcx", background_pic, JNB_WIDTH * JNB_HEIGHT, true) != 0) {
-        main_info.error_str = "Error loading 'level.pcx', aborting...\n";
-        return 1;
-    }
-    register_background(background_pic);
-
-    if (read_pcx("/home/edwin/Projects/jumpnbump/data/mask.pcx", mask_pic, JNB_WIDTH * JNB_HEIGHT) != 0) {
-        main_info.error_str = "Error loading 'mask.pcx', aborting...\n";
-        return 1;
-    }
-    register_mask(mask_pic);
-    free(background_pic);
-    free(mask_pic);
+    external_game_manager->init_window();
+    external_game_manager->init_textures();
+    external_game_manager->init_deprecated_data();
+    init_players();
 
     for (auto& player : players) {
             player.reset_kills();
@@ -245,186 +211,12 @@ int init_level() {
 
 }
 
-
-void deinit_level(void) {
-
-    dj_stop_mod();
-}
-
-
-#ifndef PATH_MAX
-#define PATH_MAX 1024
-#endif
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
-static void preread_datafile(const std::string& fname) {
-    int fd = 0;
-    int len;
-
-
-    fd = open(fname.c_str(), O_RDONLY | O_BINARY);
-    if (fd == -1) {
-        fprintf(stderr, "can't open %s:", fname.c_str());
-        perror("");
-        exit(42);
-    }
-
-    len = filelength(fd);
-    datafile_buffer = (unsigned char *) malloc(len);
-    if (datafile_buffer == nullptr) {
-        perror("malloc()");
-        close(fd);
-        exit(42);
-    }
-
-    if (read(fd, datafile_buffer, len) != len) {
-        perror("read()");
-        close(fd);
-        exit(42);
-    }
-
-    close(fd);
-}
-
-
 int init_program(int argc, char *argv[]) {
-    unsigned char *handle = nullptr;
-    int load_flag = 0;
-    main_info.music_no_sound =0;
-    main_info.no_sound = 0;
+
+
+    external_game_manager.reset(new game_manager_t);
 
     srand(time(NULL));
-
-    std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
-
-    if (argc > 1) {
-        for (auto c1 = 1; c1 < argc; c1++) {
-            if (stricmp(argv[c1], "-nosound") == 0)
-                main_info.no_sound = 1;
-            else if (stricmp(argv[c1], "-musicnosound") == 0)
-                main_info.music_no_sound = 1;
-            else if (stricmp(argv[c1], "-nomusic") == 0);
-            else if (stricmp(argv[c1], "-nogore") == 0)
-                main_info.gore = false;
-            else if (stricmp(argv[c1], "-nojoy") == 0)
-                main_info.joy_enabled = 0;
-             else if (stricmp(argv[c1], "-players") == 0) {
-                if (c1 < (argc - 1)) {
-                    if (client_player_num < 0)
-                        client_player_num = atoi(argv[c1 + 1]);
-                }
-            } else if (strstr(argv[1], "-v")) {
-                printf("jumpnbump %s compiled with", JNB_VERSION);
-                printf(" network support.\n");
-                return 1;
-            } else if (strstr(argv[1], "-h")) {
-                printf("Usage: jumpnbump [OPTION]...\n");
-                printf("\n");
-                printf("  -h                       this help\n");
-                printf("  -v                       print version\n");
-                printf("  -dat level.dat           play a different level\n");
-                printf("  -players num              set main players to num (0-3). Needed for networking\n");
-                printf("  -fullscreen              run in fullscreen mode\n");
-                printf("  -nosound                 play without sound\n");
-                printf("  -nogore                  play without blood\n");
-                printf("  -mirror                  play with mirrored level\n");
-                printf("  -scaleup                 play with doubled resolution (800x512)\n");
-                printf("  -musicnosound            play with music but without sound\n");
-                printf("\n");
-                return 1;
-            }
-        }
-    }
-
-    preread_datafile(datfile_name);
-
-    player_anims = {
-            {0, {{ 0, 0x7fff}}},
-            {0, {{0, 4}, {1, 4}, {2, 4}, {3, 4}}},
-            {0, {{4, 0x7fff}}},
-            {2, {{5, 8}, {6, 10}, {7, 3}, {6, 3}}},
-            {0, {{6, 0x7fff}}},
-            {1, {{5, 8}, {4, 0x7fff}}},
-            {0, {{8, 5}}}
-    };
-
-
-    if ((handle = dat_open("rabbit.gob", datafile_buffer)) == nullptr) {
-        main_info.error_str = "Error loading 'rabbit.gob', aborting...\n";
-        return 1;
-    }
-    if (register_gob(handle, rabbit_gobs, dat_filelen("rabbit.gob", datafile_buffer))) {
-        /* error */
-        return 1;
-    }
-
-    if ((handle = dat_open("objects.gob", datafile_buffer)) == nullptr) {
-        main_info.error_str = "Error loading 'objects.gob', aborting...\n";
-        return 1;
-    }
-    if (register_gob(handle, object_gobs, dat_filelen("objects.gob", datafile_buffer))) {
-        /* error */
-        return 1;
-    }
-
-    if (!ban_map.read_from_file("/home/edwin/Projects/jumpnbump/data/levelmap.txt")) {
-        main_info.error_str = "Error loading 'levelmap.txt', aborting...\n";
-        return 1;
-    }
-
-    open_screen();
-    dj_init();
-
-    if (main_info.no_sound == 0) {
-
-        dj_set_mixing_freq(20000);
-
-        dj_set_num_sfx_channels(5);
-        dj_set_sfx_volume(64);
-
-        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/jump.smp", SFX_JUMP) != 0) {
-            main_info.error_str = "Error loading 'jump.smp', aborting...\n";
-            return 1;
-        }
-
-        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/death.smp", SFX_DEATH) != 0) {
-            main_info.error_str = "Error loading 'death.smp', aborting...\n";
-            return 1;
-        }
-
-        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/spring.smp", SFX_SPRING) != 0) {
-            main_info.error_str = "Error loading 'spring.smp', aborting...\n";
-            return 1;
-        }
-
-        if (dj_load_sfx("/home/edwin/Projects/jumpnbump/data/splash.smp", SFX_SPLASH) != 0) {
-            main_info.error_str = "Error loading 'splash.smp', aborting...\n";
-            return 1;
-        }
-    }
-
-    init_inputs(main_info);
-
-
-    if (main_info.joy_enabled == 1) {
-            if ((handle = dat_open("calib.dat", datafile_buffer)) == 0) {
-                main_info.error_str = "Error loading 'calib.dat', aborting...\n";
-                return 1;
-            }
-            joy.calib_data.x1 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.x2 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.x3 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.y1 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.y2 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-            handle += 4;
-            joy.calib_data.y3 = (handle[0]) + (handle[1] << 8) + (handle[2] << 16) + (handle[3] << 24);
-    }
 
     return 0;
 

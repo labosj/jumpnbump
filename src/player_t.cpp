@@ -9,14 +9,14 @@
 #include "util.h"
 #include <iostream>
 #include "objects_t.h"
+#include "sound_manager_t.h"
+#include "main_info.h"
 
 std::vector<player_t> players;
 
 extern int jetpack;
 extern int bunnies_in_space;
 extern int pogostick;
-extern int blood_is_thicker_than_water;
-extern main_info_t main_info;
 
 void player_t::set_position(const position_t &position) {
     this->position = position;
@@ -195,7 +195,8 @@ void player_t::check_spring_jump() {
         this->set_anim(2);
         this->jump_ready = 0;
         this->jump_abort = 0;
-        dj_play_sfx(SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
+        external_sound_manager->play_sfx_spring();
+        /*dj_play_sfx(SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
     }
 }
 
@@ -216,7 +217,9 @@ void player_t::check_ceiling() {
 
 void steer_players() {
 
-    update_player_actions();
+    for ( auto& player : players) {
+        player.update_movement();
+    }
 
     for (auto& player : players) {
             if (player.is_alive()) {
@@ -255,12 +258,19 @@ void steer_players() {
                             player.set_anim(2);
                             player.jump_ready = 0;
                             player.jump_abort = 1;
-                            if (pogostick == 0)
-                                dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
-                                            64, 0, -1);
-                            else
-                                dj_play_sfx(SFX_SPRING,
-                                            (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
+                            if (pogostick == 0) {
+                                external_sound_manager->play_sfx_jump();
+                                /*
+                                    dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
+                                                64, 0, -1);
+                                                */
+                            } else {
+                                //external_sound_manager->play_sfx(SFX_SPRING);
+                                external_sound_manager->play_sfx_spring();
+
+                             /*   dj_play_sfx(SFX_SPRING,
+                                            (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
+                            }
                         }
                         /* jump out of water */
                         if (ban_map.is_in_water(player.get_position())) {
@@ -269,12 +279,13 @@ void steer_players() {
                             player.set_anim(2);
                             player.jump_ready = 0;
                             player.jump_abort = 1;
-                            if (pogostick == 0)
-                                dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
-                                            64, 0, -1);
-                            else
-                                dj_play_sfx(SFX_SPRING,
-                                            (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);
+                            if (pogostick == 0) {
+                                external_sound_manager->play_sfx_jump();
+
+                            } else {
+                                external_sound_manager->play_sfx_spring();
+                            }
+
                         }
                     }
                     /* fall down by gravity */
@@ -326,12 +337,7 @@ void steer_players() {
                                        screen_position
                                        + screen_position_t{9, 15}, 0, 0,
                                        OBJ_ANIM_SPLASH, 0);
-                            if (blood_is_thicker_than_water == 0)
-                                dj_play_sfx(SFX_SPLASH,
-                                            (unsigned short) (SFX_SPLASH_FREQ + rnd(2000) - 1000), 64, 0, -1);
-                            else
-                                dj_play_sfx(SFX_SPLASH,
-                                            (unsigned short) (SFX_SPLASH_FREQ + rnd(2000) - 5000), 64, 0, -1);
+                            external_sound_manager->play_sfx_splash();
                         }
                     }
                     /* slowly move up to water surface */
@@ -424,6 +430,12 @@ void player_t::check_lateral_walls() {
         this->position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
         this->x_add = 0;
     }
+}
+
+void player_t::update_movement() {
+    this->action_left = this->control.left_pressed();
+    this->action_right = this->control.right_pressed();
+    this->action_up = this->control.up_pressed();
 }
 
 void position_player(player_t &player) {
@@ -551,5 +563,33 @@ void init_players()
         player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image;
 
         players.push_back(player);
+    }
+
+    {
+        auto& control = players[0].control;
+        control.up_key = sf::Keyboard::Key::W;
+        control.left_key = sf::Keyboard::Key::A;
+        control.right_key = sf::Keyboard::Key::D;
+    }
+
+    {
+        auto& control = players[1].control;
+        control.up_key = sf::Keyboard::Key::I;
+        control.left_key = sf::Keyboard::Key::J;
+        control.right_key = sf::Keyboard::Key::L;
+    }
+
+    {
+        auto& control = players[2].control;
+        control.up_key = sf::Keyboard::Key::Up;
+        control.left_key = sf::Keyboard::Key::Left;
+        control.right_key = sf::Keyboard::Key::Right;
+    }
+
+    {
+        auto& control = players[3].control;
+        control.up_key = sf::Keyboard::Key::Numpad8;
+        control.left_key = sf::Keyboard::Key::Numpad4;
+        control.right_key = sf::Keyboard::Key::Numpad6;
     }
 }

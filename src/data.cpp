@@ -4,6 +4,8 @@
 
 #include "globals.h"
 #include "data.h"
+#include <fcntl.h>
+#include <unistd.h>
 
 [[deprecated]]
 unsigned char *dat_open(const std::string &file_name, unsigned char *datafile_buffer) {
@@ -91,4 +93,37 @@ int filelength(int handle) {
     }
 
     return buf.st_size;
+}
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
+void preread_datafile(const std::string& fname, unsigned char** datafile_buffer) {
+    int fd = 0;
+    int len;
+
+
+    fd = open(fname.c_str(), O_RDONLY | O_BINARY);
+    if (fd == -1) {
+        fprintf(stderr, "can't open %s:", fname.c_str());
+        perror("");
+        exit(42);
+    }
+
+    len = filelength(fd);
+    *datafile_buffer = (unsigned char *) malloc(len);
+    if (*datafile_buffer == nullptr) {
+        perror("malloc()");
+        close(fd);
+        exit(42);
+    }
+
+    if (read(fd, *datafile_buffer, len) != len) {
+        perror("read()");
+        close(fd);
+        exit(42);
+    }
+
+    close(fd);
 }

@@ -15,5 +15,7 @@ unsigned char *dat_open(const std::string &file_name, unsigned char *datafile_bu
 [[deprecated]]
 int dat_filelen(const std::string & file_name, unsigned char *datafile_buffer);
 
+[[deprecated]]
+void preread_datafile(const std::string& fname, unsigned char **datafile_buffer);
 
 #endif //JUMPNBUMP_DATA_H

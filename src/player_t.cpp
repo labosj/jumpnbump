@@ -604,7 +604,7 @@ void player_t::kill(game_manager_t& game_manager, int killer, int victim) {
     players[c2].dead_flag = 1;
     if (players[c2].anim_handler.anim != 6) {
         players[c2].set_anim(6);
-        if (main_info.gore ) {
+        if (game_manager.gore ) {
             auto screen_position = screen_position_t{players[victim].get_position()} + screen_position_t{6 + rnd(5), 6 + rnd(5)};
             for (c4 = 0; c4 < 6; c4++)
                 objects.add(object_t::Type::FUR, screen_position, (rnd(65535) - 32768) * 3,

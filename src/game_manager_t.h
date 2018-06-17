@@ -19,6 +19,8 @@ public:
     int frame_counter = 0;
     sf::RenderWindow& window;
 
+    bool gore = true;
+
     sf::Texture object_texture;
     sf::Texture rabbit_texture;
     sf::Texture background_texture;

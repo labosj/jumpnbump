@@ -13,12 +13,9 @@ struct gob_t;
 
 struct main_info_t {
 
-	bool gore = true;
-	std::string error_str;
 
 	pobs_t pobs;
 
-	~main_info_t();
 };
 
 extern main_info_t main_info;

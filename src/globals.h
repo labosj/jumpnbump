@@ -46,8 +46,6 @@
 #include "object_t.h"
 
 
-#define JNB_END_SCORE 100
-
 #define OBJ_ANIM_SPRING 0
 #define OBJ_ANIM_SPLASH 1
 #define OBJ_ANIM_SMOKE 2

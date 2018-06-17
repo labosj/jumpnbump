@@ -564,4 +564,32 @@ void init_players()
 
         players.push_back(player);
     }
+
+    {
+        auto& control = players[0].control;
+        control.up_key = sf::Keyboard::Key::W;
+        control.left_key = sf::Keyboard::Key::A;
+        control.right_key = sf::Keyboard::Key::D;
+    }
+
+    {
+        auto& control = players[1].control;
+        control.up_key = sf::Keyboard::Key::I;
+        control.left_key = sf::Keyboard::Key::J;
+        control.right_key = sf::Keyboard::Key::L;
+    }
+
+    {
+        auto& control = players[2].control;
+        control.up_key = sf::Keyboard::Key::Up;
+        control.left_key = sf::Keyboard::Key::Left;
+        control.right_key = sf::Keyboard::Key::Right;
+    }
+
+    {
+        auto& control = players[3].control;
+        control.up_key = sf::Keyboard::Key::Numpad8;
+        control.left_key = sf::Keyboard::Key::Numpad4;
+        control.right_key = sf::Keyboard::Key::Numpad6;
+    }
 }

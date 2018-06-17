@@ -85,9 +85,6 @@ void serverSendKillPacket(int killer, int victim) {
 
 
         players[c1].count_kill(c2);
-        if (players[c1].bumps >= JNB_END_SCORE) {
-            endscore_reached = 1;
-        }
     }
 }
 

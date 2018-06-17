@@ -110,7 +110,6 @@ void game_manager_t::process_input() {
     sf::Event event;
     while (this->window.pollEvent(event))
     {
-        // Close window: exit
         if (event.type == sf::Event::Closed)
             this->window.close();
         if ( event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased ) {
@@ -123,33 +122,4 @@ void game_manager_t::process_input() {
             }
         }
     }
-/*
-        while (SDL_PollEvent(&e)) {
-            switch (e.type) {
-                case SDL_QUIT:
-                    SDL_Quit();
-                    exit(1);
-                    break;
-                case SDL_KEYDOWN:
-                case SDL_KEYUP:
-                    if (e.key.repeat != 0) {
-                        continue;
-                    }
-                    switch (e.key.keysym.scancode) {
-                        default:
-                            e.key.keysym.scancode = static_cast<SDL_Scancode>(e.key.keysym.scancode & 0x7fff);
-                            if (e.type == SDL_KEYUP)
-                                e.key.keysym.scancode = static_cast<SDL_Scancode>(e.key.keysym.scancode | 0x8000);
-                            addkey(e.key.keysym.scancode);
-                            break;
-                            /*
-                    }
-                    break;
-                default:
-                    break;
-            }
-            i++;
-        }
-
-    }*/
 }

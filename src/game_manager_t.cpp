@@ -15,8 +15,9 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include "objects_t.h"
 #include "util.h"
+#include "sound_manager_t.h"
 
-std::unique_ptr<game_manager_t> external_game_manager = nullptr;
+int pogostick, bunnies_in_space, jetpack;
 
 game_manager_t::game_manager_t(sf::RenderWindow& window) :window(window) {
 }
@@ -66,8 +67,8 @@ void game_manager_t::draw() {
         main_info.pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
     }
 
-    main_info.pobs.draw();
-    leftovers.draw();
+    main_info.pobs.draw(*this);
+    leftovers.draw(*this);
 
     sf::Sprite foreground(this->foreground_texture);
     this->window.draw(foreground);
@@ -80,7 +81,7 @@ void game_manager_t::draw_pob(const pob_t& pob)
 {
     auto& image = pob.pob_data->images[pob.image];
     image.setPosition(pob.position.x, pob.position.y);
-    external_game_manager->window.draw(image);
+    this->window.draw(image);
 
 }
 
@@ -125,8 +126,8 @@ void game_manager_t::process_input() {
 
 bool game_manager_t::init() {
 
-        external_game_manager->init_textures();
-        external_game_manager->init_deprecated_data();
+        this->init_textures();
+        this->init_deprecated_data();
         init_players();
 
         for (auto& player : players) {
@@ -157,4 +158,56 @@ bool game_manager_t::init() {
 
         return true;
 
+}
+
+void game_manager_t::loop() {
+
+
+    external_sound_manager.reset(new sound_manager_t);
+
+    external_sound_manager->load_sfx();
+    external_sound_manager->load_music();
+    external_sound_manager->play_music();
+
+    this->init();
+    printf("hola como te va");
+
+
+
+    bunnies_in_space = jetpack = pogostick = 0;
+
+    int update_count = 1;
+
+    this->reset_frames();
+
+    this->process_input();
+
+    while (this->window.isOpen()) {
+        while (update_count) {
+
+            steer_players();
+
+
+
+            collision_check();
+
+
+            objects.update();
+
+
+            if (update_count == 1) {
+                this->draw();
+
+
+
+
+            }
+
+            update_count--;
+        }
+
+        this->process_input();
+        update_count = this->get_elapsed_frames();
+
+    }
 }

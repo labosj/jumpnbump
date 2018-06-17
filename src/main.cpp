@@ -47,66 +47,6 @@
 #include "game_manager_t.h"
 #include "application_t.h"
 
-int pogostick, bunnies_in_space, jetpack;
-
-static void game_loop(void) {
-
-
-    external_sound_manager.reset(new sound_manager_t);
-
-    external_sound_manager->load_sfx();
-    external_sound_manager->load_music();
-    external_sound_manager->play_music();
-
-    external_game_manager->init();
-    printf("hola como te va");
-
-
-
-    bunnies_in_space = jetpack = pogostick = 0;
-
-    int update_count = 1;
-    int end_loop_flag = 0;
-
-    external_game_manager->reset_frames();
-
-    external_game_manager->process_input();
-
-    while (external_game_manager->window.isOpen()) {
-        while (update_count) {
-/*
-            if (endscore_reached || (key_pressed(1) == 1)) {
-                end_loop_flag = 1;
-            }
-*/
-
-            steer_players();
-
-
-
-            collision_check();
-
-
-            objects.update();
-
-
-            if (update_count == 1) {
-                external_game_manager->draw();
-
-
-
-
-            }
-
-            update_count--;
-        }
-
-        external_game_manager->process_input();
-        update_count = external_game_manager->get_elapsed_frames();
-
-    }
-}
-
 
 int main(int argc, char *argv[]) {
 
@@ -114,7 +54,8 @@ int main(int argc, char *argv[]) {
     application_t application;
     int result;
     if (application.init() ) {
-        game_loop();
+        auto game_manager= game_manager_t{application.get_window()};
+        game_manager.loop();
 
     }
 

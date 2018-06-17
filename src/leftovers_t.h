@@ -9,6 +9,7 @@
 #include "pob_t.h"
 
 class screen_position_t;
+class game_manager_t;
 
 struct gob_t;
 
@@ -20,7 +21,7 @@ private:
 public:
     void add(const screen_position_t &position, int image, gob_t *pob_data);
 
-    void draw();
+    void draw(game_manager_t& game_manager);
 };
 
 extern leftovers_t leftovers;

@@ -14,8 +14,8 @@ void leftovers_t::add(const screen_position_t &position, int image, gob_t *pob_d
     this->pobs.emplace_back(position, image, pob_data);
 }
 
-void leftovers_t::draw() {
+void leftovers_t::draw(game_manager_t& game_manager) {
     for (const auto& pob : this->pobs)
-        external_game_manager->draw_pob(pob);
+        game_manager.draw_pob(pob);
 
 }

@@ -16,6 +16,8 @@ class application_t {
 private:
     sf::RenderWindow window;
 public:
+
+    sf::RenderWindow& get_window() { return this->window; }
     bool init();
 };
 

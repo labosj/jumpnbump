@@ -9,8 +9,6 @@
 bool application_t::init() {
     this->window.create(sf::VideoMode(400, 256), "My window");
 
-    external_game_manager.reset(new game_manager_t(this->window));
-
     srand(time(NULL));
 
     return true;

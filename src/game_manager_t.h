@@ -38,8 +38,9 @@ public:
     void process_input();
 
     bool init();
+
+    void loop();
 };
 
-extern std::unique_ptr<game_manager_t> external_game_manager;
 
 #endif //JUMPNBUMP_GAME_MANAGER_T_H

@@ -15,13 +15,17 @@ public:
     bool left = false;
     bool right = false;
 
+    sf::Keyboard::Key up_key =  sf::Keyboard::Key::Up;
+    sf::Keyboard::Key left_key = sf::Keyboard::Key::Left;
+    sf::Keyboard::Key right_key = sf::Keyboard::Key::Right;
+
     void update(const sf::Event& event) {
-        if ( event.key.code == sf::Keyboard::Key::Left) {
+        if ( event.key.code ==  this->left_key) {
             this->left = this->toBool(event);
-        } else if ( event.key.code == sf::Keyboard::Key::Right) {
+        } else if ( event.key.code ==  this->right_key) {
             this->right = this->toBool(event);
 
-        } else if ( event.key.code == sf::Keyboard::Key::Up ) {
+        } else if ( event.key.code == this->up_key ) {
             this->up = this->toBool(event);
         }
 

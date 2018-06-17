@@ -6,11 +6,6 @@
 #include "globals.h"
 #include "util.h"
 
-void sound_manager_t::load_music() {
-    this->music.openFromFile("/home/edwin/Projects/jumpnbump/data/maps/default/bgm.ogg");
-    this->music.setLoop(true);
-}
-
 void sound_manager_t::load_sfx() {
     this->jump_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/jump.ogg");
 
@@ -21,9 +16,6 @@ void sound_manager_t::load_sfx() {
     this->splash_buffer.loadFromFile("/home/edwin/Projects/jumpnbump/data/splash.ogg");
 }
 
-void sound_manager_t::play_music() {
-    this->music.play();
-}
 
 void sound_manager_t::play_sfx_spring() {
     auto sound = sf::Sound{this->spring_buffer};

@@ -6,7 +6,7 @@
 #include <utility>
 #include <algorithm>
 #include <iostream>
-#include "ban_map.h"
+#include "ban_map_t.h"
 #include "screen_position_t.h"
 #include "util.h"
 

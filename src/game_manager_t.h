@@ -12,6 +12,7 @@
 #include "pobs_t.h"
 #include "player_t.h"
 #include "leftovers_t.h"
+#include "stage_t.h"
 #include <memory>
 
 class pob_t;
@@ -29,8 +30,8 @@ public:
 
     sf::Texture object_texture;
     sf::Texture rabbit_texture;
-    sf::Texture foreground_texture;
-    sf::Texture foreground_2_texture;
+
+    stage_t stage;
 
     sound_manager_t sound_manager;
     pobs_t pobs;

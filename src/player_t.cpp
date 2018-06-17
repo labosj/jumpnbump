@@ -4,7 +4,7 @@
 
 #include "globals.h"
 #include "player_t.h"
-#include "ban_map.h"
+#include "ban_map_t.h"
 #include "anim_t.h"
 #include "util.h"
 #include <iostream>

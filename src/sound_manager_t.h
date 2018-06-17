@@ -14,16 +14,11 @@ public:
     sf::SoundBuffer spring_buffer;
     sf::SoundBuffer splash_buffer;
 
-    sf::Music music;
-
     std::vector<sf::Sound> sounds;
 
 
 
-    void load_music();
     void load_sfx();
-
-    void play_music();
 
     void play_sfx(const sf::Sound& new_sound);
     void play_sfx_spring();

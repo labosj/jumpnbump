@@ -62,7 +62,7 @@
 
 9 Jun 2002 - 1.3
    - Added -mirror commandline option to play the level mirrored
-   - Deleting temporary music file
+   - Deleting temporary background_music file
 
 17 Apr 2002 - 1.2
    - MacOS X fixes
@@ -70,7 +70,7 @@
 
 24 Feb 2002 - 1.1
    - fixed timing problems
-   - fixed crash when temporary music can't be written
+   - fixed crash when temporary background_music can't be written
 
 22 Feb 2002 - 1.0
    - working sound

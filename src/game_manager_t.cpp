@@ -8,7 +8,7 @@
 #include "player_t.h"
 #include "anim_t.h"
 #include "globals.h"
-#include "ban_map.h"
+#include "ban_map_t.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include "objects_t.h"
@@ -21,8 +21,6 @@ game_manager_t::game_manager_t(sf::RenderWindow& window) :window(window) {
 void game_manager_t::init_textures() {
 
     this->object_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/objects.png");
-    this->foreground_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/maps/default/foreground.png");
-    this->foreground_2_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/maps/default/foreground_2.png");
     this->rabbit_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/rabbit.png");
 
 }
@@ -45,18 +43,12 @@ void game_manager_t::init_deprecated_data() {
 
     object_gobs.add("/home/edwin/Projects/jumpnbump/data/objects.json", this->object_texture);
 
-
-    if (!ban_map.read_from_file("/home/edwin/Projects/jumpnbump/data/maps/default/map.txt")) {
-        printf("Error loading 'rabbit.gob', aborting...\n");
-        return;
-    }
 }
 
 void game_manager_t::draw() {
     this->window.clear();
-    sf::Sprite background(this->foreground_texture);
 
-    this->window.draw(background);
+    this->stage.draw_background(this->window);
 
 
     for (int i = 0 ; i < players.size(); i++) {
@@ -66,8 +58,7 @@ void game_manager_t::draw() {
     this->pobs.draw(*this);
     leftovers.draw(*this);
 
-    sf::Sprite foreground(this->foreground_2_texture);
-    this->window.draw(foreground);
+    this->stage.draw_foreground(this->window);
 
     this->window.display();
 
@@ -122,6 +113,7 @@ void game_manager_t::process_input() {
 
 bool game_manager_t::init() {
 
+        this->stage.load("/home/edwin/Projects/jumpnbump/data/maps/default");
         this->init_textures();
         this->init_deprecated_data();
         this->init_players();
@@ -159,12 +151,10 @@ bool game_manager_t::init() {
 void game_manager_t::loop() {
 
 
-    this->sound_manager.load_sfx();
-    this->sound_manager.load_music();
-    this->sound_manager.play_music();
-
     this->init();
-    printf("hola como te va");
+
+    this->sound_manager.load_sfx();
+    this->stage.play_bgm();
 
 
     int update_count = 1;

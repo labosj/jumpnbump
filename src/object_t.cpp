@@ -4,7 +4,7 @@
 
 #include "object_t.h"
 
-#include "ban_map.h"
+#include "ban_map_t.h"
 #include "util.h"
 #include "globals.h"
 #include "gob_t.h"

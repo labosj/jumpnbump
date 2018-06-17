@@ -30,8 +30,6 @@ void game_manager_t::init_textures() {
 }
 
 void game_manager_t::init_deprecated_data() {
-    std::string datfile_name = "/home/edwin/Projects/jumpnbump/data/jumpbump.dat";
-
     player_anims = {
             {0, {{ 0, 0x7fff}}},
             {0, {{0, 4}, {1, 4}, {2, 4}, {3, 4}}},

@@ -117,11 +117,7 @@ void game_manager_t::process_input() {
             if ( event.key.code == sf::Keyboard::Key::Escape ) {
                 this->window.close();
             } else {
-                if (event.type == sf::Event::KeyReleased)
-                    addkey(event.key.code | 0x8000);
-                else {
-                    addkey(event.key.code | 0x7fff);
-                }
+                //here goes the processing
             }
         }
     }

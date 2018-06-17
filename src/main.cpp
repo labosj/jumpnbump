@@ -37,7 +37,6 @@
 #include <string>
 #include "object_t.h"
 #include "anim_t.h"
-#include "joy_t.h"
 #include "main_info.h"
 #include "objects_t.h"
 #include "sound_manager_t.h"
@@ -47,12 +46,8 @@
 #include <SFML/Graphics.hpp>
 #include "game_manager_t.h"
 
-#ifndef M_PI
-#define M_PI		3.14159265358979323846
-#endif
 int endscore_reached;
 
-joy_t joy;
 
 int pogostick, bunnies_in_space, jetpack;
 
@@ -109,11 +104,11 @@ static void game_loop(void) {
 
     while (external_game_manager->window.isOpen()) {
         while (update_count) {
-
+/*
             if (endscore_reached || (key_pressed(1) == 1)) {
                 end_loop_flag = 1;
             }
-
+*/
 
             steer_players();
 

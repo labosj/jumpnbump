@@ -10,14 +10,13 @@
 #include <iostream>
 #include "objects_t.h"
 #include "sound_manager_t.h"
+#include "main_info.h"
 
 std::vector<player_t> players;
 
 extern int jetpack;
 extern int bunnies_in_space;
 extern int pogostick;
-extern int blood_is_thicker_than_water;
-extern main_info_t main_info;
 
 void player_t::set_position(const position_t &position) {
     this->position = position;
@@ -218,7 +217,9 @@ void player_t::check_ceiling() {
 
 void steer_players() {
 
-    update_player_actions();
+    for ( auto& player : players) {
+        player.update_movement();
+    }
 
     for (auto& player : players) {
             if (player.is_alive()) {
@@ -429,6 +430,12 @@ void player_t::check_lateral_walls() {
         this->position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
         this->x_add = 0;
     }
+}
+
+void player_t::update_movement() {
+    this->action_left = this->control.left_pressed();
+    this->action_right = this->control.right_pressed();
+    this->action_up = this->control.up_pressed();
 }
 
 void position_player(player_t &player) {

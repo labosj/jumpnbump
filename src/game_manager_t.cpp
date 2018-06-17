@@ -15,8 +15,6 @@
 #include "util.h"
 #include "sound_manager_t.h"
 
-int pogostick, bunnies_in_space, jetpack;
-
 game_manager_t::game_manager_t(sf::RenderWindow& window) :window(window) {
 }
 
@@ -168,9 +166,6 @@ void game_manager_t::loop() {
     this->init();
     printf("hola como te va");
 
-
-
-    bunnies_in_space = jetpack = pogostick = 0;
 
     int update_count = 1;
 

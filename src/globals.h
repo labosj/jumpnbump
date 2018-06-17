@@ -55,7 +55,5 @@
 #define OBJ_ANIM_PINK_BUTFLY_LEFT 6
 #define OBJ_ANIM_FLESH_TRACE 7
 
-int init_level();
-
 
 #endif

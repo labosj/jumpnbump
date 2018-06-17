@@ -13,6 +13,7 @@ class game_manager_t;
 
 class objects_t {
 public:
+
     std::vector<object_t> objects;
 
     void update(game_manager_t& game_manager);

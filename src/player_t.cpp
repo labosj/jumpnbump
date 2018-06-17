@@ -13,10 +13,6 @@
 
 std::vector<player_t> players;
 
-extern int jetpack;
-extern int bunnies_in_space;
-extern int pogostick;
-
 void player_t::set_position(const position_t &position) {
     this->position = position;
 }
@@ -126,10 +122,10 @@ void player_t::set_anim(int anim) {
     this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image + this->direction * 9;
 }
 
-void player_t::gravity_fall() {
+void player_t::gravity_fall(game_manager_t& game_manager) {
 
     auto gravity = 32768;
-    if (bunnies_in_space == 0)
+    if (!game_manager.bunnies_in_space)
         gravity = 16384;
 
     this->jump_ready = 1;
@@ -239,9 +235,9 @@ void steer_players(game_manager_t& game_manager) {
                     player_no_action(player);
 
                 }
-                if (jetpack == 0) {
+                if (!game_manager.jetpack) {
                     /* no jetpack */
-                    if (pogostick == 1 || (player.jump_ready == 1 && player.action_up)) {
+                    if (game_manager.pogostick || (player.jump_ready == 1 && player.action_up)) {
 
                         auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
                         auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
@@ -255,7 +251,7 @@ void steer_players(game_manager_t& game_manager) {
                             player.set_anim(2);
                             player.jump_ready = 0;
                             player.jump_abort = 1;
-                            if (pogostick == 0) {
+                            if (!game_manager.pogostick) {
                                 game_manager.sound_manager.play_sfx_jump();
                                 /*
                                     dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
@@ -276,7 +272,7 @@ void steer_players(game_manager_t& game_manager) {
                             player.set_anim(2);
                             player.jump_ready = 0;
                             player.jump_abort = 1;
-                            if (pogostick == 0) {
+                            if (!game_manager.pogostick) {
                                 game_manager.sound_manager.play_sfx_jump();
 
                             } else {
@@ -286,8 +282,8 @@ void steer_players(game_manager_t& game_manager) {
                         }
                     }
                     /* fall down by gravity */
-                    if (pogostick == 0 && (!player.action_up)) {
-                        player.gravity_fall();
+                    if (!game_manager.pogostick && (!player.action_up)) {
+                        player.gravity_fall(game_manager);
                     }
                 } else {
                     /* with jetpack */
@@ -368,7 +364,7 @@ void steer_players(game_manager_t& game_manager) {
                     }
                 } else {
                     if (player.in_water == 0) {
-                        if (bunnies_in_space == 0)
+                        if (!game_manager.bunnies_in_space)
                             player.y_add += 12288;
                         else
                             player.y_add += 6144;

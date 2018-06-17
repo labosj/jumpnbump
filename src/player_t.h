@@ -48,7 +48,7 @@ public:
 		this->bumped[victim.get_id()]++;
 	}
 
-	void gravity_fall();
+	void gravity_fall(game_manager_t& game_manager);
 
 	void check_ceiling();
 

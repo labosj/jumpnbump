@@ -10,7 +10,6 @@
 #include <iostream>
 #include "objects_t.h"
 #include "game_manager_t.h"
-#include "main_info.h"
 
 std::vector<player_t> players;
 

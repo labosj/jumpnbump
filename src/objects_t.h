@@ -8,11 +8,14 @@
 
 #include "object_t.h"
 
+
+class game_manager_t;
+
 class objects_t {
 public:
     std::vector<object_t> objects;
 
-    void update();
+    void update(game_manager_t& game_manager);
 
     void add(object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame);
 

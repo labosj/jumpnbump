@@ -36,7 +36,6 @@
 #include <string>
 #include "object_t.h"
 #include "anim_t.h"
-#include "main_info.h"
 #include "objects_t.h"
 #include "sound_manager_t.h"
 #include "game_manager_t.h"

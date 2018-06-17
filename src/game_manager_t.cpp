@@ -6,7 +6,6 @@
 #include "gob_t.h"
 #include "leftovers_t.h"
 #include "player_t.h"
-#include "main_info.h"
 #include "anim_t.h"
 #include "globals.h"
 #include "ban_map.h"
@@ -63,10 +62,10 @@ void game_manager_t::draw() {
 
 
     for (int i = 0 ; i < players.size(); i++) {
-        main_info.pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
+        this->pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
     }
 
-    main_info.pobs.draw(*this);
+    this->pobs.draw(*this);
     leftovers.draw(*this);
 
     sf::Sprite foreground(this->foreground_texture);
@@ -189,7 +188,7 @@ void game_manager_t::loop() {
             collision_check(*this);
 
 
-            objects.update();
+            objects.update(*this);
 
 
             if (update_count == 1) {

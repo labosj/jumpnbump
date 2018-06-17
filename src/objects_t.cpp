@@ -3,10 +3,10 @@
 //
 
 #include "objects_t.h"
-#include "main_info.h"
 #include "globals.h"
 #include "gob_t.h"
 #include "util.h"
+#include "game_manager_t.h"
 
 objects_t objects;
 
@@ -23,7 +23,7 @@ void objects_t::add(object_t::Type type, const position_t &position, int x_add, 
 
 }
 
-void objects_t::update() {
+void objects_t::update(game_manager_t& game_manager) {
     for (auto& object : this->objects) {
 
         if (object.is_used()) {
@@ -31,23 +31,23 @@ void objects_t::update() {
                 case object_t::Type::SPRING:
                     object.update_spring();
                     if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
+                        game_manager.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
                 case object_t::Type::SPLASH:
                     object.update_splash();
                     if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
+                        game_manager.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
                 case object_t::Type::SMOKE:
                     object.update_smoke();
                     if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
+                        game_manager.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
                 case object_t::Type::YEL_BUTFLY:
                 case object_t::Type::PINK_BUTFLY:
                     object.update_butterfly();
                     if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
+                        game_manager.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
                 case object_t::Type::FUR:
                     object.update_fur();
@@ -59,19 +59,19 @@ void objects_t::update() {
                             s1 = 0;
                         if (s1 > 7)
                             s1 = 7;
-                        main_info.pobs.add(object.get_position(), object.anim_handler.frame + s1, &object_gobs);
+                        game_manager.pobs.add(object.get_position(), object.anim_handler.frame + s1, &object_gobs);
                     }
                     break;
                 case object_t::Type::FLESH:
                     object.update_flesh();
                     if (object.is_used())
-                        main_info.pobs.add(object.get_position(), object.anim_handler.frame, &object_gobs);
+                        game_manager.pobs.add(object.get_position(), object.anim_handler.frame, &object_gobs);
                     break;
                 case object_t::Type::FLESH_TRACE:
                     object.update_flesh_trace();
 
                     if (object.is_used() )
-                        main_info.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
+                        game_manager.pobs.add(object.get_position(), object.anim_handler.image, &object_gobs);
                     break;
             }
         }

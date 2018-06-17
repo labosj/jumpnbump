@@ -19,7 +19,6 @@ add_executable(jumpnbump
         src/util.cpp
         src/player_t.cpp
         src/ban_map.cpp
-        src/main_info.cpp
         src/gob_t.cpp
         src/main.cpp
         src/leftovers_t.cpp

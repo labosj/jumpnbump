@@ -9,6 +9,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "sound_manager_t.h"
+#include "pobs_t.h"
 #include <memory>
 
 class pob_t;
@@ -27,6 +28,7 @@ public:
     sf::Texture foreground_texture;
 
     sound_manager_t sound_manager;
+    pobs_t pobs;
 
     game_manager_t(sf::RenderWindow& window);
 

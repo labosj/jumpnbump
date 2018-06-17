@@ -127,7 +127,7 @@ bool game_manager_t::init() {
         this->init_players();
 
         for (auto& player : this->players) {
-            player.reset_kills(*this);
+            player.reset_kills();
             position_player(*this, player);
         }
 
@@ -180,7 +180,7 @@ void game_manager_t::loop() {
 
 
 
-            collision_check(*this);
+            this->collision_check();
 
 
             objects.update(*this);
@@ -209,7 +209,7 @@ void game_manager_t::init_players()
     this->players.clear();
     for (auto c1 = 0; c1 < 4; c1++) {
         //create bunnies randomly in the menu screen
-        auto player = player_t{c1};
+        auto player = player_t{*this, c1};
         player.position = screen_position_t{rnd(150), (160 + c1 * 2)};
         player.x_add = 0;
         player.y_add = 0;
@@ -249,5 +249,15 @@ void game_manager_t::init_players()
         control.up_key = sf::Keyboard::Key::Numpad8;
         control.left_key = sf::Keyboard::Key::Numpad4;
         control.right_key = sf::Keyboard::Key::Numpad6;
+    }
+}
+
+void game_manager_t::collision_check() {
+
+    for (auto i = 0; i < this->players.size(); i++) {
+        for (auto j = i + 1; j < this->players.size(); j++) {
+            check_collision(*this, this->players[i], this->players[j]);
+
+        }
     }
 }

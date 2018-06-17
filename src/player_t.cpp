@@ -10,6 +10,9 @@
 #include <iostream>
 #include "objects_t.h"
 #include "game_manager_t.h"
+#include "game_manager_t.h"
+
+player_t::player_t(game_manager_t& game_manager, int id) : id{id}, game_manager(game_manager) {}
 
 void player_t::set_position(const position_t &position) {
     this->position = position;
@@ -120,10 +123,10 @@ void player_t::set_anim(int anim) {
     this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image + this->direction * 9;
 }
 
-void player_t::gravity_fall(game_manager_t& game_manager) {
+void player_t::gravity_fall() {
 
     auto gravity = 32768;
-    if (!game_manager.bunnies_in_space)
+    if (!this->game_manager.bunnies_in_space)
         gravity = 16384;
 
     this->jump_ready = 1;
@@ -139,7 +142,7 @@ void player_t::gravity_fall(game_manager_t& game_manager) {
  * First check if the bunny do s  spring jump and then makes the spring animation according the
  * need a refactor
  */
-void player_t::check_spring_jump(game_manager_t& game_manager) {
+void player_t::check_spring_jump() {
     position_t position = this->get_position();
 
 
@@ -186,8 +189,8 @@ void player_t::check_spring_jump(game_manager_t& game_manager) {
         this->set_anim(2);
         this->jump_ready = 0;
         this->jump_abort = 0;
-        game_manager.sound_manager.play_sfx_spring();
-        /*dj_play_sfx(SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
+        this->game_manager.sound_manager.play_sfx_spring();
+
     }
 }
 
@@ -281,7 +284,7 @@ void steer_players(game_manager_t& game_manager) {
                     }
                     /* fall down by gravity */
                     if (!game_manager.pogostick && (!player.action_up)) {
-                        player.gravity_fall(game_manager);
+                        player.gravity_fall();
                     }
                 } else {
                     /* with jetpack */
@@ -309,7 +312,7 @@ void steer_players(game_manager_t& game_manager) {
 
                 player.position.y += player.y_add;
 
-                player.check_spring_jump(game_manager);
+                player.check_spring_jump();
 
                 player.check_ceiling();
 
@@ -521,19 +524,9 @@ void check_collision(game_manager_t& game_manager, player_t &player_1, player_t 
         }
 }
 
-void collision_check(game_manager_t& game_manager) {
-
-    for (auto i = 0; i < game_manager.players.size(); i++) {
-        for (auto j = i + 1; j < game_manager.players.size(); j++) {
-            check_collision(game_manager, game_manager.players[i], game_manager.players[j]);
-
-        }
-    }
-}
-
-void player_t::reset_kills(game_manager_t& game_manager) {
+void player_t::reset_kills() {
     this->bumps = 0;
-    this->bumped = std::vector<int>(game_manager.players.size(), 0);
+    this->bumped = std::vector<int>(this->game_manager.players.size(), 0);
 }
 
 void player_t::kill(game_manager_t& game_manager, int killer, int victim) {
@@ -571,6 +564,6 @@ void player_t::kill(game_manager_t& game_manager, int killer, int victim) {
         game_manager.sound_manager.play_sfx_death();
 
 
-        players[c1].count_kill(c2);
+        players[c1].count_kill(players[c2]);
     }
 }

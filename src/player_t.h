@@ -12,10 +12,13 @@
 
 class game_manager_t;
 
-struct player_t {
+class player_t {
 private:
 	int id;
+	game_manager_t& game_manager;
+
 public:
+
 
 	int action_left,action_up,action_right;
 	int dead_flag;
@@ -31,7 +34,7 @@ public:
 
 	player_control_t control;
 
-	player_t(int id) : id{id} {}
+	player_t(game_manager_t& game_manager, int id);
 
 	int get_id() const { return this->id; }
 
@@ -40,15 +43,15 @@ public:
 	bool is_alive() const { return this->dead_flag == 0; }
 
 	void set_position(const position_t& position);
-	void check_spring_jump(game_manager_t& game_manager);
+	void check_spring_jump();
 
-	void reset_kills(game_manager_t& game_manager);
+	void reset_kills();
 	void count_kill(const player_t& victim) {
 		this->bumps++;
 		this->bumped[victim.get_id()]++;
 	}
 
-	void gravity_fall(game_manager_t& game_manager);
+	void gravity_fall();
 
 	void check_ceiling();
 
@@ -61,8 +64,9 @@ public:
 	void update_movement();
 };
 
+void check_collision(game_manager_t& game_manager, player_t &player_1, player_t &player_2);
+
 void steer_players(game_manager_t &game_manager);
-void collision_check(game_manager_t& game_manager);
 
 void position_player(game_manager_t& game_manager, player_t& player);
 

@@ -46,6 +46,7 @@ public:
     void init_players();
     void init_deprecated_data();
 
+    void collision_check();
 
     void draw();
     void draw_pob(const pob_t& pob);

@@ -9,7 +9,7 @@
 #include "util.h"
 #include <iostream>
 #include "objects_t.h"
-#include "sound_manager_t.h"
+#include "game_manager_t.h"
 #include "main_info.h"
 
 std::vector<player_t> players;
@@ -146,7 +146,7 @@ void player_t::gravity_fall() {
  * First check if the bunny do s  spring jump and then makes the spring animation according the
  * need a refactor
  */
-void player_t::check_spring_jump() {
+void player_t::check_spring_jump(game_manager_t& game_manager) {
     position_t position = this->get_position();
 
 
@@ -193,7 +193,7 @@ void player_t::check_spring_jump() {
         this->set_anim(2);
         this->jump_ready = 0;
         this->jump_abort = 0;
-        external_sound_manager->play_sfx_spring();
+        game_manager.sound_manager.play_sfx_spring();
         /*dj_play_sfx(SFX_SPRING, (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
     }
 }
@@ -213,7 +213,7 @@ void player_t::check_ceiling() {
     }
 }
 
-void steer_players() {
+void steer_players(game_manager_t& game_manager) {
 
     for ( auto& player : players) {
         player.update_movement();
@@ -257,14 +257,14 @@ void steer_players() {
                             player.jump_ready = 0;
                             player.jump_abort = 1;
                             if (pogostick == 0) {
-                                external_sound_manager->play_sfx_jump();
+                                game_manager.sound_manager.play_sfx_jump();
                                 /*
                                     dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
                                                 64, 0, -1);
                                                 */
                             } else {
                                 //external_sound_manager->play_sfx(SFX_SPRING);
-                                external_sound_manager->play_sfx_spring();
+                                game_manager.sound_manager.play_sfx_spring();
 
                              /*   dj_play_sfx(SFX_SPRING,
                                             (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
@@ -278,10 +278,10 @@ void steer_players() {
                             player.jump_ready = 0;
                             player.jump_abort = 1;
                             if (pogostick == 0) {
-                                external_sound_manager->play_sfx_jump();
+                                game_manager.sound_manager.play_sfx_jump();
 
                             } else {
-                                external_sound_manager->play_sfx_spring();
+                                game_manager.sound_manager.play_sfx_spring();
                             }
 
                         }
@@ -316,7 +316,7 @@ void steer_players() {
 
                 player.position.y += player.y_add;
 
-                player.check_spring_jump();
+                player.check_spring_jump(game_manager);
 
                 player.check_ceiling();
 
@@ -335,7 +335,7 @@ void steer_players() {
                                        screen_position
                                        + screen_position_t{9, 15}, 0, 0,
                                        OBJ_ANIM_SPLASH, 0);
-                            external_sound_manager->play_sfx_splash();
+                            game_manager.sound_manager.play_sfx_splash();
                         }
                     }
                     /* slowly move up to water surface */
@@ -469,26 +469,26 @@ void position_player(player_t &player) {
 
 }
 
-void player_kill(player_t &player_1, player_t &player_2) {
+void player_kill(game_manager_t &game_manager, player_t &player_1, player_t &player_2) {
 
     if (player_1.y_add >= 0) {
 
-        player_t::kill(player_1.get_id(), player_2.get_id());
+        player_t::kill(game_manager, player_1.get_id(), player_2.get_id());
     } else {
         if (player_2.y_add < 0)
             player_2.y_add = 0;
     }
 }
 
-void check_collision(player_t &player_1, player_t &player_2) {
+void check_collision(game_manager_t& game_manager, player_t &player_1, player_t &player_2) {
 
         if (labs(player_1.position.x - player_2.position.x) < (12L << 16) &&
             labs(player_1.position.y - player_2.position.y) < (12L << 16)) {
             if ((labs(player_1.position.y - player_2.position.y) >> 16) > 5) {
                 if (player_1.position.y < player_2.position.y) {
-                    player_kill(player_1, player_2);
+                    player_kill(game_manager, player_1, player_2);
                 } else {
-                    player_kill(player_2, player_1);
+                    player_kill(game_manager, player_2, player_1);
                 }
             } else {
                 if (player_1.position.x < player_2.position.x) {
@@ -528,11 +528,11 @@ void check_collision(player_t &player_1, player_t &player_2) {
         }
 }
 
-void collision_check() {
+void collision_check(game_manager_t& game_manager) {
 
     for (auto i = 0; i < players.size(); i++) {
         for (auto j = i + 1; j < players.size(); j++) {
-            check_collision(players[i], players[j]);
+            check_collision(game_manager, players[i], players[j]);
 
         }
     }
@@ -592,7 +592,7 @@ void init_players()
     }
 }
 
-void player_t::kill(int killer, int victim) {
+void player_t::kill(game_manager_t& game_manager, int killer, int victim) {
     int c1 = killer;
     int c2 = victim;
     int c4 = 0;
@@ -622,7 +622,7 @@ void player_t::kill(int killer, int victim) {
                 objects.add(object_t::Type::FLESH, screen_position, (rnd(65535) - 32768) * 3,
                             (rnd(65535) - 32768) * 3, 0, 79);
         }
-        external_sound_manager->play_sfx_death();
+        game_manager.sound_manager.play_sfx_death();
 
 
         players[c1].count_kill(c2);

@@ -162,11 +162,9 @@ bool game_manager_t::init() {
 void game_manager_t::loop() {
 
 
-    external_sound_manager.reset(new sound_manager_t);
-
-    external_sound_manager->load_sfx();
-    external_sound_manager->load_music();
-    external_sound_manager->play_music();
+    this->sound_manager.load_sfx();
+    this->sound_manager.load_music();
+    this->sound_manager.play_music();
 
     this->init();
     printf("hola como te va");
@@ -184,11 +182,11 @@ void game_manager_t::loop() {
     while (this->window.isOpen()) {
         while (update_count) {
 
-            steer_players();
+            steer_players(*this);
 
 
 
-            collision_check();
+            collision_check(*this);
 
 
             objects.update();

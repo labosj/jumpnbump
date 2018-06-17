@@ -10,6 +10,8 @@
 #include "anim_handler_t.h"
 #include "player_control_t.h"
 
+class game_manager_t;
+
 struct player_t {
 private:
 	int id;
@@ -38,7 +40,7 @@ public:
 	bool is_alive() const { return this->dead_flag == 0; }
 
 	void set_position(const position_t& position);
-	void check_spring_jump();
+	void check_spring_jump(game_manager_t& game_manager);
 
 	void reset_kills();
 	void count_kill(const player_t& victim) {
@@ -54,16 +56,16 @@ public:
 
 	void set_anim(int anim);
 
-	static void kill(int killer, int victim);
+	static void kill(game_manager_t &game_manager, int killer, int victim);
 
 	void update_movement();
 };
 
-void steer_players();
+void steer_players(game_manager_t &game_manager);
 
 void position_player(player_t& player);
 
-void collision_check();
+void collision_check(game_manager_t& game_manager);
 
 void init_players();
 

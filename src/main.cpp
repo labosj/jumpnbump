@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     application_t application;
     int result;
     if (application.init() ) {
-        auto game_manager= game_manager_t{application.get_window()};
+        game_manager_t game_manager{application.get_window()};
         game_manager.loop();
 
     }

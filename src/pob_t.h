@@ -14,11 +14,13 @@ struct gob_t;
  * Maybe this stands for player object
  */
 struct pob_t {
+private:
     screen_position_t position;
 
     int image;
     gob_t *pob_data;
 
+public:
     sf::Sprite& get_image();
 
 

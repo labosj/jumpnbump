@@ -7,6 +7,8 @@
 #include "gob_t.h"
 
 sf::Sprite& pob_t::get_image() {
-    return this->pob_data->images[this->image];
+    auto& image = this->pob_data->images[this->image];
+    image.setPosition(this->position.x, this->position.y);
+    return image;
 }
 

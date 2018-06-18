@@ -173,7 +173,6 @@ void game_manager_t::draw() {
 void game_manager_t::draw_pob(pob_t& pob)
 {
     auto& image = pob.get_image();
-    image.setPosition(pob.position.x, pob.position.y);
     this->window.draw(image);
 
 }

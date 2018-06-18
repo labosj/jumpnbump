@@ -15,20 +15,12 @@ struct gob_t;
  */
 struct pob_t {
 private:
-    screen_position_t position;
-
-    int image;
-    gob_t *pob_data;
+    sf::Sprite image;
 
 public:
     sf::Sprite& get_image();
 
-
-    pob_t(const screen_position_t& position, int image, gob_t* pob_data) {
-        this->position = position;
-        this->image = image;
-        this->pob_data = pob_data;
-    }
+    pob_t(const screen_position_t& position, int image, gob_t* pob_data);
 };
 
 #endif //JUMPNBUMP_POB_T_H

@@ -11,6 +11,8 @@
 
 /**
  * Maybe this stands for graphic object
+ *
+
  */
 struct gob_t{
 	std::vector<sf::Sprite> images;

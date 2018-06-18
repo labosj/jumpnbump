@@ -6,7 +6,6 @@
 #define JUMPNBUMP_LEFTOVERS_H
 
 #include <vector>
-#include "pob_t.h"
 
 class screen_position_t;
 class game_manager_t;
@@ -16,9 +15,10 @@ struct gob_t;
 //this are the red gibs of the rabbits
 class leftovers_t {
 private:
-    std::vector<pob_t> pobs;
-
+    std::vector<sf::Sprite> pobs;
 public:
+
+
     void add(const screen_position_t &position, int image, gob_t *pob_data);
 
     void draw(game_manager_t& game_manager);

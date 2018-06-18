@@ -6,14 +6,17 @@
 #define JUMPNBUMP_POBS_T_H
 
 #include <vector>
-#include "pob_t.h"
+#include <SFML/Graphics/Sprite.hpp>
+#include "screen_position_t.h"
+
+class gob_t;
 
 class game_manager_t;
 
 
 class pobs_t {
 private:
-    std::vector<pob_t> pobs;
+    std::vector<sf::Sprite> pobs;
 public:
 
 

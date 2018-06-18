@@ -170,13 +170,6 @@ void game_manager_t::draw() {
 
 }
 
-void game_manager_t::draw_pob(pob_t& pob)
-{
-    auto& image = pob.get_image();
-    this->window.draw(image);
-
-}
-
 void game_manager_t::reset_frames() {
     this->clock.restart();
     this->frame_counter= 0;

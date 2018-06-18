@@ -59,7 +59,6 @@ public:
     void collision_check();
 
     void draw();
-    void draw_pob(pob_t& pob);
     void reset_frames();
     int get_elapsed_frames();
 

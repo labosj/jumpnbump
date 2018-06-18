@@ -24,7 +24,5 @@ public:
     void add_jetpack_smoke(player_t& player);
 };
 
-extern objects_t objects;
-
 
 #endif //JUMPNBUMP_OBJECTS_T_H

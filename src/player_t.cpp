@@ -50,7 +50,7 @@ void player_action_left(player_t &player) {
         if (player.x_add > 0) {
             player.x_add -= 16384;
             if (player.x_add > -98304L && player.in_water == 0 && below == ban_map_t::Type::SOLID)
-                objects.add(player.get_game_manager(), object_t::Type::SMOKE, player.get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
+                player.get_game_manager().objects.add(player.get_game_manager(), object_t::Type::SMOKE, player.get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
                            -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
         } else
             player.x_add -= 12288;
@@ -87,7 +87,7 @@ void player_action_right(player_t &player) {
         if (player.x_add < 0) {
             player.x_add += 16384;
             if (player.x_add < 98304L && player.in_water == 0 && below == ban_map_t::Type::SOLID)
-                objects.add_smoke(player);
+                player.get_game_manager().objects.add_smoke(player);
         } else
             player.x_add += 12288;
     }
@@ -121,7 +121,7 @@ void player_no_action(player_t &player) {
                 player.x_add = 0;
         }
         if (player.x_add != 0 && below == ban_map_t::Type::SOLID)
-            objects.add_smoke(player);
+            player.get_game_manager().objects.add_smoke(player);
     }
     if ( player.anim_handler.anim == 1 )
         player.set_anim(0);
@@ -169,7 +169,7 @@ void player_t::check_spring_jump() {
          * this code just animate a spring
          * this can be simplified a lot
          */
-        for (auto &object : objects.objects) {
+        for (auto &object : this->game_manager.objects.objects) {
             screen_position_t screen_position = position;
             if (object.used == 1 && object.type == object_t::Type::SPRING) {
                 if (ban_map.get(screen_position + screen_position_t{8, 15}) == ban_map_t::Type::SPRING) {
@@ -304,7 +304,7 @@ void steer_players(game_manager_t& game_manager) {
                         if (ban_map.is_in_water(player.get_position()))
                             player.in_water = 0;
                         if (rnd(100) < 50)
-                            objects.add_jetpack_smoke(player);
+                            game_manager.objects.add_jetpack_smoke(player);
                     }
                 }
 
@@ -336,7 +336,7 @@ void steer_players(game_manager_t& game_manager) {
                         if (player.y_add >= 32768) {
                             screen_position_t screen_position = player.get_position();
                             screen_position.y &= 0xfff0;
-                            objects.add(player.get_game_manager(), object_t::Type::SPLASH,
+                            game_manager.objects.add(player.get_game_manager(), object_t::Type::SPLASH,
                                        screen_position
                                        + screen_position_t{9, 15}, 0, 0,
                                        OBJ_ANIM_SPLASH, 0);

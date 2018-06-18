@@ -8,8 +8,6 @@
 #include "util.h"
 #include "game_manager_t.h"
 
-objects_t objects;
-
 void objects_t::add(game_manager_t& game_manager, object_t::Type type, const position_t &position, int x_add, int y_add, int anim, int frame) {
 
     for (auto &object : this->objects) {

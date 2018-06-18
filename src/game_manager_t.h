@@ -15,6 +15,7 @@
 #include "stage_t.h"
 #include "anim_t.h"
 #include "gob_t.h"
+#include "objects_t.h"
 #include <memory>
 
 class pob_t;
@@ -46,6 +47,7 @@ public:
     std::vector<anim_t> object_anims;
     gob_t rabbit_gobs;
     gob_t object_gobs;
+    objects_t objects;
 
     game_manager_t(sf::RenderWindow& window);
 

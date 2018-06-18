@@ -12,7 +12,7 @@ void pobs_t::add(const screen_position_t &position, int image, gob_t *pob_data) 
 
 void pobs_t::draw(game_manager_t& game_manager) {
 
-    for (const auto& pob : this->pobs) {
+    for (auto& pob : this->pobs) {
 
         game_manager.draw_pob(pob);
     }

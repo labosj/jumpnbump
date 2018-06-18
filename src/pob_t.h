@@ -5,6 +5,7 @@
 #ifndef JUMPNBUMP_POB_T_H
 #define JUMPNBUMP_POB_T_H
 
+#include <SFML/Graphics/Sprite.hpp>
 #include "screen_position_t.h"
 
 struct gob_t;
@@ -17,6 +18,9 @@ struct pob_t {
 
     int image;
     gob_t *pob_data;
+
+    sf::Sprite& get_image();
+
 
     pob_t(const screen_position_t& position, int image, gob_t* pob_data) {
         this->position = position;

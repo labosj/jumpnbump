@@ -170,9 +170,9 @@ void game_manager_t::draw() {
 
 }
 
-void game_manager_t::draw_pob(const pob_t& pob)
+void game_manager_t::draw_pob(pob_t& pob)
 {
-    auto& image = pob.pob_data->images[pob.image];
+    auto& image = pob.get_image();
     image.setPosition(pob.position.x, pob.position.y);
     this->window.draw(image);
 

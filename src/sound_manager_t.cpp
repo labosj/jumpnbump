@@ -3,7 +3,6 @@
 //
 
 #include "sound_manager_t.h"
-#include "globals.h"
 #include "util.h"
 
 void sound_manager_t::load_sfx() {

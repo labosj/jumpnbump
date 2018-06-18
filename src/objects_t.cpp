@@ -3,7 +3,6 @@
 //
 
 #include "objects_t.h"
-#include "globals.h"
 #include "gob_t.h"
 #include "util.h"
 #include "game_manager_t.h"

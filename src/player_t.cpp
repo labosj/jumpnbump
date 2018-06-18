@@ -2,7 +2,6 @@
 // Created by edwin on 01-06-18.
 //
 
-#include "globals.h"
 #include "player_t.h"
 #include "ban_map_t.h"
 #include "anim_t.h"

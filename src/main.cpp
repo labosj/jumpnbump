@@ -26,7 +26,6 @@
  */
 
 #include "sound_manager_t.h"
-#include "globals.h"
 #include "gob_t.h"
 #include "anim_t.h"
 #include "leftovers_t.h"

@@ -3,7 +3,6 @@
 //
 
 #include "gob_t.h"
-#include "globals.h"
 #include "leftovers_t.h"
 #include "screen_position_t.h"
 #include "game_manager_t.h"

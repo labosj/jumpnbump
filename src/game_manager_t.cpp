@@ -7,7 +7,6 @@
 #include "leftovers_t.h"
 #include "player_t.h"
 #include "anim_t.h"
-#include "globals.h"
 #include "ban_map_t.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Sprite.hpp>

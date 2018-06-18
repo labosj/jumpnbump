@@ -13,6 +13,8 @@
 #include "player_t.h"
 #include "leftovers_t.h"
 #include "stage_t.h"
+#include "anim_t.h"
+#include "gob_t.h"
 #include <memory>
 
 class pob_t;
@@ -39,6 +41,11 @@ public:
     std::vector<player_t> players;
 
     leftovers_t leftovers;
+
+    std::vector<anim_t> player_anims;
+    std::vector<anim_t> object_anims;
+    gob_t rabbit_gobs;
+    gob_t object_gobs;
 
     game_manager_t(sf::RenderWindow& window);
 

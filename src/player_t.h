@@ -61,12 +61,12 @@ public:
 	void set_anim(int anim);
 
 	void update_movement();
+
+	void position_player() ;
 };
 
 void check_collision(player_t &player_1, player_t &player_2);
 
 void steer_players(game_manager_t &game_manager);
-
-void position_player(game_manager_t& game_manager, player_t& player);
 
 #endif //JUMPNBUMP_PLAYER_H

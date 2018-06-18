@@ -128,6 +128,7 @@ void player_no_action(player_t &player) {
 }
 
 void player_t::set_anim(int anim) {
+    auto& player_anims = this->game_manager.player_anims;
     this->anim_handler.anim = anim;
     this->anim_handler.frame = 0;
     this->anim_handler.frame_tick = 0;
@@ -270,16 +271,8 @@ void steer_players(game_manager_t& game_manager) {
                             player.jump_abort = 1;
                             if (!game_manager.pogostick) {
                                 game_manager.sound_manager.play_sfx_jump();
-                                /*
-                                    dj_play_sfx(SFX_JUMP, (unsigned short) (SFX_JUMP_FREQ + rnd(2000) - 1000),
-                                                64, 0, -1);
-                                                */
                             } else {
-                                //external_sound_manager->play_sfx(SFX_SPRING);
                                 game_manager.sound_manager.play_sfx_spring();
-
-                             /*   dj_play_sfx(SFX_SPRING,
-                                            (unsigned short) (SFX_SPRING_FREQ + rnd(2000) - 1000), 64, 0, -1);*/
                             }
                         }
                         /* jump out of water */
@@ -399,13 +392,15 @@ void steer_players(game_manager_t& game_manager) {
 
             }
 
+            auto& player_anims = player.get_game_manager().player_anims;
+
             player.anim_handler.frame_tick++;
             if (player.anim_handler.frame_tick >= player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].ticks) {
                 player.anim_handler.frame++;
                 if (player.anim_handler.frame >= player_anims[player.anim_handler.anim].frame.size()) {
                     if (player.anim_handler.anim != 6)
                         player.anim_handler.frame = player_anims[player.anim_handler.anim].restart_frame;
-                    else position_player(game_manager, player);
+                    else player.position_player();
                 }
                 player.anim_handler.frame_tick = 0;
             }
@@ -450,9 +445,9 @@ void player_t::update_movement() {
     this->action_up = this->control.up_pressed();
 }
 
-void position_player(game_manager_t& game_manager, player_t &player) {
+void player_t::position_player() {
 
-    auto& ban_map = player.get_game_manager().get_stage().get_map();
+    auto& ban_map = this->get_game_manager().get_stage().get_map();
 
     map_position_t position;
 
@@ -462,8 +457,8 @@ void position_player(game_manager_t& game_manager, player_t &player) {
         position = ban_map.get_random_available_floor_position();
 
         //verifica que el conejo no este cerca de otros conejos
-        for (const auto &other_player : game_manager.players) {
-            if (other_player.get_id() != player.get_id()) {
+        for (const auto &other_player : this->get_game_manager().players) {
+            if (other_player.get_id() != this->get_id()) {
                 screen_position_t screen_position = position;
                 if (abs(screen_position.x - (screen_position_t{other_player.get_position()}.x)) < 32 &&
                     abs(screen_position.y - (screen_position_t{other_player.get_position()}.y)) < 32)
@@ -471,18 +466,19 @@ void position_player(game_manager_t& game_manager, player_t &player) {
             }
         }
 
-    player.set_position(position);
+    this->set_position(position);
 
-    player.x_add = player.y_add = 0;
-    player.direction = 0;
-    player.jump_ready = 1;
-    player.in_water = 0;
-    player.anim_handler.anim = 0;
-    player.anim_handler.frame = 0;
-    player.anim_handler.frame_tick = 0;
-    player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image;
+    this->x_add = 0;
+    this->y_add = 0;
+    this->direction = 0;
+    this->jump_ready = 1;
+    this->in_water = 0;
+    this->anim_handler.anim = 0;
+    this->anim_handler.frame = 0;
+    this->anim_handler.frame_tick = 0;
+    this->anim_handler.image = this->game_manager.player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image;
 
-    player.dead_flag = 0;
+    this->dead_flag = 0;
 
 }
 

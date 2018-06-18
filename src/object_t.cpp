@@ -38,6 +38,9 @@ void object_t::operator=(const object_t& other) {
 }
 
 void object_t::set_anim(int anim, int frame) {
+
+
+    auto& object_anims = this->game_manager.object_anims;
     this->anim_handler.anim = anim;
     this->anim_handler.frame = frame;
     this->anim_handler.frame_tick = object_anims[anim].frame[frame].ticks;
@@ -45,6 +48,7 @@ void object_t::set_anim(int anim, int frame) {
 }
 
 void object_t::advance_anim() {
+    auto& object_anims = this->game_manager.object_anims;
     this->anim_handler.frame_tick--;
     if (this->anim_handler.frame_tick <= 0) {
         this->anim_handler.frame++;
@@ -68,6 +72,7 @@ void object_t::update_smoke() {
 }
 
 void object_t::update_spring() {
+    auto& object_anims = this->game_manager.object_anims;
     this->anim_handler.frame_tick--;
     if (this->anim_handler.frame_tick <= 0) {
         this->anim_handler.frame++;
@@ -161,6 +166,8 @@ void object_t::update_butterfly() {
         }
     }
 
+    auto& object_anims = this->game_manager.object_anims;
+
     this->anim_handler.frame_tick--;
     if (this->anim_handler.frame_tick <= 0) {
         this->anim_handler.frame++;
@@ -245,9 +252,9 @@ void object_t::update_flesh() {
                     if (rnd(100) < 10) {
                         int s1 = rnd(4) - 2;
                         game_manager.leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
-                                    this->anim_handler.frame, &object_gobs);
+                                    this->anim_handler.frame, &(game_manager.object_gobs));
                         game_manager.leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
-                                      this->anim_handler.frame, &object_gobs);
+                                      this->anim_handler.frame, &(game_manager.object_gobs));
                     }
                     this->used = 0;
                 }

@@ -18,7 +18,4 @@ struct gob_t{
 	int add(const std::string& filename, sf::Texture& texture);
 };
 
-extern gob_t rabbit_gobs;
-extern gob_t object_gobs;
-
 #endif //JUMPNBUMP_GOB_H

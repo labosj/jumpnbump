@@ -9,9 +9,6 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 
-gob_t rabbit_gobs;
-gob_t object_gobs;
-
 int gob_t::add(const std::string& filename, sf::Texture& texture)
 {
 

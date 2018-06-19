@@ -7,7 +7,6 @@
 #include "ban_map_t.h"
 #include "util.h"
 #include "gob_t.h"
-#include "leftovers_t.h"
 #include "objects_t.h"
 #include "game_manager_t.h"
 
@@ -344,4 +343,13 @@ void object_t::update_fur() {
         this->x_add = -16384;
     if (this->x_add > 0 && this->x_add < 16384)
         this->x_add = 16384;
+}
+
+sf::Sprite object_t::get_pob() {
+    screen_position_t position = this->get_position();
+
+    auto sprite = this->game_manager.object_gobs.get_sprite(this->anim_handler.image);
+    sprite.setPosition(position.x, position.y);
+
+    return sprite;
 }

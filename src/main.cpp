@@ -28,7 +28,6 @@
 #include "sound_manager_t.h"
 #include "gob_t.h"
 #include "anim_t.h"
-#include "leftovers_t.h"
 #include "util.h"
 #include "player_t.h"
 #include "ban_map_t.h"

@@ -19,10 +19,10 @@ private:
     std::vector<sf::Sprite> pobs;
 public:
 
-
     void add(const screen_position_t &position, int image, gob_t *pob_data);
 
     void draw(game_manager_t& game_manager);
+    void clear();
 };
 
 

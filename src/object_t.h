@@ -7,6 +7,7 @@
 
 class player_t;
 
+#include <SFML/Graphics/Sprite.hpp>
 #include "position_t.h"
 #include "anim_t.h"
 #include "anim_handler_t.h"
@@ -81,6 +82,8 @@ struct object_t{
 	void set_anim(int anim, int frame);
 
 	void advance_anim();
+
+	sf::Sprite get_pob();
 };
 
 #endif //JUMPNBUMP_OBJECT_T_H

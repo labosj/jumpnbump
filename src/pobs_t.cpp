@@ -21,6 +21,8 @@ void pobs_t::draw(game_manager_t& game_manager) {
         game_manager.window.draw(pob);
     }
 
-    this->pobs.clear();
+}
 
+void pobs_t::clear() {
+    this->pobs.clear();
 }

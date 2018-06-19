@@ -28,3 +28,7 @@ int gob_t::add(const std::string& filename, sf::Texture& texture)
     return 0;
 
 }
+
+sf::Sprite& gob_t::get_sprite(int image) {
+    return this->images[image];
+}

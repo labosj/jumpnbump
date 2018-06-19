@@ -11,14 +11,11 @@
 #include "sound_manager_t.h"
 #include "pobs_t.h"
 #include "player_t.h"
-#include "leftovers_t.h"
 #include "stage_t.h"
 #include "anim_t.h"
 #include "gob_t.h"
 #include "objects_t.h"
 #include <memory>
-
-class pob_t;
 
 class game_manager_t {
 public:
@@ -37,11 +34,13 @@ public:
     stage_t stage;
 
     sound_manager_t sound_manager;
+
     pobs_t pobs;
+    pobs_t leftovers;
 
     std::vector<player_t> players;
 
-    leftovers_t leftovers;
+
 
     std::vector<anim_t> player_anims;
     std::vector<anim_t> object_anims;

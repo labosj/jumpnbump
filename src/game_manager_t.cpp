@@ -4,7 +4,6 @@
 
 #include "game_manager_t.h"
 #include "gob_t.h"
-#include "leftovers_t.h"
 #include "player_t.h"
 #include "anim_t.h"
 #include "ban_map_t.h"
@@ -162,6 +161,7 @@ void game_manager_t::draw() {
     }
 
     this->pobs.draw(*this);
+    this->pobs.clear();
     leftovers.draw(*this);
 
     this->stage.draw_foreground(this->window);

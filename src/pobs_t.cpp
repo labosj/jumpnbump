@@ -8,9 +8,13 @@
 #include "gob_t.h"
 
 void pobs_t::add(const screen_position_t &position, int image, gob_t *pob_data) {
-    sf::Sprite sprite = pob_data->images[image];
+    sf::Sprite sprite = pob_data->get_sprite(image);
     sprite.setPosition(position.x, position.y);
 
+    this->pobs.push_back(sprite);
+}
+
+void pobs_t::add(const sf::Sprite& sprite) {
     this->pobs.push_back(sprite);
 }
 

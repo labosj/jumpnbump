@@ -533,12 +533,8 @@ void game_manager_t::steer_players() {
                     player.position.y = (((screen_position.y + 16) & 0xfff0) - 16) << 16;
                     player.y_add = 0;
                 }
-            } else if (ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
-                       ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
-                       ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING ||
-                       ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
-                       ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::ICE ||
-                       ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
+            } else if (ban_map.is_solid(player.get_position() + screen_position_t{0, 15}) ||
+                       ban_map.is_solid(player.get_position() + screen_position_t{15, 15})) {
                 player.in_water = 0;
                 player.position.y = (((screen_position.y + 16) & 0xfff0) - 16) << 16;
                 player.y_add = 0;

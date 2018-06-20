@@ -233,24 +233,16 @@ void player_t::check_lateral_walls() {
 
     auto& ban_map = this->get_game_manager().get_stage().get_map();
 
-    if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
-        ban_map.get(this->get_position()) == ban_map_t::Type::ICE ||
-        ban_map.get(this->get_position()) == ban_map_t::Type::SPRING ||
-        ban_map.get(this->get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
-        ban_map.get(this->get_position() + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
-        ban_map.get(this->get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING) {
+    if (ban_map.is_solid(this->get_position()) ||
+        ban_map.is_solid(this->get_position() + screen_position_t{0, 15})) {
         int s1 = (this->position.x >> 16);
         this->position.x = (((s1 + 16) & 0xfff0)) << 16;
         this->x_add = 0;
     }
 
 
-    if (ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SOLID ||
-        ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::ICE ||
-        ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SPRING ||
-        ban_map.get(this->get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
-        ban_map.get(this->get_position() + screen_position_t{15, 15}) == ban_map_t::Type::ICE ||
-        ban_map.get(this->get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
+    if (ban_map.is_solid(this->get_position() + screen_position_t{15, 0}) ||
+        ban_map.is_solid(this->get_position() + screen_position_t{15, 15})) {
         int s1 = (this->position.x >> 16);
         this->position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
         this->x_add = 0;

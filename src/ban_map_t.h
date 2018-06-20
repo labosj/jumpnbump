@@ -37,6 +37,7 @@ public:
 
 
     bool is_in_water(const screen_position_t& position) const;
+    bool is_solid(const screen_position_t& position) const;
     map_position_t get_random_position() const;
 
     /**

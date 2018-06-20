@@ -25,6 +25,11 @@ bool ban_map_t::is_in_water(const screen_position_t& position) const {
            && (this->get(position + screen_position_t{0, 8}) == ban_map_t::Type::WATER || this->get(position + screen_position_t{15, 8}) == ban_map_t::Type::WATER);
 }
 
+bool ban_map_t::is_solid(const screen_position_t& position) const {
+    return  this->get(position) == ban_map_t::Type::SOLID ||
+            this->get(position) == ban_map_t::Type::ICE ||
+            this->get(position) == ban_map_t::Type::SPRING;
+}
 
 map_position_t ban_map_t::get_random_position() const {
     return map_position_t{rnd(this->get_width()), rnd(this->get_height())};

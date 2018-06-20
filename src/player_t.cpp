@@ -215,12 +215,8 @@ void player_t::check_ceiling() {
 
     auto& ban_map = this->game_manager.get_stage().get_map();
 
-    if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
-        ban_map.get(this->get_position()) == ban_map_t::Type::ICE ||
-        ban_map.get(this->get_position()) == ban_map_t::Type::SPRING ||
-        ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SOLID ||
-        ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::ICE ||
-        ban_map.get(this->get_position() + screen_position_t{15, 0}) == ban_map_t::Type::SPRING) {
+    if (ban_map.is_solid(this->get_position()) ||
+        ban_map.is_solid(this->get_position() + screen_position_t{15, 0})) {
         //stop the velocity in y
         this->position.y = (((screen_position_t{this->get_position()}.y + 16) & 0xfff0)) << 16; //TODO: MASK
         this->y_add = 0;

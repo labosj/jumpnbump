@@ -25,8 +25,9 @@ game_manager_t& player_t::get_game_manager() {
     return this->game_manager;
 }
 
-void player_action_left(player_t &player) {
+void player_t::do_action_left() {
 
+    auto& player = *this;
     auto& ban_map = player.get_game_manager().get_stage().get_map();
 
     screen_position_t pixel_pos = player.position;
@@ -63,7 +64,9 @@ void player_action_left(player_t &player) {
     }
 }
 
-void player_action_right(player_t &player) {
+void player_t::do_action_right() {
+
+    auto& player = *this;
 
     auto& ban_map = player.get_game_manager().get_stage().get_map();
 
@@ -97,7 +100,9 @@ void player_action_right(player_t &player) {
         player.set_anim(1);
 }
 
-void player_no_action(player_t &player) {
+void player_t::do_no_action() {
+
+    auto& player = *this;
 
     auto& ban_map = player.get_game_manager().get_stage().get_map();
 
@@ -223,192 +228,6 @@ void player_t::check_ceiling() {
     }
 }
 
-void steer_players(game_manager_t& game_manager) {
-
-    auto& ban_map = game_manager.get_stage().get_map();
-
-    for ( auto& player : game_manager.players) {
-        player.update_movement();
-    }
-
-    for (auto& player : game_manager.players) {
-            if (player.is_alive()) {
-
-                if (player.action_left && player.action_right) {
-                    if (player.direction == 0) {
-                        if (player.action_right) {
-                            player_action_right(player);
-                        }
-                    } else {
-                        if (player.action_left) {
-                            player_action_left(player);
-                        }
-                    }
-                } else if (player.action_left) {
-                    player_action_left(player);
-                } else if (player.action_right) {
-                    player_action_right(player);
-                } else if ((!player.action_left) && (!player.action_right)) {
-                    player_no_action(player);
-
-                }
-                if (!game_manager.jetpack) {
-                    /* no jetpack */
-                    if (game_manager.pogostick || (player.jump_ready == 1 && player.action_up)) {
-
-                        auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
-                        auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
-
-                        /* jump */
-                        if (below_left == ban_map_t::Type::SOLID ||
-                            below_left == ban_map_t::Type::ICE ||
-                            below_right == ban_map_t::Type::SOLID ||
-                            below_right == ban_map_t::Type::ICE) {
-                            player.y_add = -280000L;
-                            player.set_anim(2);
-                            player.jump_ready = 0;
-                            player.jump_abort = 1;
-                            if (!game_manager.pogostick) {
-                                game_manager.sound_manager.play_sfx_jump();
-                            } else {
-                                game_manager.sound_manager.play_sfx_spring();
-                            }
-                        }
-                        /* jump out of water */
-                        if (ban_map.is_in_water(player.get_position())) {
-                            player.y_add = -196608L;
-                            player.in_water = 0;
-                            player.set_anim(2);
-                            player.jump_ready = 0;
-                            player.jump_abort = 1;
-                            if (!game_manager.pogostick) {
-                                game_manager.sound_manager.play_sfx_jump();
-
-                            } else {
-                                game_manager.sound_manager.play_sfx_spring();
-                            }
-
-                        }
-                    }
-                    /* fall down by gravity */
-                    if (!game_manager.pogostick && (!player.action_up)) {
-                        player.gravity_fall();
-                    }
-                } else {
-                    /* with jetpack */
-                    if (player.action_up) {
-                        player.y_add -= 16384;
-                        if (player.y_add < -400000L)
-                            player.y_add = -400000L;
-                        if (ban_map.is_in_water(player.get_position()))
-                            player.in_water = 0;
-                        if (rnd(100) < 50)
-                            game_manager.objects.add_jetpack_smoke(player);
-                    }
-                }
-
-                player.position.x += player.x_add;
-                if ((player.position.x >> 16) < 0) {
-                    player.position.x = 0;
-                    player.x_add = 0;
-                }
-                if ((player.position.x >> 16) + 15 > 351) {
-                    player.position.x = 336L << 16;
-                    player.x_add = 0;
-                }
-                player.check_lateral_walls();
-
-                player.position.y += player.y_add;
-
-                player.check_spring_jump();
-
-                player.check_ceiling();
-
-                screen_position_t screen_position = player.get_position();
-                if (ban_map.get(screen_position + screen_position_t{8, 8}) == ban_map_t::Type::WATER) {
-                    if (player.in_water == 0) {
-                        /* falling into water */
-                        player.in_water = 1;
-                        player.set_anim(4);
-
-
-                        if (player.y_add >= 32768) {
-                            screen_position_t screen_position = player.get_position();
-                            screen_position.y &= 0xfff0;
-                            game_manager.objects.add(player.get_game_manager(), object_t::Type::SPLASH,
-                                       screen_position
-                                       + screen_position_t{9, 15}, 0, 0,
-                                       OBJ_ANIM_SPLASH, 0);
-                            game_manager.sound_manager.play_sfx_splash();
-                        }
-                    }
-                    /* slowly move up to water surface */
-                    player.y_add -= 1536;
-                    if (player.y_add < 0 && player.anim_handler.anim != 5) {
-                        player.set_anim(5);
-                    }
-                    if (player.y_add < -65536L)
-                        player.y_add = -65536L;
-                    if (player.y_add > 65535L)
-                        player.y_add = 65535L;
-
-                    if (ban_map.get(screen_position + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
-                        ban_map.get(screen_position + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
-                        ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
-                        ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::ICE) {
-                        player.position.y = (((screen_position.y + 16) & 0xfff0) - 16) << 16;
-                        player.y_add = 0;
-                    }
-                } else if (ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SOLID ||
-                           ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
-                           ban_map.get(player.get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING ||
-                           ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
-                           ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::ICE ||
-                           ban_map.get(player.get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
-                    player.in_water = 0;
-                    player.position.y = (((screen_position.y + 16) & 0xfff0) - 16) << 16;
-                    player.y_add = 0;
-                    if (player.anim_handler.anim != 0 && player.anim_handler.anim != 1) {
-                        player.set_anim(0);
-                    }
-                } else {
-                    if (player.in_water == 0) {
-                        if (!game_manager.bunnies_in_space)
-                            player.y_add += 12288;
-                        else
-                            player.y_add += 6144;
-                        if (player.y_add > 327680L)
-                            player.y_add = 327680L;
-                    } else {
-                        player.position.y = (player.position.y & 0xffff0000) + 0x10000;
-                        player.y_add = 0;
-                    }
-                    player.in_water = 0;
-                }
-                if (player.y_add > 36864 && player.anim_handler.anim != 3 && player.in_water == 0) {
-                    player.set_anim(3);
-                }
-
-            }
-
-            auto& player_anims = player.get_game_manager().player_anims;
-
-            player.anim_handler.frame_tick++;
-            if (player.anim_handler.frame_tick >= player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].ticks) {
-                player.anim_handler.frame++;
-                if (player.anim_handler.frame >= player_anims[player.anim_handler.anim].frame.size()) {
-                    if (player.anim_handler.anim != 6)
-                        player.anim_handler.frame = player_anims[player.anim_handler.anim].restart_frame;
-                    else player.position_player();
-                }
-                player.anim_handler.frame_tick = 0;
-            }
-            player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image + player.direction * 9;
-
-        }
-
-
-}
 
 void player_t::check_lateral_walls() {
 
@@ -481,7 +300,7 @@ void player_t::position_player() {
 
 }
 
-void player_kill(player_t &player_1, player_t &player_2) {
+void player_t::player_kill(player_t &player_1, player_t &player_2) {
 
     auto& game_manager =player_1.get_game_manager();
 
@@ -494,7 +313,7 @@ void player_kill(player_t &player_1, player_t &player_2) {
     }
 }
 
-void check_collision(player_t &player_1, player_t &player_2) {
+void player_t::check_collision(player_t &player_1, player_t &player_2) {
 
     auto& game_manager =player_1.get_game_manager();
 

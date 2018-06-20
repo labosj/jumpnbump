@@ -63,10 +63,14 @@ public:
 	void update_movement();
 
 	void position_player() ;
+
+	static void check_collision(player_t &player_1, player_t &player_2);
+	static void player_kill(player_t &player_1, player_t &player_2);
+
+	void do_action_left();
+	void do_action_right();
+	void do_no_action();
 };
 
-void check_collision(player_t &player_1, player_t &player_2);
-
-void steer_players(game_manager_t &game_manager);
 
 #endif //JUMPNBUMP_PLAYER_H

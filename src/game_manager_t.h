@@ -68,6 +68,8 @@ public:
     void kill(int killer, int victim);
 
     void loop();
+
+    void steer_players();
 };
 
 

@@ -335,9 +335,9 @@ void player_t::check_collision(player_t &player_1, player_t &player_2) {
                         player_1.position.x -= player_1.x_add;
                         player_2.position.x -= player_2.x_add;
                     }
-                    int l1 = player_2.x_add;
-                    player_2.x_add = player_1.x_add;
-                    player_1.x_add = l1;
+
+                    std::swap(player_1.x_add, player_2.x_add);
+
                     if (player_1.x_add > 0)
                         player_1.x_add = -player_1.x_add;
                     if (player_2.x_add < 0)
@@ -351,13 +351,12 @@ void player_t::check_collision(player_t &player_1, player_t &player_2) {
                         player_1.position.x -= player_1.x_add;
                         player_2.position.x -= player_2.x_add;
                     }
-                    int l1 = player_2.x_add;
-                    player_2.x_add = player_1.x_add;
-                    player_1.x_add = l1;
-                    if (player_1.x_add < 0)
-                        player_1.x_add = -player_1.x_add;
+                    std::swap(player_1.x_add, player_2.x_add);
                     if (player_2.x_add > 0)
                         player_2.x_add = -player_2.x_add;
+                    if (player_1.x_add < 0)
+                        player_1.x_add = -player_1.x_add;
+
                 }
             }
         }

@@ -172,7 +172,8 @@ void game_manager_t::draw() {
     sf::Text text;
     text.setFont(this->font); // font is a sf::Font
 
-    text.setString("Hello world");
+
+    text.setString(std::to_string(this->players[0].bumps) + " " + std::to_string(this->players[1].bumps) + " " + std::to_string(this->players[2].bumps) + " " + std::to_string(this->players[3].bumps));
     text.setCharacterSize(24); // in pixels, not points!
     text.setColor(sf::Color::Red);
 

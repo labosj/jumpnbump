@@ -16,6 +16,7 @@
 #include "gob_t.h"
 #include "objects_t.h"
 #include <memory>
+#include <SFML/Graphics/Font.hpp>
 
 class game_manager_t {
 public:
@@ -30,6 +31,8 @@ public:
 
     sf::Texture object_texture;
     sf::Texture rabbit_texture;
+
+    sf::Font font;
 
     stage_t stage;
 

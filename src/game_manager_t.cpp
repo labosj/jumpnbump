@@ -9,6 +9,7 @@
 #include "ban_map_t.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include "objects_t.h"
 #include "util.h"
 #include "sound_manager_t.h"
@@ -20,6 +21,7 @@ void game_manager_t::init_textures() {
 
     this->object_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/objects.png");
     this->rabbit_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/rabbit.png");
+    this->font.loadFromFile("/home/edwin/Projects/jumpnbump/data/EagerNaturalist.ttf");
 
 }
 
@@ -165,6 +167,19 @@ void game_manager_t::draw() {
     leftovers.draw(*this);
 
     this->stage.draw_foreground(this->window);
+
+
+    sf::Text text;
+    text.setFont(this->font); // font is a sf::Font
+
+    text.setString("Hello world");
+    text.setCharacterSize(24); // in pixels, not points!
+    text.setColor(sf::Color::Red);
+
+    text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+// inside the main loop, between window.clear() and window.display()
+    this->window.draw(text);
 
     this->window.display();
 

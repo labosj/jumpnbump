@@ -8,3 +8,10 @@
 
 map_position_t::map_position_t(const position_t& position) : map_position_t{screen_position_t{position}} {}
 map_position_t::map_position_t(const screen_position_t& position) : map_position_t{position.x >> 4, position.y >> 4}{}
+
+map_position_t map_position_t::operator+(const map_position_t &position) const {
+    return map_position_t{
+            this->x + position.x,
+            this->y + position.y
+    };
+}

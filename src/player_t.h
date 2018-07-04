@@ -23,6 +23,7 @@ public:
 	int action_left,action_up,action_right;
 	int dead_flag;
 	int bumps;
+	std::string player_name;
 	//vector that stores the kill to other players
 	std::vector<int> bumped;
 

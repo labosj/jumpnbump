@@ -173,7 +173,13 @@ void game_manager_t::draw() {
     text.setFont(this->font); // font is a sf::Font
 
 
-    text.setString(std::to_string(this->players[0].bumps) + " " + std::to_string(this->players[1].bumps) + " " + std::to_string(this->players[2].bumps) + " " + std::to_string(this->players[3].bumps));
+    text.setString(
+            this->players[0].player_name + ": " + std::to_string(this->players[0].bumps) + "\n" +
+            this->players[1].player_name + ": " + std::to_string(this->players[1].bumps) + "\n" +
+            this->players[2].player_name + ": " + std::to_string(this->players[2].bumps) + "\n" +
+            this->players[3].player_name + ": " + std::to_string(this->players[3].bumps) + "\n"
+    );
+
     text.setCharacterSize(24); // in pixels, not points!
     text.setColor(sf::Color::Red);
 
@@ -334,6 +340,7 @@ void game_manager_t::init_players()
     }
 
     {
+        this->players[0].player_name = "Edwin";
         auto& control = this->players[0].control;
         control.up_key = sf::Keyboard::Key::W;
         control.left_key = sf::Keyboard::Key::A;
@@ -341,6 +348,7 @@ void game_manager_t::init_players()
     }
 
     {
+        this->players[1].player_name = "Amanda";
         auto& control = this->players[1].control;
         control.up_key = sf::Keyboard::Key::I;
         control.left_key = sf::Keyboard::Key::J;
@@ -348,6 +356,7 @@ void game_manager_t::init_players()
     }
 
     {
+        this->players[2].player_name = "Dani";
         auto& control = this->players[2].control;
         control.up_key = sf::Keyboard::Key::Up;
         control.left_key = sf::Keyboard::Key::Left;
@@ -355,6 +364,7 @@ void game_manager_t::init_players()
     }
 
     {
+        this->players[3].player_name = "Lesluchis";
         auto& control = this->players[3].control;
         control.up_key = sf::Keyboard::Key::Numpad8;
         control.left_key = sf::Keyboard::Key::Numpad4;

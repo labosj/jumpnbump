@@ -73,6 +73,8 @@ public:
     void loop();
 
     void steer_players();
+
+    void draw_hud();
 };
 
 

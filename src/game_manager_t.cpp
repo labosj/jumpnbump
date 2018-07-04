@@ -152,6 +152,56 @@ void game_manager_t::init_deprecated_data() {
 
 }
 
+void game_manager_t::draw_hud() {
+    sf::Text text;
+    sf::Text score;
+    text.setFont(this->font);
+    score.setFont(this->font); // font is a sf::Font
+    int nameSize = 10;
+    int scoreSize = 20;
+    int scoreSpacing = 2;
+    int playerSpacing = 5;
+    text.setCharacterSize(nameSize);
+    score.setCharacterSize(scoreSize);
+    //text.setStyle(sf::Text::Bold);
+
+    int y = 0;
+    text.setPosition(350, y);
+    text.setString(this->players[0].player_name);
+    this->window.draw(text);
+    y += nameSize + scoreSpacing;
+    score.setPosition(350,  y );
+    score.setString(std::to_string(this->players[0].bumps));
+    this->window.draw(score);
+
+    y += scoreSize + playerSpacing;
+    text.setPosition(350, y);
+    text.setString(this->players[1].player_name);
+    this->window.draw(text);
+    y += nameSize + scoreSpacing;
+    score.setPosition(350, y);
+    score.setString(std::to_string(this->players[1].bumps));
+    this->window.draw(score);
+
+    y += scoreSize + playerSpacing;
+    text.setPosition(350, y);
+    text.setString(this->players[2].player_name);
+    this->window.draw(text);
+    y += nameSize + scoreSpacing;
+    score.setPosition(350, y);
+    score.setString(std::to_string(this->players[2].bumps));
+    this->window.draw(score);
+
+    y += scoreSize + playerSpacing;
+    text.setPosition(350, y);
+    text.setString(this->players[3].player_name);
+    this->window.draw(text);
+    y += nameSize + scoreSpacing;
+    score.setPosition(350, y);
+    score.setString(std::to_string(this->players[3].bumps));
+    this->window.draw(score);
+}
+
 void game_manager_t::draw() {
     this->window.clear();
 
@@ -169,25 +219,9 @@ void game_manager_t::draw() {
     this->stage.draw_foreground(this->window);
 
 
-    sf::Text text;
-    text.setFont(this->font); // font is a sf::Font
 
 
-    text.setString(
-            this->players[0].player_name + ": " + std::to_string(this->players[0].bumps) + "\n" +
-            this->players[1].player_name + ": " + std::to_string(this->players[1].bumps) + "\n" +
-            this->players[2].player_name + ": " + std::to_string(this->players[2].bumps) + "\n" +
-            this->players[3].player_name + ": " + std::to_string(this->players[3].bumps) + "\n"
-    );
-
-    text.setCharacterSize(24); // in pixels, not points!
-    text.setColor(sf::Color::Red);
-
-    text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-
-// inside the main loop, between window.clear() and window.display()
-    this->window.draw(text);
-
+    this->draw_hud();
     this->window.display();
 
 }

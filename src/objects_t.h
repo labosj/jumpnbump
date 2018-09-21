@@ -22,8 +22,6 @@ public:
 
     void add_smoke(player_t& player);
     void add_jetpack_smoke(player_t& player);
-
-    sf::Sprite get_pob();
 };
 
 

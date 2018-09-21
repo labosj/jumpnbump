@@ -20,6 +20,7 @@ private:
 public:
 
 
+	int character_id = 0;
 	int action_left,action_up,action_right;
 	int dead_flag;
 	int bumps;
@@ -45,6 +46,7 @@ public:
 	bool is_alive() const { return this->dead_flag == 0; }
 
 	void set_position(const position_t& position);
+	int get_character_id() const { return this->character_id; }
 	void check_spring_jump();
 
 	void reset_kills();

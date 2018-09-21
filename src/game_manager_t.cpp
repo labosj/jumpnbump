@@ -20,9 +20,20 @@ game_manager_t::game_manager_t(sf::RenderWindow& window) :window(window) {
 void game_manager_t::init_textures() {
 
     this->object_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/objects.png");
-    this->rabbit_texture.loadFromFile("/home/edwin/Projects/jumpnbump/data/rabbit.png");
+
     this->font.loadFromFile("/home/edwin/Projects/jumpnbump/data/EagerNaturalist.ttf");
 
+}
+
+void game_manager_t::init_character() {
+    this->characters.emplace_back(character_t{});
+    this->characters.emplace_back(character_t{});
+    this->characters.emplace_back(character_t{});
+    this->characters.emplace_back(character_t{});
+    this->characters[0].load("/home/edwin/Projects/jumpnbump/data/charas/jiffy");
+    this->characters[1].load("/home/edwin/Projects/jumpnbump/data/charas/mijji");
+    this->characters[2].load("/home/edwin/Projects/jumpnbump/data/charas/dott");
+    this->characters[3].load("/home/edwin/Projects/jumpnbump/data/charas/fizz");
 }
 
 void game_manager_t::init_deprecated_data() {
@@ -145,10 +156,7 @@ void game_manager_t::init_deprecated_data() {
             }
     };
 
-    rabbit_gobs.add("/home/edwin/Projects/jumpnbump/data/rabbit.json", this->rabbit_texture);
-
-
-    object_gobs.add("/home/edwin/Projects/jumpnbump/data/objects.json", this->object_texture);
+    this->object_gobs.add("/home/edwin/Projects/jumpnbump/data/objects.json", this->object_texture);
 
 }
 
@@ -209,7 +217,7 @@ void game_manager_t::draw() {
 
 
     for (int i = 0 ; i < players.size(); i++) {
-        this->pobs.add(players[i].get_position(), players[i].anim_handler.image + i * 18, &rabbit_gobs);
+        this->pobs.add(players[i].get_position(), players[i].anim_handler.image, &this->characters[players[i].get_character_id()].gobs);
     }
 
     this->pobs.draw(*this);
@@ -269,8 +277,10 @@ bool game_manager_t::init() {
 
         this->stage.load("/home/edwin/Projects/jumpnbump/data/maps/default");
         this->init_textures();
+        this->init_character();
         this->init_deprecated_data();
         this->init_players();
+
 
         auto& ban_map = this->stage.get_map();
 
@@ -375,6 +385,7 @@ void game_manager_t::init_players()
 
     {
         this->players[0].player_name = "Edwin";
+        this->players[0].character_id = 0;
         auto& control = this->players[0].control;
         control.up_key = sf::Keyboard::Key::W;
         control.left_key = sf::Keyboard::Key::A;
@@ -383,6 +394,7 @@ void game_manager_t::init_players()
 
     {
         this->players[1].player_name = "Amanda";
+        this->players[1].character_id = 1;
         auto& control = this->players[1].control;
         control.up_key = sf::Keyboard::Key::I;
         control.left_key = sf::Keyboard::Key::J;
@@ -391,6 +403,7 @@ void game_manager_t::init_players()
 
     {
         this->players[2].player_name = "Dani";
+        this->players[2].character_id = 2;
         auto& control = this->players[2].control;
         control.up_key = sf::Keyboard::Key::Up;
         control.left_key = sf::Keyboard::Key::Left;
@@ -399,6 +412,7 @@ void game_manager_t::init_players()
 
     {
         this->players[3].player_name = "Lesluchis";
+        this->players[3].character_id = 3;
         auto& control = this->players[3].control;
         control.up_key = sf::Keyboard::Key::Numpad8;
         control.left_key = sf::Keyboard::Key::Numpad4;

@@ -18,6 +18,7 @@ struct gob_t{
 	std::vector<sf::Sprite> images;
 
 	int add(const std::string& filename, sf::Texture& texture);
+    int add_character(const std::string& filename, sf::Texture& texture);
 
 	sf::Sprite& get_sprite(int image);
 };

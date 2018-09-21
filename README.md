@@ -1,6 +1,6 @@
 # Jump 'n Bump
 
-This source is donwloaded from [here](https://archive.org/details/jumpnbump_1.60)
+This source is downloaded from [here](https://archive.org/details/jumpnbump_1.60)
 And modified by me
 
 Changes so far.
@@ -42,36 +42,6 @@ You can also use joysticks (main axis and button 1 will be used).
 Additional levels are available on the website of
 [Brainchild Design](http://www.brainchilddesign.com/games/jumpnbump/levels/levels1.html).
 You can launch them with `jumpnbump -dat levelname.dat`.
-
-## Networking
-
-Jump 'n Bump can be played in multiplayer over the network. This can be done
-with these commands:
-
-Player 1: `jumpnbump -port 7777 -net 0 <ip_or_hostname_of_player2> <port_of_player2>`
-Player 2: `jumpnbump -port 7777 -net 1 <ip_or_hostname_of_player1> <port_of_player1>`
-
-You have to make sure that the port udp/7777 is open in your firewall.
-
-You can add -net 2 and -net 3 for 3rd and 4th players, and make sure that all
-the players are using the same `-dat level.dat`, if any.
-
-## Compilation
-
-To build Jump 'n Bump you will need the SDL2, SDL2_mixer and SDL2_net
-development libraries, as well as BZip2 and Zlib.
-
-In lubuntu you just need to install the following commands
-```
-sudo apt install libsdl2-dev
-sudo apt install libsdl2-mixer-dev libsdl2-net-dev
-sudo apt install zlib1g-dev libbz2-dev
-```
-
-
-You can then run `make` to build the engine, and `make install` (as root or
-sudo) to install it system wide. You can impact the default installation paths
-via the Make variables defined at the top of the `Makefile`.
 
 ## License
 

@@ -15,6 +15,7 @@
 #include "anim_t.h"
 #include "gob_t.h"
 #include "objects_t.h"
+#include "character_t.h"
 #include <memory>
 #include <SFML/Graphics/Font.hpp>
 
@@ -30,7 +31,8 @@ public:
     bool jetpack = false;
 
     sf::Texture object_texture;
-    sf::Texture rabbit_texture;
+
+    std::vector<character_t> characters;
 
     sf::Font font;
 
@@ -43,11 +45,8 @@ public:
 
     std::vector<player_t> players;
 
-
-
     std::vector<anim_t> player_anims;
     std::vector<anim_t> object_anims;
-    gob_t rabbit_gobs;
     gob_t object_gobs;
     objects_t objects;
 
@@ -56,6 +55,7 @@ public:
     void init_textures();
 
     void init_players();
+    void init_character();
     void init_deprecated_data();
 
     void collision_check();

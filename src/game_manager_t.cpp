@@ -614,12 +614,11 @@ void game_manager_t::steer_players() {
                 }
             } else {
                 if (player.in_water == 0) {
-                    if (!game_manager.bunnies_in_space)
-                        player.y_add += 12288;
-                    else
-                        player.y_add += 6144;
+                    //water floatability, double in space
+                    player.y_add += 12288;
                     if (player.y_add > 327680L)
                         player.y_add = 327680L;
+
                 } else {
                     player.position.y = (player.position.y.value & 0xffff0000) + 0x10000;
                     player.y_add = 0;

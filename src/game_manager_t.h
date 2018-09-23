@@ -27,7 +27,6 @@ public:
 
     bool gore = true;
     bool pogostick = false;
-    bool bunnies_in_space = false;
     bool jetpack = false;
 
     sf::Texture object_texture;

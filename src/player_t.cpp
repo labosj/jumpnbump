@@ -144,7 +144,7 @@ void player_t::set_anim(int anim) {
 }
 
 void player_t::gravity_fall() {
-    
+
     this->jump_ready = true;
     if (this->in_water == 0 && this->y_add < 0 && this->jump_abort) {
         this->y_add += this->game_manager.get_stage().get_gravity().value;

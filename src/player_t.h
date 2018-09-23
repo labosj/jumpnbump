@@ -25,7 +25,7 @@ public:
 
 	int character_id = 0;
 	int action_left,action_up,action_right;
-	int dead_flag;
+	bool dead_flag;
 	int bumps;
 	std::string player_name;
 	//vector that stores the kill to other players
@@ -48,7 +48,7 @@ public:
 
 	position_t get_position() const;
 
-	bool is_alive() const { return this->dead_flag == 0; }
+	bool is_alive() const { return !this->dead_flag; }
 
 	void set_position(const position_t& position);
 	int get_character_id() const { return this->character_id; }
@@ -61,6 +61,7 @@ public:
 	}
 
 	void gravity_fall();
+	void animate();
 
 	bounding_box_t get_bounding_box() const { return bounding_box_t{this->position, 12 << 16, 12 << 16};}
 

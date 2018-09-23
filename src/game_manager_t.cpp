@@ -438,7 +438,7 @@ void game_manager_t::kill(int killer, int victim) {
     auto& players = this->players;
 
     players[c1].bounce();
-    players[c2].dead_flag = 1;
+    players[c2].dead_flag = true;
     if (players[c2].anim_handler.anim != 6) {
         players[c2].set_anim(6);
         if (this->gore ) {
@@ -628,26 +628,11 @@ void game_manager_t::steer_players() {
             if (player.y_add > 36864 && player.anim_handler.anim != 3 && player.in_water == 0) {
                 player.set_anim(3);
             }
-
+            player.animate();
         }
 
-        auto& player_anims = player.get_game_manager().player_anims;
-
-        player.anim_handler.frame_tick++;
-        if (player.anim_handler.frame_tick >= player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].ticks) {
-            player.anim_handler.frame++;
-            if (player.anim_handler.frame >= player_anims[player.anim_handler.anim].frame.size()) {
-                if (player.anim_handler.anim != 6)
-                    player.anim_handler.frame = player_anims[player.anim_handler.anim].restart_frame;
-                else player.position_player();
-            }
-            player.anim_handler.frame_tick = 0;
-        }
-        if ( player.direction == player_t::PLAYER_DIRECTION::LEFT ) {
-            player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image + 9;
-        } else {
-            player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image;
-        }
+        if (!player.is_alive())
+            player.position_player();
 
     }
 

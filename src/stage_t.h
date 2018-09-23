@@ -10,6 +10,7 @@
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include "ban_map_t.h"
+#include "position_component_t.h"
 
 class stage_t {
 
@@ -23,6 +24,8 @@ private:
     sf::Music background_music;
 
     ban_map_t ban_map;
+
+    position_component_t gravity{32768};
 
 public:
     void load(const std::string& folder);

@@ -34,7 +34,8 @@ public:
 	position_t position;
 
 	int x_add, y_add;
-	int jump_ready, jump_abort, in_water;
+	bool jump_ready, jump_abort;
+	int in_water;
 	PLAYER_DIRECTION direction;
 	anim_handler_t anim_handler;
 
@@ -67,15 +68,35 @@ public:
 		return this->get_bounding_box().collide(player.get_bounding_box());
 	}
 
-	bool is_stomping(const player_t& player) const {
+	/**
+	 * Use in conjuntion with collide
+	 * @param player
+	 * @return
+	 */
+	bool is_over(const player_t &player) const {
 
+		auto stomper_bottom = this->get_bounding_box().get_bottom();
+
+		auto stomped_top = player.get_bounding_box().get_top() + (5 << 16);
+
+		return stomper_bottom < stomped_top;
+	}
+
+	/**
+	 * Jumping of moving up.
+	 *
+	 * When is moving up it can't stomp another rabbits
+	 * @return
+	 */
+	bool is_moving_up() const {
+		return this->y_add < 0;
 	}
 
 	void bounce() {
 		this->y_add = -this->y_add;
 		if (this->y_add > -262144L)
 			this->y_add = -262144L;
-		this->jump_abort = 1;
+		this->jump_abort = true;
 	}
 
 	void check_ceiling();

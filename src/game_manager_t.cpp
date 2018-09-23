@@ -374,7 +374,7 @@ void game_manager_t::init_players()
         player.x_add = 0;
         player.y_add = 0;
         player.direction = rnd(2) ? player_t::PLAYER_DIRECTION::LEFT : player_t::PLAYER_DIRECTION::RIGHT;
-        player.jump_ready = 1;
+        player.jump_ready = true;
         player.anim_handler.anim = 0;
         player.anim_handler.frame = 0;
         player.anim_handler.frame_tick = 0;
@@ -499,7 +499,7 @@ void game_manager_t::steer_players() {
             }
             if (!game_manager.jetpack) {
                 /* no jetpack */
-                if (game_manager.pogostick || (player.jump_ready == 1 && player.action_up)) {
+                if (game_manager.pogostick || (player.jump_ready && player.action_up)) {
 
                     auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
                     auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
@@ -511,8 +511,8 @@ void game_manager_t::steer_players() {
                         below_right == ban_map_t::Type::ICE) {
                         player.y_add = -280000L;
                         player.set_anim(2);
-                        player.jump_ready = 0;
-                        player.jump_abort = 1;
+                        player.jump_ready = false;
+                        player.jump_abort = true;
                         if (!game_manager.pogostick) {
                             game_manager.sound_manager.play_sfx_jump();
                         } else {
@@ -524,8 +524,8 @@ void game_manager_t::steer_players() {
                         player.y_add = -196608L;
                         player.in_water = 0;
                         player.set_anim(2);
-                        player.jump_ready = 0;
-                        player.jump_abort = 1;
+                        player.jump_ready = false;
+                        player.jump_abort = true;
                         if (!game_manager.pogostick) {
                             game_manager.sound_manager.play_sfx_jump();
 

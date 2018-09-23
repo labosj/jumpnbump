@@ -149,8 +149,8 @@ void player_t::gravity_fall() {
     if (!this->game_manager.bunnies_in_space)
         gravity = 16384;
 
-    this->jump_ready = 1;
-    if (this->in_water == 0 && this->y_add < 0 && this->jump_abort == 1) {
+    this->jump_ready = true;
+    if (this->in_water == 0 && this->y_add < 0 && this->jump_abort) {
         this->y_add += gravity;
         if (this->y_add > 0)
             this->y_add = 0;
@@ -208,8 +208,8 @@ void player_t::check_spring_jump() {
         this->position.y = ((this->position.y.value >> 16) & 0xfff0) << 16;
         this->y_add = -400000L;
         this->set_anim(2);
-        this->jump_ready = 0;
-        this->jump_abort = 0;
+        this->jump_ready = false;
+        this->jump_abort = false;
         this->game_manager.sound_manager.play_sfx_spring();
 
     }
@@ -284,7 +284,7 @@ void player_t::position_player() {
     this->x_add = 0;
     this->y_add = 0;
     this->direction = PLAYER_DIRECTION::RIGHT;
-    this->jump_ready = 1;
+    this->jump_ready = true;
     this->in_water = 0;
     this->anim_handler.anim = 0;
     this->anim_handler.frame = 0;
@@ -299,26 +299,23 @@ void player_t::player_kill(player_t &player_1, player_t &player_2) {
 
     auto& game_manager =player_1.get_game_manager();
 
-    if (player_1.y_add >= 0) {
+    if (player_2.y_add < 0)
+        player_2.y_add = 0;
 
+    if ( !player_1.is_moving_up()) {
         game_manager.kill(player_1.get_id(), player_2.get_id());
-    } else {
-        if (player_2.y_add < 0)
-            player_2.y_add = 0;
-    }
+     }
 }
 
 void player_t::check_collision(player_t &player_1, player_t &player_2) {
 
-    auto& game_manager =player_1.get_game_manager();
-
     if ( player_1.collide(player_2) ) {
-        if ((labs(player_1.position.y.value - player_2.position.y.value)) > (5 << 16)) {
-            if (player_1.position.y < player_2.position.y) {
-                player_kill(player_1, player_2);
-            } else {
-                player_kill(player_2, player_1);
-            }
+        if (player_1.is_over(player_2) ) {
+            player_kill(player_1, player_2);
+
+        } else if (player_2.is_over(player_1) ) {
+            player_kill(player_2, player_1);
+
         } else {
             auto fix_player = [](player_t &player_1, player_t &player_2) {
                 if (player_1.x_add > 0)
@@ -342,14 +339,6 @@ void player_t::check_collision(player_t &player_1, player_t &player_2) {
                 fix_player(player_1, player_2);
             } else {
                 fix_player(player_2, player_1);
-
-                /*
-                if (player_1.x_add > 0)
-                    player_2.position.x = player_1.position.x - (12L << 16);
-                else if (player_2.x_add < 0)
-                    player_1.position.x = player_2.position.x + (12L << 16);
-                */
-
             }
         }
     }

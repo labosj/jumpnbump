@@ -42,6 +42,13 @@ public:
         if ( this->get_bottom() < position.y ) return false;
         return true;
     }
+
+    bool over(const bounding_box_t& box) const {
+        if ( box.get_right() < this->get_left() ) return false;
+        if ( this->get_right() < box.get_left() ) return false;
+        if  ( this->get_bottom() + 1 != box.get_top() ) return false;
+        return true;
+    }
 };
 
 

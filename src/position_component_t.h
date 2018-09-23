@@ -26,6 +26,11 @@ public:
         };
     }
 
+    bool operator!=(const position_component_t& position) {
+        return this->value != position.value;
+    }
+
+
     position_component_t operator+=(const position_component_t& position) {
         return this->value += position.value;
     }

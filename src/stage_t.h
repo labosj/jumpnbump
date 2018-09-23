@@ -26,12 +26,18 @@ private:
     ban_map_t ban_map;
 
     position_component_t gravity{32768};
+    /*
+     * Bunnies in space
+     * gravity = 16384;
+     */
 
 public:
     void load(const std::string& folder);
 
     void draw_background(sf::RenderTarget& target);
     void draw_foreground(sf::RenderTarget& target);
+
+    position_component_t get_gravity() const { return this->gravity; }
 
     void play_bgm();
 

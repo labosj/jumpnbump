@@ -144,14 +144,10 @@ void player_t::set_anim(int anim) {
 }
 
 void player_t::gravity_fall() {
-
-    auto gravity = 32768;
-    if (!this->game_manager.bunnies_in_space)
-        gravity = 16384;
-
+    
     this->jump_ready = true;
     if (this->in_water == 0 && this->y_add < 0 && this->jump_abort) {
-        this->y_add += gravity;
+        this->y_add += this->game_manager.get_stage().get_gravity().value;
         if (this->y_add > 0)
             this->y_add = 0;
     }

@@ -50,14 +50,13 @@ void player_t::do_action_left() {
         if (player.x_add > 0) {
             player.x_add -= 16384;
             if (player.x_add > -98304L && player.in_water == 0 && below == ban_map_t::Type::SOLID)
-                player.get_game_manager().objects.add(player.get_game_manager(), object_t::Type::SMOKE, player.get_position() + screen_position_t{2 + rnd(9), 13 + rnd(5)}, 0,
-                           -16384 - rnd(8192), OBJ_ANIM_SMOKE, 0);
+                player.get_game_manager().objects.add_smoke(player);
         } else
             player.x_add -= 12288;
     }
     if (player.x_add < -98304L)
         player.x_add = -98304L;
-    player.direction = 1;
+    player.direction = PLAYER_DIRECTION::LEFT;
 
     if (player.anim_handler.anim == 0) {
         player.set_anim(1);
@@ -93,9 +92,10 @@ void player_t::do_action_right() {
         } else
             player.x_add += 12288;
     }
+
     if (player.x_add > 98304L)
         player.x_add = 98304L;
-    player.direction = 0;
+    player.direction = PLAYER_DIRECTION::RIGHT;
     if ( player.anim_handler.anim == 0 )
         player.set_anim(1);
 }
@@ -136,7 +136,11 @@ void player_t::set_anim(int anim) {
     this->anim_handler.anim = anim;
     this->anim_handler.frame = 0;
     this->anim_handler.frame_tick = 0;
-    this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image + this->direction * 9;
+    if ( this->direction == PLAYER_DIRECTION::RIGHT ) {
+        this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image;
+    } else {
+        this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image + 9;
+    }
 }
 
 void player_t::gravity_fall() {
@@ -177,21 +181,21 @@ void player_t::check_spring_jump() {
             screen_position_t screen_position = position;
             if (object.used == 1 && object.type == object_t::Type::SPRING) {
                 if (ban_map.get(screen_position + screen_position_t{8, 15}) == ban_map_t::Type::SPRING) {
-                    if ((object.position.x >> 20) == ((screen_position.x + 8) >> 4) &&
-                        (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
+                    if ((object.position.x.value >> 20) == ((screen_position.x.value + 8) >> 4) &&
+                        (object.position.y.value >> 20) == ((screen_position.y.value + 15) >> 4)) {
                         object.set_anim(object.anim_handler.anim, 0);
                         break;
                     }
                 } else {
                     if (ban_map.get(screen_position + screen_position_t{0, 15}) == ban_map_t::Type::SPRING) {
-                        if ((object.position.x >> 20) == (screen_position.x >> 4) &&
-                            (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
+                        if ((object.position.x.value >> 20) == (screen_position.x.value >> 4) &&
+                            (object.position.y.value >> 20) == ((screen_position.y.value + 15) >> 4)) {
                             object.set_anim(object.anim_handler.anim, 0);
                             break;
                         }
                     } else if (ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
-                        if ((object.position.x >> 20) == ((screen_position.x + 15) >> 4) &&
-                            (object.position.y >> 20) == ((screen_position.y + 15) >> 4)) {
+                        if ((object.position.x.value >> 20) == ((screen_position.x.value + 15) >> 4) &&
+                            (object.position.y.value >> 20) == ((screen_position.y.value + 15) >> 4)) {
                             object.set_anim(object.anim_handler.anim, 0);
                             break;
                         }
@@ -201,7 +205,7 @@ void player_t::check_spring_jump() {
         }
 
 
-        this->position.y = ((this->position.y >> 16) & 0xfff0) << 16;
+        this->position.y = ((this->position.y.value >> 16) & 0xfff0) << 16;
         this->y_add = -400000L;
         this->set_anim(2);
         this->jump_ready = 0;
@@ -215,10 +219,11 @@ void player_t::check_ceiling() {
 
     auto& ban_map = this->game_manager.get_stage().get_map();
 
-    if (ban_map.is_solid(this->get_position()) ||
-        ban_map.is_solid(this->get_position() + screen_position_t{15, 0})) {
+    //if the bunny collide in the top with a solid wall
+    if (ban_map.is_solid(this->get_position() + screen_position_t{0,  0}) ||
+        ban_map.is_solid(this->get_position() + screen_position_t{15, 0}) ) {
         //stop the velocity in y
-        this->position.y = (((screen_position_t{this->get_position()}.y + 16) & 0xfff0)) << 16; //TODO: MASK
+        this->position.y = (((screen_position_t{this->get_position()}.y.value + 16) & 0xfff0)) << 16; //TODO: MASK
         this->y_add = 0;
         this->set_anim(0);
     }
@@ -229,17 +234,19 @@ void player_t::check_lateral_walls() {
 
     auto& ban_map = this->get_game_manager().get_stage().get_map();
 
-    if (ban_map.is_solid(this->get_position()) ||
+    // if the bunny collide in the left with a wall |B
+    if (ban_map.is_solid(this->get_position() + screen_position_t{0,  0}) ||
         ban_map.is_solid(this->get_position() + screen_position_t{0, 15})) {
-        int s1 = (this->position.x >> 16);
+        int s1 = (this->position.x.value >> 16);
         this->position.x = (((s1 + 16) & 0xfff0)) << 16;
         this->x_add = 0;
     }
 
 
+    // if the bunny collide in the right with a wall    B|
     if (ban_map.is_solid(this->get_position() + screen_position_t{15, 0}) ||
         ban_map.is_solid(this->get_position() + screen_position_t{15, 15})) {
-        int s1 = (this->position.x >> 16);
+        int s1 = (this->position.x.value >> 16);
         this->position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
         this->x_add = 0;
     }
@@ -266,8 +273,8 @@ void player_t::position_player() {
         for (const auto &other_player : this->get_game_manager().players) {
             if (other_player.get_id() != this->get_id()) {
                 screen_position_t screen_position = position;
-                if (abs(screen_position.x - (screen_position_t{other_player.get_position()}.x)) < 32 &&
-                    abs(screen_position.y - (screen_position_t{other_player.get_position()}.y)) < 32)
+                if (abs(screen_position.x.value - (screen_position_t{other_player.get_position()}.x.value)) < 32 &&
+                    abs(screen_position.y.value - (screen_position_t{other_player.get_position()}.y.value)) < 32)
                     goto again;
             }
         }
@@ -276,7 +283,7 @@ void player_t::position_player() {
 
     this->x_add = 0;
     this->y_add = 0;
-    this->direction = 0;
+    this->direction = PLAYER_DIRECTION::RIGHT;
     this->jump_ready = 1;
     this->in_water = 0;
     this->anim_handler.anim = 0;
@@ -305,49 +312,47 @@ void player_t::check_collision(player_t &player_1, player_t &player_2) {
 
     auto& game_manager =player_1.get_game_manager();
 
-        if (labs(player_1.position.x - player_2.position.x) < (12L << 16) &&
-            labs(player_1.position.y - player_2.position.y) < (12L << 16)) {
-            if ((labs(player_1.position.y - player_2.position.y) >> 16) > 5) {
-                if (player_1.position.y < player_2.position.y) {
-                    player_kill(player_1, player_2);
-                } else {
-                    player_kill(player_2, player_1);
-                }
+    if ( player_1.collide(player_2) ) {
+        if ((labs(player_1.position.y.value - player_2.position.y.value)) > (5 << 16)) {
+            if (player_1.position.y < player_2.position.y) {
+                player_kill(player_1, player_2);
             } else {
-                if (player_1.position.x < player_2.position.x) {
-                    if (player_1.x_add > 0)
-                        player_1.position.x = player_2.position.x - (12L << 16);
-                    else if (player_2.x_add < 0)
-                        player_2.position.x = player_1.position.x + (12L << 16);
-                    else {
-                        player_1.position.x -= player_1.x_add;
-                        player_2.position.x -= player_2.x_add;
-                    }
-
-                    std::swap(player_1.x_add, player_2.x_add);
-
-                    if (player_1.x_add > 0)
-                        player_1.x_add = -player_1.x_add;
-                    if (player_2.x_add < 0)
-                        player_2.x_add = -player_2.x_add;
-                } else {
-                    if (player_1.x_add > 0)
-                        player_2.position.x = player_1.position.x - (12L << 16);
-                    else if (player_2.x_add < 0)
-                        player_1.position.x = player_2.position.x + (12L << 16);
-                    else {
-                        player_1.position.x -= player_1.x_add;
-                        player_2.position.x -= player_2.x_add;
-                    }
-                    std::swap(player_1.x_add, player_2.x_add);
-                    if (player_2.x_add > 0)
-                        player_2.x_add = -player_2.x_add;
-                    if (player_1.x_add < 0)
-                        player_1.x_add = -player_1.x_add;
-
+                player_kill(player_2, player_1);
+            }
+        } else {
+            auto fix_player = [](player_t &player_1, player_t &player_2) {
+                if (player_1.x_add > 0)
+                    player_1.position.x = player_2.position.x.value - (12L << 16);
+                else if (player_2.x_add < 0)
+                    player_2.position.x = player_1.position.x + (12L << 16);
+                else {
+                    player_1.position.x -= player_1.x_add;
+                    player_2.position.x -= player_2.x_add;
                 }
+
+                std::swap(player_1.x_add, player_2.x_add);
+
+                if (player_1.x_add > 0)
+                    player_1.x_add = -player_1.x_add;
+                if (player_2.x_add < 0)
+                    player_2.x_add = -player_2.x_add;
+            };
+
+            if (player_1.position.x < player_2.position.x) {
+                fix_player(player_1, player_2);
+            } else {
+                fix_player(player_2, player_1);
+
+                /*
+                if (player_1.x_add > 0)
+                    player_2.position.x = player_1.position.x - (12L << 16);
+                else if (player_2.x_add < 0)
+                    player_1.position.x = player_2.position.x + (12L << 16);
+                */
+
             }
         }
+    }
 }
 
 void player_t::reset_kills() {

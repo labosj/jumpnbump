@@ -103,20 +103,20 @@ void object_t::update_butterfly() {
     if (this->x_add > 32768)
         this->x_add = 32768;
     this->position.x += this->x_add;
-    if ((this->position.x >> 16) < 16) {
-        this->position.x = 16 << 16;
+    if (this->position.x < map_position_component_t{16}) {
+        this->position.x = map_position_component_t{16};
         this->x_add = -this->x_add >> 2;
         this->x_acc = 0;
-    } else if ((this->position.x >> 16) > 350) {
-        this->position.x = 350 << 16;
+    } else if (this->position.x > map_position_component_t{350}) {
+        this->position.x = map_position_component_t{350};
         this->x_add = -this->x_add >> 2;
         this->x_acc = 0;
     }
     if (ban_map.get(this->get_position()) != ban_map_t::Type::VOID) {
         if (this->x_add < 0) {
-            this->position.x = (((this->position.x >> 16) + 16) & 0xfff0) << 16;
+            this->position.x = (((this->position.x.value >> 16) + 16) & 0xfff0) << 16;
         } else {
-            this->position.x = ((((this->position.x >> 16) - 16) & 0xfff0) + 15) << 16;
+            this->position.x = ((((this->position.x.value >> 16) - 16) & 0xfff0) + 15) << 16;
         }
         this->x_add = -this->x_add >> 2;
         this->x_acc = 0;
@@ -132,20 +132,20 @@ void object_t::update_butterfly() {
     if (this->y_add > 32768)
         this->y_add = 32768;
     this->position.y += this->y_add;
-    if ((this->position.y >> 16) < 0) {
-        this->position.y = 0;
+    if (this->position.y < map_position_component_t{0}) {
+        this->position.y = map_position_component_t{0};
         this->y_add = -this->y_add >> 2;
         this->y_acc = 0;
-    } else if ((this->position.y >> 16) > 255) {
-        this->position.y = 255 << 16;
+    } else if (this->position.y > map_position_component_t{255}) {
+        this->position.y = map_position_component_t{255};
         this->y_add = -this->y_add >> 2;
         this->y_acc = 0;
     }
     if (ban_map.get(this->get_position()) != ban_map_t::Type::VOID) {
         if (this->y_add < 0) {
-            this->position.y = (((this->position.y >> 16) + 16) & 0xfff0) << 16;
+            this->position.y = (((this->position.y.value >> 16) + 16) & 0xfff0) << 16;
         } else {
-            this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
+            this->position.y = ((((this->position.y.value >> 16) - 16) & 0xfff0) + 15) << 16;
         }
         this->y_add = -this->y_add >> 2;
         this->y_acc = 0;
@@ -220,44 +220,44 @@ void object_t::update_flesh() {
             this->y_add = 65536L;
     }
     this->position.x += this->x_add;
-    if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
+    if ((this->position.y.value >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
                                          ban_map.get(this->get_position()) == ban_map_t::Type::ICE)) {
         if (this->x_add < 0) {
-            this->position.x = (((this->position.x >> 16) + 16) & 0xfff0) << 16;
+            this->position.x = (((this->position.x.value >> 16) + 16) & 0xfff0) << 16;
             this->x_add = -this->x_add >> 2;
         } else {
-            this->position.x = ((((this->position.x >> 16) - 16) & 0xfff0) + 15) << 16;
+            this->position.x = ((((this->position.x.value >> 16) - 16) & 0xfff0) + 15) << 16;
             this->x_add = -this->x_add >> 2;
         }
     }
     this->position.y += this->y_add;
-    if ((this->position.x >> 16) < -5 || (this->position.x >> 16) > 405 || (this->position.y >> 16) > 260)
+    if ( (this->position.x.value >> 16) < -5 || (this->position.x.value >> 16) > 405 || (this->position.y.value >> 16) > 260)
         this->used = 0;
-    if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) != ban_map_t::Type::VOID)) {
+    if ((this->position.y.value >> 16) > 0 && (ban_map.get(this->get_position()) != ban_map_t::Type::VOID)) {
         if (this->y_add < 0) {
             if (ban_map.get(this->get_position()) != ban_map_t::Type::WATER) {
-                this->position.y = (((this->position.y >> 16) + 16) & 0xfff0) << 16;
+                this->position.y = (((this->position.y.value >> 16) + 16) & 0xfff0) << 16;
                 this->x_add >>= 2;
                 this->y_add = -this->y_add >> 2;
             }
         } else {
             if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID) {
                 if (this->y_add > 131072L) {
-                    this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
+                    this->position.y = ((((this->position.y.value >> 16) - 16) & 0xfff0) + 15) << 16;
                     this->x_add >>= 2;
                     this->y_add = -this->y_add >> 2;
                 } else {
                     if (rnd(100) < 10) {
                         int s1 = rnd(4) - 2;
-                        game_manager.leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
+                        game_manager.leftovers.add(screen_position_t{this->position.x.value >> 16, (this->position.y.value >> 16) + s1},
                                     this->anim_handler.frame, &(game_manager.object_gobs));
-                        game_manager.leftovers.add(screen_position_t{this->position.x >> 16, (this->position.y >> 16) + s1},
+                        game_manager.leftovers.add(screen_position_t{this->position.x.value >> 16, (this->position.y.value >> 16) + s1},
                                       this->anim_handler.frame, &(game_manager.object_gobs));
                     }
                     this->used = 0;
                 }
             } else if (ban_map.get(this->get_position()) == ban_map_t::Type::ICE) {
-                this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
+                this->position.y = ((((this->position.y.value >> 16) - 16) & 0xfff0) + 15) << 16;
                 if (this->y_add > 131072L)
                     this->y_add = -this->y_add >> 2;
                 else
@@ -302,36 +302,36 @@ void object_t::update_fur() {
             this->y_add = 65536L;
     }
     this->position.x += this->x_add;
-    if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
+    if ((this->position.y.value >> 16) > 0 && (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID ||
                                          ban_map.get(this->get_position()) == ban_map_t::Type::ICE)) {
         if (this->x_add < 0) {
-            this->position.x = (((this->position.x >> 16) + 16) & 0xfff0) << 16;
+            this->position.x = (((this->position.x.value >> 16) + 16) & 0xfff0) << 16;
             this->x_add = -this->x_add >> 2;
         } else {
-            this->position.x = ((((this->position.x >> 16) - 16) & 0xfff0) + 15) << 16;
+            this->position.x = ((((this->position.x.value >> 16) - 16) & 0xfff0) + 15) << 16;
             this->x_add = -this->x_add >> 2;
         }
     }
     this->position.y += this->y_add;
-    if ((this->position.x >> 16) < -5 || (this->position.x >> 16) > 405 || (this->position.y >> 16) > 260)
+    if ((this->position.x.value >> 16) < -5 || (this->position.x.value >> 16) > 405 || (this->position.y.value >> 16) > 260)
         this->used = 0;
-    if ((this->position.y >> 16) > 0 && (ban_map.get(this->get_position()) != ban_map_t::Type::VOID)) {
+    if ((this->position.y.value >> 16) > 0 && (ban_map.get(this->get_position()) != ban_map_t::Type::VOID)) {
         if (this->y_add < 0) {
             if (ban_map.get(this->get_position()) != ban_map_t::Type::WATER) {
-                this->position.y = (((this->position.y >> 16) + 16) & 0xfff0) << 16;
+                this->position.y = (((this->position.y.value >> 16) + 16) & 0xfff0) << 16;
                 this->x_add >>= 2;
                 this->y_add = -this->y_add >> 2;
             }
         } else {
             if (ban_map.get(this->get_position()) == ban_map_t::Type::SOLID) {
                 if (this->y_add > 131072L) {
-                    this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
+                    this->position.y = ((((this->position.y.value >> 16) - 16) & 0xfff0) + 15) << 16; //get the position of block by position of player
                     this->x_add >>= 2;
                     this->y_add = -this->y_add >> 2;
                 } else
                     this->used = 0;
             } else if (ban_map.get(this->get_position()) == ban_map_t::Type::ICE) {
-                this->position.y = ((((this->position.y >> 16) - 16) & 0xfff0) + 15) << 16;
+                this->position.y = ((((this->position.y.value >> 16) - 16) & 0xfff0) + 15) << 16;
                 if (this->y_add > 131072L)
                     this->y_add = -this->y_add >> 2;
                 else
@@ -349,7 +349,7 @@ sf::Sprite object_t::get_pob() {
     screen_position_t position = this->get_position();
 
     auto sprite = this->game_manager.object_gobs.get_sprite(this->anim_handler.image);
-    sprite.setPosition(position.x, position.y);
+    sprite.setPosition(position.x.value, position.y.value);
 
     return sprite;
 }

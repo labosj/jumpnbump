@@ -6,16 +6,19 @@
 #define JUMPNBUMP_POSITION_T_H
 
 #include "screen_position_t.h"
+#include "position_component_t.h"
 class map_position_t;
 
 class position_t {
 public:
-    int x;
-    int y;
+    position_component_t x;
+    position_component_t y;
 
     position_t() : position_t(0,0) {}
 
-    position_t(int x, int y) : x(x), y(y) {}
+    position_t(position_component_t x, position_component_t y) : x(x), y(y) {}
+
+    position_t(const position_t& position) : position_t{position.x, position.y} {}
 
     position_t(const screen_position_t& position);
     position_t(const map_position_t& position);

@@ -5,6 +5,8 @@
 #ifndef JUMPNBUMP_BAN_MAP_H
 #define JUMPNBUMP_BAN_MAP_H
 
+class map_block_t;
+
 #include <tuple>
 #include <vector>
 #include "map_position_t.h"
@@ -34,6 +36,7 @@ public:
     bool read_from_file(const std::string& filename);
 
     Type get(const map_position_t& position) const;
+    map_block_t get_block(const map_position_t& position) const;
 
 
     bool is_in_water(const screen_position_t& position) const;

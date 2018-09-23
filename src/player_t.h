@@ -9,6 +9,7 @@
 #include "position_t.h"
 #include "anim_handler_t.h"
 #include "player_control_t.h"
+#include "bounding_box_t.h"
 
 class game_manager_t;
 
@@ -18,6 +19,8 @@ private:
 	game_manager_t& game_manager;
 
 public:
+
+	enum class PLAYER_DIRECTION { LEFT, RIGHT };
 
 
 	int character_id = 0;
@@ -31,7 +34,8 @@ public:
 	position_t position;
 
 	int x_add, y_add;
-	int direction, jump_ready, jump_abort, in_water;
+	int jump_ready, jump_abort, in_water;
+	PLAYER_DIRECTION direction;
 	anim_handler_t anim_handler;
 
 	player_control_t control;
@@ -56,6 +60,23 @@ public:
 	}
 
 	void gravity_fall();
+
+	bounding_box_t get_bounding_box() const { return bounding_box_t{this->position, 12 << 16, 12 << 16};}
+
+	bool collide(const player_t& player) const {
+		return this->get_bounding_box().collide(player.get_bounding_box());
+	}
+
+	bool is_stomping(const player_t& player) const {
+
+	}
+
+	void bounce() {
+		this->y_add = -this->y_add;
+		if (this->y_add > -262144L)
+			this->y_add = -262144L;
+		this->jump_abort = 1;
+	}
 
 	void check_ceiling();
 

@@ -12,12 +12,12 @@
 
 ban_map_t::Type ban_map_t::get(const map_position_t& pos) const {
     //std::cout << "const[" << pos.x << "," << pos.y << "]\n";
-    if ( pos.x < 0) return ban_map_t::Type::VOID;
-    if ( pos.x >= this->width ) return ban_map_t::Type::VOID;
-    if ( pos.y < 0 ) return ban_map_t::Type::VOID;
-    if ( pos.y >= this->height ) return ban_map_t::Type::VOID;
+    if ( pos.x.value < 0) return ban_map_t::Type::VOID;
+    if ( pos.x.value >= this->width ) return ban_map_t::Type::VOID;
+    if ( pos.y.value < 0 ) return ban_map_t::Type::VOID;
+    if ( pos.y.value >= this->height ) return ban_map_t::Type::VOID;
 
-    return this->map[pos.y][pos.x];
+    return this->map[pos.y.value][pos.x.value];
 }
 
 bool ban_map_t::is_in_water(const screen_position_t& position) const {
@@ -53,7 +53,7 @@ map_position_t ban_map_t::get_random_available_floor_position() const {
     while (true) {
         auto position = get_random_available_position();
         auto below = position;
-        below.y += 1;
+        below.y.value += 1;
 
         if (
                this->get(below) == ban_map_t::Type::SOLID ||     //y el de abajo es un solido, posiblemente un suelo

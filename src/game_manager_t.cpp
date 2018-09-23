@@ -373,7 +373,7 @@ void game_manager_t::init_players()
         player.position = screen_position_t{rnd(150), (160 + c1 * 2)};
         player.x_add = 0;
         player.y_add = 0;
-        player.direction = rnd(2);
+        player.direction = rnd(2) ? player_t::PLAYER_DIRECTION::LEFT : player_t::PLAYER_DIRECTION::RIGHT;
         player.jump_ready = 1;
         player.anim_handler.anim = 0;
         player.anim_handler.frame = 0;
@@ -437,10 +437,7 @@ void game_manager_t::kill(int killer, int victim) {
 
     auto& players = this->players;
 
-    players[c1].y_add = -players[c1].y_add;
-    if (players[c1].y_add > -262144L)
-        players[c1].y_add = -262144L;
-    players[c1].jump_abort = 1;
+    players[c1].bounce();
     players[c2].dead_flag = 1;
     if (players[c2].anim_handler.anim != 6) {
         players[c2].set_anim(6);
@@ -483,7 +480,7 @@ void game_manager_t::steer_players() {
         if (player.is_alive()) {
 
             if (player.action_left && player.action_right) {
-                if (player.direction == 0) {
+                if (player.direction == player_t::PLAYER_DIRECTION::RIGHT) {
                     if (player.action_right) {
                         player.do_action_right();
                     }
@@ -556,11 +553,11 @@ void game_manager_t::steer_players() {
             }
 
             player.position.x += player.x_add;
-            if ((player.position.x >> 16) < 0) {
+            if ((player.position.x.value >> 16) < 0) {
                 player.position.x = 0;
                 player.x_add = 0;
             }
-            if ((player.position.x >> 16) + 15 > 351) {
+            if ((player.position.x.value >> 16) + 15 > 351) {
                 player.position.x = 336L << 16;
                 player.x_add = 0;
             }
@@ -582,7 +579,7 @@ void game_manager_t::steer_players() {
 
                     if (player.y_add >= 32768) {
                         screen_position_t screen_position = player.get_position();
-                        screen_position.y &= 0xfff0;
+                        screen_position.y.value &= 0xfff0;
                         game_manager.objects.add(player.get_game_manager(), object_t::Type::SPLASH,
                                                  screen_position
                                                  + screen_position_t{9, 15}, 0, 0,
@@ -604,13 +601,13 @@ void game_manager_t::steer_players() {
                     ban_map.get(screen_position + screen_position_t{0, 15}) == ban_map_t::Type::ICE ||
                     ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::SOLID ||
                     ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::ICE) {
-                    player.position.y = (((screen_position.y + 16) & 0xfff0) - 16) << 16;
+                    player.position.y = (((screen_position.y.value + 16) & 0xfff0) - 16) << 16;
                     player.y_add = 0;
                 }
             } else if (ban_map.is_solid(player.get_position() + screen_position_t{0, 15}) ||
                        ban_map.is_solid(player.get_position() + screen_position_t{15, 15})) {
                 player.in_water = 0;
-                player.position.y = (((screen_position.y + 16) & 0xfff0) - 16) << 16;
+                player.position.y.value = (((screen_position.y.value + 16) & 0xfff0) - 16) << 16;
                 player.y_add = 0;
                 if (player.anim_handler.anim != 0 && player.anim_handler.anim != 1) {
                     player.set_anim(0);
@@ -624,7 +621,7 @@ void game_manager_t::steer_players() {
                     if (player.y_add > 327680L)
                         player.y_add = 327680L;
                 } else {
-                    player.position.y = (player.position.y & 0xffff0000) + 0x10000;
+                    player.position.y = (player.position.y.value & 0xffff0000) + 0x10000;
                     player.y_add = 0;
                 }
                 player.in_water = 0;
@@ -647,7 +644,11 @@ void game_manager_t::steer_players() {
             }
             player.anim_handler.frame_tick = 0;
         }
-        player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image + player.direction * 9;
+        if ( player.direction == player_t::PLAYER_DIRECTION::LEFT ) {
+            player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image + 9;
+        } else {
+            player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image;
+        }
 
     }
 

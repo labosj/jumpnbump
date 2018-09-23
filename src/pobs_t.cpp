@@ -9,7 +9,7 @@
 
 void pobs_t::add(const screen_position_t &position, int image, gob_t *pob_data) {
     sf::Sprite sprite = pob_data->get_sprite(image);
-    sprite.setPosition(position.x, position.y);
+    sprite.setPosition(position.x.value, position.y.value);
 
     this->pobs.push_back(sprite);
 }

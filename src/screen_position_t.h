@@ -8,15 +8,17 @@
 class position_t;
 class map_position_t;
 
+#include "screen_position_component_t.h"
+
 class screen_position_t {
 
 public:
-    int x;
-    int y;
+    screen_position_component_t x;
+    screen_position_component_t y;
 
     screen_position_t() : screen_position_t(0, 0) {}
 
-    screen_position_t(int x, int y) : x(x), y(y) {}
+    screen_position_t(screen_position_component_t x, screen_position_component_t y) : x(x), y(y) {}
 
     screen_position_t(const position_t& position);
     screen_position_t(const map_position_t& position);

@@ -270,11 +270,7 @@ void player_t::position_player() {
     this->direction = PLAYER_DIRECTION::RIGHT;
     this->jump_ready = true;
     this->in_water = 0;
-    this->anim_handler.anim = 0;
-    this->anim_handler.frame = 0;
-    this->anim_handler.frame_tick = 0;
-    this->anim_handler.image = this->game_manager.player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image;
-
+    this->anim_handler.set_anim(0);
     this->dead_flag = false;
 
 }

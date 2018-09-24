@@ -489,9 +489,9 @@ void game_manager_t::steer_players() {
             } else {
                 player.do_no_action();
             }
-            if (!game_manager.jetpack) {
+            if (!player.jetpack) {
                 /* no jetpack */
-                if (game_manager.pogostick || (player.jump_ready && player.action_up)) {
+                if (player.pogostick || (player.jump_ready && player.action_up)) {
 
                     auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
                     auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
@@ -505,7 +505,7 @@ void game_manager_t::steer_players() {
                         player.set_anim(2);
                         player.jump_ready = false;
                         player.jump_abort = true;
-                        if (!game_manager.pogostick) {
+                        if (!player.pogostick) {
                             game_manager.sound_manager.play_sfx_jump();
                         } else {
                             game_manager.sound_manager.play_sfx_spring();
@@ -518,9 +518,8 @@ void game_manager_t::steer_players() {
                         player.set_anim(2);
                         player.jump_ready = false;
                         player.jump_abort = true;
-                        if (!game_manager.pogostick) {
+                        if (!player.pogostick) {
                             game_manager.sound_manager.play_sfx_jump();
-
                         } else {
                             game_manager.sound_manager.play_sfx_spring();
                         }
@@ -528,7 +527,7 @@ void game_manager_t::steer_players() {
                     }
                 }
                 /* fall down by gravity */
-                if (!game_manager.pogostick && (!player.action_up)) {
+                if (!player.pogostick && (!player.action_up)) {
                     player.gravity_fall();
                 }
             } else {

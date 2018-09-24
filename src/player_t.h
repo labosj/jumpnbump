@@ -26,6 +26,8 @@ public:
 	int character_id = 0;
 	int action_left,action_up,action_right;
 	bool dead_flag;
+	bool pogostick = false;
+	bool jetpack = false;
 	int bumps;
 	std::string player_name;
 	//vector that stores the kill to other players

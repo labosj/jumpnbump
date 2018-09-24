@@ -26,8 +26,6 @@ public:
     sf::RenderWindow& window;
 
     bool gore = true;
-    bool pogostick = false;
-    bool jetpack = false;
 
     sf::Texture object_texture;
 

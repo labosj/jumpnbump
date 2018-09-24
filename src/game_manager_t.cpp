@@ -10,6 +10,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <algorithm>
 #include "objects_t.h"
 #include "util.h"
 #include "sound_manager_t.h"
@@ -533,9 +534,8 @@ void game_manager_t::steer_players() {
             } else {
                 /* with jetpack */
                 if (player.action_up) {
-                    player.y_add -= 16384;
-                    if (player.y_add < -400000L)
-                        player.y_add = -400000L;
+                    player.y_add = std::max(player.y_add - 16384, -400000);
+
                     if (ban_map.is_in_water(player.get_position()))
                         player.in_water = false;
                     if (rnd(100) < 50)
@@ -606,9 +606,7 @@ void game_manager_t::steer_players() {
             } else {
                 if (!player.in_water) {
                     //water floatability, double in space
-                    player.y_add += 12288;
-                    if (player.y_add > 327680L)
-                        player.y_add = 327680L;
+                    player.y_add = std::min(player.y_add + 12288, 327680);
 
                 } else {
                     player.position.y = (player.position.y.value & 0xffff0000) + 0x10000;

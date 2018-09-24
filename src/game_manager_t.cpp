@@ -478,21 +478,16 @@ void game_manager_t::steer_players() {
 
             if (player.action_left && player.action_right) {
                 if (player.direction == player_t::PLAYER_DIRECTION::RIGHT) {
-                    if (player.action_right) {
-                        player.do_action_right();
-                    }
+                    player.do_action_right();
                 } else {
-                    if (player.action_left) {
-                        player.do_action_left();
-                    }
+                    player.do_action_left();
                 }
             } else if (player.action_left) {
                 player.do_action_left();
             } else if (player.action_right) {
                 player.do_action_right();
-            } else if ((!player.action_left) && (!player.action_right)) {
+            } else {
                 player.do_no_action();
-
             }
             if (!game_manager.jetpack) {
                 /* no jetpack */

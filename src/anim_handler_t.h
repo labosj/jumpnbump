@@ -17,6 +17,7 @@ public:
     int image;
     int frame_tick;
 
+public:
     void set_anim(int anim) {
         this->anim = anim;
         this->frame = 0;

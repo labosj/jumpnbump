@@ -514,7 +514,7 @@ void game_manager_t::steer_players() {
                     /* jump out of water */
                     if (ban_map.is_in_water(player.get_position())) {
                         player.y_add = -196608L;
-                        player.in_water = 0;
+                        player.in_water = false;
                         player.set_anim(2);
                         player.jump_ready = false;
                         player.jump_abort = true;
@@ -537,7 +537,7 @@ void game_manager_t::steer_players() {
                     if (player.y_add < -400000L)
                         player.y_add = -400000L;
                     if (ban_map.is_in_water(player.get_position()))
-                        player.in_water = 0;
+                        player.in_water = false;
                     if (rnd(100) < 50)
                         game_manager.objects.add_jetpack_smoke(player);
                 }
@@ -562,9 +562,9 @@ void game_manager_t::steer_players() {
 
             screen_position_t screen_position = player.get_position();
             if (ban_map.get(screen_position + screen_position_t{8, 8}) == ban_map_t::Type::WATER) {
-                if (player.in_water == 0) {
+                if (!player.in_water) {
                     /* falling into water */
-                    player.in_water = 1;
+                    player.in_water = true;
                     player.set_anim(4);
 
 
@@ -597,14 +597,14 @@ void game_manager_t::steer_players() {
                 }
             } else if (ban_map.is_solid(player.get_position() + screen_position_t{0, 15}) ||
                        ban_map.is_solid(player.get_position() + screen_position_t{15, 15})) {
-                player.in_water = 0;
+                player.in_water = false;
                 player.position.y.value = (((screen_position.y.value + 16) & 0xfff0) - 16) << 16;
                 player.y_add = 0;
                 if (player.anim_handler.anim != 0 && player.anim_handler.anim != 1) {
                     player.set_anim(0);
                 }
             } else {
-                if (player.in_water == 0) {
+                if (!player.in_water) {
                     //water floatability, double in space
                     player.y_add += 12288;
                     if (player.y_add > 327680L)
@@ -614,9 +614,9 @@ void game_manager_t::steer_players() {
                     player.position.y = (player.position.y.value & 0xffff0000) + 0x10000;
                     player.y_add = 0;
                 }
-                player.in_water = 0;
+                player.in_water = false;
             }
-            if (player.y_add > 36864 && player.anim_handler.anim != 3 && player.in_water == 0) {
+            if (player.y_add > 36864 && player.anim_handler.anim != 3 && !player.in_water) {
                 player.set_anim(3);
             }
             player.animate();

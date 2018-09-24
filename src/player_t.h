@@ -36,8 +36,9 @@ public:
 	position_t position;
 
 	int x_add, y_add;
-	bool jump_ready, jump_abort;
-	int in_water;
+	bool jump_ready;
+	bool jump_abort;
+	bool in_water;
 	PLAYER_DIRECTION direction;
 	anim_handler_t anim_handler;
 

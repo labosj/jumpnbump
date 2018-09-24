@@ -49,7 +49,7 @@ void player_t::do_action_left() {
     } else {
         if (player.x_add > 0) {
             player.x_add -= 16384;
-            if (player.x_add > -98304L && player.in_water == 0 && below == ban_map_t::Type::SOLID)
+            if (player.x_add > -98304L && !player.in_water && below == ban_map_t::Type::SOLID)
                 player.get_game_manager().objects.add_smoke(player);
         } else
             player.x_add -= 12288;
@@ -87,7 +87,7 @@ void player_t::do_action_right() {
     } else {
         if (player.x_add < 0) {
             player.x_add += 16384;
-            if (player.x_add < 98304L && player.in_water == 0 && below == ban_map_t::Type::SOLID)
+            if (player.x_add < 98304L && !player.in_water && below == ban_map_t::Type::SOLID)
                 player.get_game_manager().objects.add_smoke(player);
         } else
             player.x_add += 12288;
@@ -134,7 +134,7 @@ void player_t::do_no_action() {
 void player_t::gravity_fall() {
 
     this->jump_ready = true;
-    if (this->in_water == 0 && this->y_add < 0 && this->jump_abort) {
+    if (!this->in_water && this->y_add < 0 && this->jump_abort) {
         this->y_add += this->game_manager.get_stage().get_gravity().value;
         if (this->y_add > 0)
             this->y_add = 0;
@@ -269,7 +269,7 @@ void player_t::position_player() {
     this->y_add = 0;
     this->direction = PLAYER_DIRECTION::RIGHT;
     this->jump_ready = true;
-    this->in_water = 0;
+    this->in_water = false;
     this->anim_handler.set_anim(0);
     this->dead_flag = false;
 

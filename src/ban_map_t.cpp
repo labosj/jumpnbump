@@ -9,6 +9,7 @@
 #include "ban_map_t.h"
 #include "screen_position_t.h"
 #include "util.h"
+#include "bounding_box_t.h"
 
 ban_map_t::Type ban_map_t::get(const map_position_t& pos) const {
     //std::cout << "const[" << pos.x << "," << pos.y << "]\n";
@@ -18,6 +19,19 @@ ban_map_t::Type ban_map_t::get(const map_position_t& pos) const {
     if ( pos.y.value >= this->height ) return ban_map_t::Type::VOID;
 
     return this->map[pos.y.value][pos.x.value];
+}
+
+ban_map_t::Type ban_map_t::get_over_block(const bounding_box_t& box) const {
+    for ( auto y = 0 ; y < this->map.size() ; y++ ) {
+        auto row = this->map[y];
+        for ( auto x = 0 ; x < row.size() ; x++ ) {
+            bounding_box_t block{position_t{x << 16, y << 16}, 16, 16};
+
+            if ( box.over(block) )
+                return row[x];
+        }
+    }
+    return ban_map_t::Type::VOID;
 }
 
 bool ban_map_t::is_in_water(const screen_position_t& position) const {

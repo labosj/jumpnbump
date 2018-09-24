@@ -375,10 +375,7 @@ void game_manager_t::init_players()
         player.y_add = 0;
         player.direction = rnd(2) ? player_t::PLAYER_DIRECTION::LEFT : player_t::PLAYER_DIRECTION::RIGHT;
         player.jump_ready = true;
-        player.anim_handler.anim = 0;
-        player.anim_handler.frame = 0;
-        player.anim_handler.frame_tick = 0;
-        player.anim_handler.image = player_anims[player.anim_handler.anim].frame[player.anim_handler.frame].image;
+        player.anim_handler.set_anim(0);
 
         this->players.push_back(player);
     }

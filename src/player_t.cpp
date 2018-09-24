@@ -131,18 +131,6 @@ void player_t::do_no_action() {
         player.set_anim(0);
 }
 
-void player_t::set_anim(int anim) {
-    auto& player_anims = this->game_manager.player_anims;
-    this->anim_handler.anim = anim;
-    this->anim_handler.frame = 0;
-    this->anim_handler.frame_tick = 0;
-    if ( this->direction == PLAYER_DIRECTION::RIGHT ) {
-        this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image;
-    } else {
-        this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image + 9;
-    }
-}
-
 void player_t::gravity_fall() {
 
     this->jump_ready = true;
@@ -345,20 +333,13 @@ void player_t::reset_kills() {
     this->bumped = std::vector<int>(this->game_manager.players.size(), 0);
 }
 
+void player_t::set_anim(int anim) {
+    this->anim_handler.set_anim(anim);
+}
+
 void player_t::animate() {
+
     auto& player_anims = this->get_game_manager().player_anims;
 
-    this->anim_handler.frame_tick++;
-    if (this->anim_handler.frame_tick >= player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].ticks) {
-        this->anim_handler.frame++;
-        if (this->anim_handler.frame >= player_anims[this->anim_handler.anim].frame.size()) {
-            this->anim_handler.frame = player_anims[this->anim_handler.anim].restart_frame;
-        }
-        this->anim_handler.frame_tick = 0;
-    }
-    if ( this->direction == player_t::PLAYER_DIRECTION::LEFT ) {
-        this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image + 9;
-    } else {
-        this->anim_handler.image = player_anims[this->anim_handler.anim].frame[this->anim_handler.frame].image;
-    }
+    this->anim_handler.animate(player_anims,this->direction == player_t::PLAYER_DIRECTION::LEFT ? 9 : 0);
 }

@@ -119,6 +119,7 @@ public:
 	void do_action_left();
 	void do_action_right();
 	void do_no_action();
+	void do_action_up();
 };
 
 

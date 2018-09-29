@@ -10,6 +10,7 @@ class bounding_box_t;
 #include <tuple>
 #include <vector>
 #include "map_position_t.h"
+#include "bounding_box_t.h"
 
 /**
  * The ban map is a two dimensional map of blocks.
@@ -38,6 +39,9 @@ public:
     Type get(const map_position_t& position) const;
     Type get_over_block(const bounding_box_t& box) const;
 
+    bounding_box_t get_bounding_box(const map_position_t& pos) const {
+        return bounding_box_t{pos, 16, 16};
+    }
 
     bool is_in_water(const screen_position_t& position) const;
     bool is_solid(const screen_position_t& position) const;

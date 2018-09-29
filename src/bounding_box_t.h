@@ -26,6 +26,10 @@ public:
 
     position_component_t get_bottom() const { return this->position.y + (this->height - 1); }
 
+    position_t get_bottom_left() const { return position_t{this->get_left(), this->get_bottom()}; }
+
+    position_t get_bottom_right() const { return position_t{this->get_right(), this->get_bottom()}; }
+
     bool collide(const bounding_box_t& box) const {
         if ( box.get_right() < this->get_left() ) return false;
         if ( this->get_right() < box.get_left() ) return false;

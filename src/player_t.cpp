@@ -216,6 +216,18 @@ void player_t::check_ceiling() {
 
 void player_t::check_lateral_walls() {
 
+    //left boundary of the map
+    if ((this->position.x.value >> 16) < 0) {
+        this->position.x = 0;
+        this->x_add = 0;
+    }
+
+    //right boundary of the map
+    if ((this->position.x.value >> 16) + 15 > 351) {
+        this->position.x = 336L << 16;
+        this->x_add = 0;
+    }
+
     auto& ban_map = this->get_game_manager().get_stage().get_map();
 
     // if the bunny collide in the left with a wall |B
@@ -338,4 +350,65 @@ void player_t::animate() {
     auto& player_anims = this->get_game_manager().player_anims;
 
     this->anim_handler.animate(player_anims,this->direction == player_t::PLAYER_DIRECTION::LEFT ? 9 : 0);
+}
+
+void player_t::do_action_up() {
+    auto& player = *this;
+
+    auto& game_manager = player.get_game_manager();
+
+    auto& ban_map = game_manager.get_stage().get_map();
+
+    if (!player.jetpack) {
+        /* no jetpack */
+        if (player.pogostick || (player.jump_ready && player.action_up)) {
+
+            auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
+            auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
+
+            /* jump */
+            if (below_left == ban_map_t::Type::SOLID ||
+                below_left == ban_map_t::Type::ICE ||
+                below_right == ban_map_t::Type::SOLID ||
+                below_right == ban_map_t::Type::ICE) {
+                player.y_add = -280000L;
+                player.set_anim(2);
+                player.jump_ready = false;
+                player.jump_abort = true;
+                if (!player.pogostick) {
+                    game_manager.sound_manager.play_sfx_jump();
+                } else {
+                    game_manager.sound_manager.play_sfx_spring();
+                }
+            }
+            /* jump out of water */
+            if (ban_map.is_in_water(player.get_position())) {
+                player.y_add = -196608L;
+                player.in_water = false;
+                player.set_anim(2);
+                player.jump_ready = false;
+                player.jump_abort = true;
+                if (!player.pogostick) {
+                    game_manager.sound_manager.play_sfx_jump();
+                } else {
+                    game_manager.sound_manager.play_sfx_spring();
+                }
+
+            }
+        }
+        /* fall down by gravity */
+        if (!player.pogostick && (!player.action_up)) {
+            player.gravity_fall();
+        }
+    } else {
+        /* with jetpack */
+        if (player.action_up) {
+            player.y_add = std::max(player.y_add - 16384, -400000);
+
+            if (ban_map.is_in_water(player.get_position()))
+                player.in_water = false;
+            if (rnd(100) < 50)
+                game_manager.objects.add_jetpack_smoke(player);
+        }
+    }
 }

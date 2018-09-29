@@ -434,3 +434,97 @@ void player_t::do_action_up() {
         }
     }
 }
+
+void player_t::do_falling() {
+
+    auto& player = *this;
+    auto& ban_map = this->get_game_manager().get_stage().get_map();
+
+    screen_position_t screen_position = player.get_position();
+
+    auto player_bounding_box = player.get_bounding_box_for_walls();
+
+    //is in water
+    if (ban_map.get(screen_position + screen_position_t{8, 8}) == ban_map_t::Type::WATER) {
+        //enter in water
+        if (!player.in_water) {
+            /* falling into water */
+            player.in_water = true;
+            player.set_anim(4);
+
+
+            if (player.y_add >= 32768) {
+                screen_position_t screen_position = player.get_position();
+                screen_position.y.value &= 0xfff0;
+                game_manager.objects.add(player.get_game_manager(), object_t::Type::SPLASH,
+                                         screen_position
+                                         + screen_position_t{9, 15}, 0, 0,
+                                         OBJ_ANIM_SPLASH, 0);
+                game_manager.sound_manager.play_sfx_splash();
+            }
+        }
+        /* slowly move up to water surface */
+        player.y_add -= 1536;
+        if (player.y_add < 0 && player.anim_handler.anim != 5) {
+            player.set_anim(5);
+        }
+        if (player.y_add < -65536L)
+            player.y_add = -65536L;
+        if (player.y_add > 65535L)
+            player.y_add = 65535L;
+
+        //check floor in water
+
+        if (ban_map.is_solid(screen_position + screen_position_t{0, 15}) ||
+            ban_map.is_solid(screen_position + screen_position_t{15, 15})) {
+            auto above_solid_block = ((screen_position.y.value + 16) & 0xfff0) - 1;
+            player.position.y.value = (above_solid_block - 15) << 16;
+            player.y_add = 0;
+        }
+        //check is you are in the floor
+    } else if ( ban_map.is_solid(screen_position + screen_position_t{0, 15}) ||
+                ban_map.is_solid(screen_position + screen_position_t{15, 15}) ) {
+/*
+            } else if (ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_left()) ||
+                       ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_right()) ) {
+*/
+
+        player.in_water = false;
+
+
+        auto top = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_top();
+        top.value -= player_bounding_box.height;
+
+        // TO DELETE TODO
+        auto top_alternative = (screen_position.y.value + 16);
+        auto above_solid_block = ((top_alternative) & 0xfff0) - 1;
+        player.position.y.value = (above_solid_block - 15) << 16;
+        player.position.y = top;
+
+        //TO DELETE TODO
+        if ( player.position.y.value - top.value != 0 ) {
+            std::cout << player.position.y.value << " " << top.value << " "
+                      << player.position.y.value - top.value << std::endl;
+        }
+        player.y_add = 0;
+
+
+        if (player.anim_handler.anim != 0 && player.anim_handler.anim != 1) {
+            player.set_anim(0);
+        }
+    } else {
+        if (!player.in_water) {
+            //water floatability, double in space
+            player.y_add = std::min(player.y_add + 12288, 327680);
+
+        } else {
+            player.position.y = (player.position.y.value & 0xffff0000) + 0x10000;
+            player.y_add = 0;
+        }
+        player.in_water = false;
+    }
+
+    if (player.y_add > 36864 && player.anim_handler.anim != 3 && !player.in_water) {
+        player.set_anim(3);
+    }
+}

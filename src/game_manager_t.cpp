@@ -14,6 +14,7 @@
 #include "objects_t.h"
 #include "util.h"
 #include "sound_manager_t.h"
+#include <iostream>
 
 game_manager_t::game_manager_t(sf::RenderWindow& window) :window(window) {
 }
@@ -505,6 +506,8 @@ void game_manager_t::steer_players() {
 
             screen_position_t screen_position = player.get_position();
 
+            auto player_bounding_box = player.get_bounding_box_for_walls();
+
             //is in water
             if (ban_map.get(screen_position + screen_position_t{8, 8}) == ban_map_t::Type::WATER) {
                 //enter in water
@@ -537,20 +540,35 @@ void game_manager_t::steer_players() {
                 //check floor in water
 
                 if (ban_map.is_solid(screen_position + screen_position_t{0, 15}) ||
-                    ban_map.is_solid(screen_position + screen_position_t{15, 15}) ) {
+                    ban_map.is_solid(screen_position + screen_position_t{15, 15})) {
                     auto above_solid_block = ((screen_position.y.value + 16) & 0xfff0) - 1;
                     player.position.y.value = (above_solid_block - 15) << 16;
                     player.y_add = 0;
                 }
-            //check is you are in the floor
-            } else if (ban_map.is_solid(screen_position + screen_position_t{0, 15}) ||
-                       ban_map.is_solid(screen_position + screen_position_t{15, 15}) ) {
-
+                //check is you are in the floor
+            } else if ( ban_map.is_solid(screen_position + screen_position_t{0, 15}) ||
+                                           ban_map.is_solid(screen_position + screen_position_t{15, 15}) ) {
+            /*} else if (ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_left()) ||
+                       ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_right()) ) {
+*/
 
                 player.in_water = false;
 
-                auto above_solid_block = ((screen_position.y.value + 16) & 0xfff0) - 1;
+
+                auto top = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_top();
+                top.value -= player_bounding_box.height;
+
+                // TO DELETE TODO
+                auto top_alternative = (screen_position.y.value + 16);
+                auto above_solid_block = ((top_alternative) & 0xfff0) - 1;
                 player.position.y.value = (above_solid_block - 15) << 16;
+                player.position.y = top;
+
+                //TO DELETE TODO
+                if ( player.position.y.value - top.value != 0 ) {
+                    std::cout << player.position.y.value << " " << top.value << " "
+                              << player.position.y.value - top.value << std::endl;
+                }
                 player.y_add = 0;
 
 

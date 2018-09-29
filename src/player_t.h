@@ -68,6 +68,8 @@ public:
 
 	bounding_box_t get_bounding_box() const { return bounding_box_t{this->position, 12 << 16, 12 << 16};}
 
+    bounding_box_t get_bounding_box_for_walls() const { return bounding_box_t{this->position, 16 << 16, 16 << 16};}
+
 	bool collide(const player_t& player) const {
 		return this->get_bounding_box().collide(player.get_bounding_box());
 	}

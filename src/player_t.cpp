@@ -230,11 +230,24 @@ void player_t::check_lateral_walls() {
 
     auto& ban_map = this->get_game_manager().get_stage().get_map();
 
+    auto player_bounding_box = this->get_bounding_box_for_walls();
+
     // if the bunny collide in the left with a wall |B
     if (ban_map.is_solid(this->get_position() + screen_position_t{0,  0}) ||
         ban_map.is_solid(this->get_position() + screen_position_t{0, 15})) {
+  //    if (ban_map.is_solid(player_bounding_box.get_bottom_left()) ||
+  //        ban_map.is_solid(player_bounding_box.get_top_left())) {
+
+        auto right = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_right();
+        right.value += 1;
+
+
         int s1 = (this->position.x.value >> 16);
         this->position.x = (((s1 + 16) & 0xfff0)) << 16;
+        if ( right.value != this->position.x.value ) {
+            std::cout << right.value << " " << this->position.x.value << " " << right.value - this->position.x.value << "\n";
+        }
+        this->position.x = right;
         this->x_add = 0;
     }
 
@@ -242,8 +255,17 @@ void player_t::check_lateral_walls() {
     // if the bunny collide in the right with a wall    B|
     if (ban_map.is_solid(this->get_position() + screen_position_t{15, 0}) ||
         ban_map.is_solid(this->get_position() + screen_position_t{15, 15})) {
+
+        auto left = ban_map.get_bounding_box(player_bounding_box.get_bottom_right()).get_left();
+        left.value -= player_bounding_box.width;
+
         int s1 = (this->position.x.value >> 16);
         this->position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
+
+        if ( left.value != this->position.x.value ) {
+            std::cout << left.value << " " << this->position.x.value << " " << left.value - this->position.x.value << "\n";
+        }
+
         this->x_add = 0;
     }
 }

@@ -40,7 +40,7 @@ public:
     Type get_over_block(const bounding_box_t& box) const;
 
     bounding_box_t get_bounding_box(const map_position_t& pos) const {
-        return bounding_box_t{pos, 16, 16};
+        return bounding_box_t{pos, 16 << 16, 16 << 16};
     }
 
     bool is_in_water(const screen_position_t& position) const;

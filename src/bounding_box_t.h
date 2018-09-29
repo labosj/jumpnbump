@@ -26,6 +26,10 @@ public:
 
     position_component_t get_bottom() const { return this->position.y + (this->height - 1); }
 
+    position_t get_top_left() const { return position_t{this->get_left(), this->get_top()}; }
+
+    position_t get_top_right() const { return position_t{this->get_right(), this->get_top()}; }
+
     position_t get_bottom_left() const { return position_t{this->get_left(), this->get_bottom()}; }
 
     position_t get_bottom_right() const { return position_t{this->get_right(), this->get_bottom()}; }

@@ -21,6 +21,29 @@ public:
     bounding_box_t bounding_box;
     Type type;
 
+    map_element_t(const bounding_box_t& bounding_box, Type type) : bounding_box(bounding_box), type(type) {}
+
+    bool is_wall() const {
+        return
+          this->type == Type::SOLID ||
+          this->type == Type::ICE ||
+          this->type == Type::SPRING;
+    }
+
+    bool is_floor() const {
+        return
+            this->type == Type::SOLID ||
+            this->type == Type::ICE;
+    }
+
+    bool is_ceil() const {
+        return
+          this->type == Type::SOLID ||
+          this->type == Type::ICE ||
+          this->type == Type::SPRING;
+    }
+
+
 
 };
 

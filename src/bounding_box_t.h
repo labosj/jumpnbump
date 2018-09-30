@@ -20,6 +20,12 @@ public:
 
     position_component_t get_left() const { return this->position.x; }
 
+    bounding_box_t get_left_box() const { return bounding_box_t{this->get_top_left(), 1, this->height}; }
+
+    bounding_box_t get_right_box() const { return bounding_box_t{this->get_top_right(), 1, this->height}; }
+
+    bounding_box_t get_top_box() const { return bounding_box_t{this->get_top_left(), this->width, 1}; }
+
     position_component_t get_right() const { return this->position.x + (this->width - 1); }
 
     position_component_t get_top() const { return this->position.y; }

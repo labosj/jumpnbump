@@ -21,7 +21,7 @@ ban_map_t::Type ban_map_t::get(const map_position_t& pos) const {
     return this->map[pos.y.value][pos.x.value];
 }
 
-void ban_map_t::get(const bounding_box_t& box) const {
+map_elements_t ban_map_t::get(const bounding_box_t& box) const {
     auto left = map_position_component_t{box.get_left()}.value;
     auto right = map_position_component_t{box.get_right()}.value;
 
@@ -34,12 +34,20 @@ void ban_map_t::get(const bounding_box_t& box) const {
     if ( top < 0 ) top = 0;
     if ( bottom >= this->height ) bottom = this->height;
 
+    map_elements_t elements;
     for ( auto y = top; y <= bottom ; y++ ) {
         for (auto x = left; x <= right; x++) {
-            auto bounding_box = bounding_box_t{map_position_t{x, y}, 1 << 20, 1 << 20};
-            auto type = this->map[y][x];
+
+            map_element_t element{
+                bounding_box_t{map_position_t{x, y}, 1 << 20, 1 << 20},
+                this->map[y][x]
+            };
+
+            if ( element.type == Type::VOID ) continue;
+            elements.elements.emplace_back(element);
         }
     }
+    return elements;
 }
 
 bool ban_map_t::is_in_water(const screen_position_t& position) const {

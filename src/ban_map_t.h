@@ -12,6 +12,7 @@ class bounding_box_t;
 #include "map_position_t.h"
 #include "bounding_box_t.h"
 #include "map_element_t.h"
+#include "map_elements_t.h"
 
 /**
  * The ban map is a two dimensional map of blocks.
@@ -35,7 +36,7 @@ public:
     Type get(const map_position_t& position) const;
     Type get_over_block(const bounding_box_t& box) const;
 
-    void get(const bounding_box_t& box) const;
+    map_elements_t get(const bounding_box_t& box) const;
 
     bounding_box_t get_bounding_box(const map_position_t& pos) const {
         return bounding_box_t{pos, 1 << 20, 1 << 20};

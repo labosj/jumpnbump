@@ -204,15 +204,15 @@ void player_t::check_ceiling() {
 
     auto player_bounding_box = this->get_bounding_box_for_walls();
 
+    auto ceilings = ban_map.get(player_bounding_box.get_top_box());
     //if the bunny collide in the top with a solid wall
-    if (ban_map.is_solid(player_bounding_box.get_top_right()) ||
-        ban_map.is_solid(player_bounding_box.get_top_left())) {
-    /*
-    if (ban_map.is_solid(this->get_position() + screen_position_t{0,  0}) ||
-        ban_map.is_solid(this->get_position() + screen_position_t{15, 0}) ) {
-        */
-        //stop the velocity in y
-        auto top = ban_map.get_bounding_box(player_bounding_box.get_top_right()).get_bottom_right().below().y;
+
+
+    if ( ceilings.is_ceil() ) {
+        auto lower_ceil = ceilings.get_lowest_ceil();
+
+        auto top = lower_ceil.bounding_box.get_bottom();
+        top.value += 1;
 
         this->position.y = (((screen_position_t{this->get_position()}.y.value + 16) & 0xfff0)) << 16; //TODO: MASK
         debug_diff("CEILING", top.value, this->position.y.value);
@@ -243,11 +243,16 @@ void player_t::check_lateral_walls() {
 
     auto player_bounding_box = this->get_bounding_box_for_walls();
 
-    // if the bunny collide in the left with a wall |B
-      if (ban_map.is_solid(player_bounding_box.get_bottom_left()) ||
-          ban_map.is_solid(player_bounding_box.get_top_left())) {
+    auto colliding_blocks = ban_map.get(player_bounding_box);
 
-        auto right = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_right();
+    auto left_walls = colliding_blocks.collide(player_bounding_box.get_left_box());
+
+    // if the bunny collide in the left with a wall |B
+      if ( left_walls.is_wall() ) {
+        auto left_wall =left_walls.get_rightmost_wall();
+
+        //auto right = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_right();
+        auto right = left_wall.bounding_box.get_right();
         right.value += 1;
 
 
@@ -259,12 +264,14 @@ void player_t::check_lateral_walls() {
         this->x_add = 0;
     }
 
+    auto right_walls = colliding_blocks.collide(player_bounding_box.get_right_box());
 
     // if the bunny collide in the right with a wall    B|
-        if (ban_map.is_solid(player_bounding_box.get_bottom_right()) ||
-            ban_map.is_solid(player_bounding_box.get_top_right())) {
+        if (right_walls.is_wall()) {
 
-        auto left = ban_map.get_bounding_box(player_bounding_box.get_bottom_right()).get_left();
+        auto right_wall = right_walls.get_leftmost_wall();
+        auto left = right_wall.bounding_box.get_left();
+        //auto left = ban_map.get_bounding_box(player_bounding_box.get_bottom_right()).get_left();
         left.value -= player_bounding_box.width;
 
         int s1 = (this->position.x.value >> 16);

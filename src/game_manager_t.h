@@ -72,6 +72,8 @@ public:
     void steer_players();
 
     void draw_hud();
+
+    void fx_splash(const screen_position_t& position);
 };
 
 

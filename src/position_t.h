@@ -30,6 +30,13 @@ public:
         };
     }
 
+    position_t below() const {
+        return position_t{
+                this->x,
+                this->y + 1
+        };
+    }
+
 };
 
 

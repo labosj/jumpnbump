@@ -513,6 +513,11 @@ void game_manager_t::steer_players() {
             player.position_player();
 
     }
+}
 
-
+void game_manager_t::fx_splash(const screen_position_t& position) {
+    this->objects.add(*this, object_t::Type::SPLASH,
+                             position, 0, 0,
+                             OBJ_ANIM_SPLASH, 0);
+    this->sound_manager.play_sfx_splash();
 }

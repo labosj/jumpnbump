@@ -35,13 +35,8 @@ void player_t::do_action_left() {
     auto below = ban_map.get(pixel_pos + screen_position_t{8, 16});
     auto below_right = ban_map.get(pixel_pos + screen_position_t{15, 16});
 
-    if (below == ban_map_t::Type::ICE) {
-        if (player.x_add > 0)
-            player.x_add -= 1024;
-        else
-            player.x_add -= 768;
-    } else if ((below_left != ban_map_t::Type::SOLID && below_right == ban_map_t::Type::ICE) ||
-               (below_left == ban_map_t::Type::ICE && below_right != ban_map_t::Type::SOLID)) {
+    if (below == ban_map_t::Type::ICE || ((below_left != ban_map_t::Type::SOLID && below_right == ban_map_t::Type::ICE) ||
+               (below_left == ban_map_t::Type::ICE && below_right != ban_map_t::Type::SOLID)) ) {
         if (player.x_add > 0)
             player.x_add -= 1024;
         else
@@ -73,14 +68,10 @@ void player_t::do_action_right() {
     auto below = ban_map.get(player.get_position() + screen_position_t{8, 16});
     auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
 
-    if (below == ban_map_t::Type::ICE) {
+    if (below == ban_map_t::Type::ICE ||
+            ((below_left != ban_map_t::Type::SOLID && below_right == ban_map_t::Type::ICE) ||
+            (below_left == ban_map_t::Type::ICE && below_right != ban_map_t::Type::SOLID)) ) {
         if (player.x_add < 0)
-            player.x_add += 1024;
-        else
-            player.x_add += 768;
-    } else if ((below_left != ban_map_t::Type::SOLID && below_right == ban_map_t::Type::ICE) ||
-               (below_left == ban_map_t::Type::ICE && below_right != ban_map_t::Type::SOLID)) {
-        if (player.x_add > 0)
             player.x_add += 1024;
         else
             player.x_add += 768;
@@ -385,8 +376,10 @@ void player_t::do_action_up() {
         /* no jetpack */
         if (player.pogostick || (player.jump_ready && player.action_up)) {
 
-            auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
-            auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
+            //auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
+            //auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
+            auto below_left = ban_map.get(player.get_bounding_box_for_walls().get_bottom_left().below());
+            auto below_right = ban_map.get(player.get_bounding_box_for_walls().get_bottom_right().below());
 
             /* jump */
             if (below_left == ban_map_t::Type::SOLID ||
@@ -456,11 +449,8 @@ void player_t::do_falling() {
             if (player.y_add >= 32768) {
                 screen_position_t screen_position = player.get_position();
                 screen_position.y.value &= 0xfff0;
-                game_manager.objects.add(player.get_game_manager(), object_t::Type::SPLASH,
-                                         screen_position
-                                         + screen_position_t{9, 15}, 0, 0,
-                                         OBJ_ANIM_SPLASH, 0);
-                game_manager.sound_manager.play_sfx_splash();
+                game_manager.fx_splash(screen_position
+                                         + screen_position_t{9, 15});
             }
         }
         /* slowly move up to water surface */

@@ -123,6 +123,7 @@ public:
 	void do_no_action();
 	void do_action_up();
 	void do_falling();
+	bool check_floor();
 };
 
 

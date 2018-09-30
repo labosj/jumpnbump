@@ -436,6 +436,27 @@ void player_t::do_action_up() {
     }
 }
 
+bool player_t::check_floor() {
+    auto& player = *this;
+    auto& ban_map = this->get_game_manager().get_stage().get_map();
+
+    auto player_bounding_box = player.get_bounding_box_for_walls();
+
+    auto floors = ban_map.get(player_bounding_box.get_bottom_box());
+
+    if ( !floors.is_floor() ) return false;
+
+    auto top = floors.get_highest_floor().bounding_box.get_top();
+    top.value -= player_bounding_box.height;
+
+    player.position.y = top;
+
+    player.y_add = 0;
+
+    return true;
+
+}
+
 void player_t::do_falling() {
 
     auto& player = *this;
@@ -475,33 +496,12 @@ void player_t::do_falling() {
 
         //check floor in water
 
-        if (ban_map.is_solid(screen_position + screen_position_t{0, 15}) ||
-            ban_map.is_solid(screen_position + screen_position_t{15, 15})) {
-            auto above_solid_block = ((screen_position.y.value + 16) & 0xfff0) - 1;
-            player.position.y.value = (above_solid_block - 15) << 16;
-            player.y_add = 0;
-        }
+        player.check_floor();
         //check is you are in the floor
 
-            } else if (floors.is_floor()
-                    /*
-                    ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_left()) ||
-                       ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_right()) */) {
-
+    } else if (player.check_floor() ) {
 
         player.in_water = false;
-
-
-
-        //auto top = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_top();
-
-        auto top = floors.get_highest_floor().bounding_box.get_top();
-        top.value -= player_bounding_box.height;
-
-        player.position.y = top;
-
-        player.y_add = 0;
-
 
         if (player.anim_handler.anim != 0 && player.anim_handler.anim != 1) {
             player.set_anim(0);

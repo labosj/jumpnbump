@@ -445,6 +445,8 @@ void player_t::do_falling() {
 
     auto player_bounding_box = player.get_bounding_box_for_walls();
 
+    auto floors = ban_map.get(player_bounding_box.get_bottom_box());
+
     //is in water
     if (ban_map.get(screen_position + screen_position_t{8, 8}) == ban_map_t::Type::WATER) {
         //enter in water
@@ -481,24 +483,22 @@ void player_t::do_falling() {
         }
         //check is you are in the floor
 
-            } else if (ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_left()) ||
-                       ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_right()) ) {
+            } else if (floors.is_floor()
+                    /*
+                    ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_left()) ||
+                       ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_right()) */) {
 
 
         player.in_water = false;
 
 
-        auto top = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_top();
+
+        //auto top = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_top();
+
+        auto top = floors.get_highest_floor().bounding_box.get_top();
         top.value -= player_bounding_box.height;
 
-        // TO DELETE TODO
-        auto top_alternative = (screen_position.y.value + 16);
-        auto above_solid_block = ((top_alternative) & 0xfff0) - 1;
-        player.position.y.value = (above_solid_block - 15) << 16;
         player.position.y = top;
-
-        //TO DELETE TODO
-        debug_diff("FLOOR", top.value, player.position.y.value);
 
         player.y_add = 0;
 

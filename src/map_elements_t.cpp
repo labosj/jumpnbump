@@ -33,6 +33,15 @@ bool map_elements_t::is_ceil() const {
         ) != std::end(this->elements);
 }
 
+bool map_elements_t::is_floor() const {
+    return
+            std::find_if(
+                    this->elements.cbegin(),
+                    this->elements.cend(),
+                    [](const map_element_t& a) { return a.is_floor(); }
+            ) != std::end(this->elements);
+}
+
 const map_element_t& map_elements_t::get_rightmost_wall() const {
     return *std::max_element(
             this->elements.cbegin(),
@@ -71,6 +80,21 @@ const map_element_t& map_elements_t::get_leftmost_wall() const {
 
                 //less if more left
                 return a.bounding_box.get_left() > b.bounding_box.get_left();
+            }
+    );
+
+}
+
+const map_element_t& map_elements_t::get_highest_floor() const {
+    return *std::max_element(
+            this->elements.cbegin(),
+            this->elements.cend(),
+            [](const map_element_t& a, const map_element_t& b) { //a less than b
+                if ( !a.is_floor() &&  b.is_floor() ) return true;
+                if (  a.is_floor() && !b.is_floor() ) return false;
+
+                //less if more higher
+                return a.bounding_box.get_top() > b.bounding_box.get_top();
             }
     );
 

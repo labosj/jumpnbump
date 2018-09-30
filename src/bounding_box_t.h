@@ -42,29 +42,15 @@ public:
 
     position_t get_bottom_left() const { return position_t{this->get_left(), this->get_bottom()}; }
 
-    position_t get_bottom_right() const { return position_t{this->get_right(), this->get_bottom()}; }
+    bool is_below(const position_component_t& above) const {
+        return this->position.y.value - 1 == above.value;
+    }
 
     bool collide(const bounding_box_t& box) const {
         if ( box.get_right() < this->get_left() ) return false;
         if ( this->get_right() < box.get_left() ) return false;
         if ( box.get_bottom() < this->get_top() ) return false;
         if ( this->get_bottom() < box.get_top() ) return false;
-        return true;
-    }
-
-    bool collide(const position_t& position) const {
-
-        if ( position.x < this->get_left() ) return false;
-        if ( this->get_right() < position.x ) return false;
-        if ( position.y < this->get_top() ) return false;
-        if ( this->get_bottom() < position.y ) return false;
-        return true;
-    }
-
-    bool over(const bounding_box_t& box) const {
-        if ( box.get_right() < this->get_left() ) return false;
-        if ( this->get_right() < box.get_left() ) return false;
-        if  ( this->get_bottom() + 1 != box.get_top() ) return false;
         return true;
     }
 };

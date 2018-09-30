@@ -15,6 +15,15 @@ map_elements_t map_elements_t::collide(const bounding_box_t& bounding_box) const
     return elements;
 }
 
+map_elements_t map_elements_t::just_below(const position_component_t& y) const {
+    map_elements_t elements;
+    for ( auto& element : this->elements ) {
+        if ( element.bounding_box.is_below(y) )
+            elements.elements.emplace_back(element);
+    }
+    return elements;
+}
+
 bool map_elements_t::is_wall() const {
     return
         std::find_if(

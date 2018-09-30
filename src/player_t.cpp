@@ -386,14 +386,11 @@ void player_t::do_action_up() {
         /* no jetpack */
         if (player.pogostick || (player.jump_ready && player.action_up)) {
 
-            auto below_left = ban_map.get(player.get_bounding_box_for_walls().get_bottom_left().below());
-            auto below_right = ban_map.get(player.get_bounding_box_for_walls().get_bottom_right().below());
+            auto below_boxes = ban_map.get(player.get_bounding_box_for_walls().get_below_box());
+            below_boxes = below_boxes.just_below(player.get_bounding_box_for_walls().get_bottom());
 
             /* jump */
-            if (below_left == ban_map_t::Type::SOLID ||
-                below_left == ban_map_t::Type::ICE ||
-                below_right == ban_map_t::Type::SOLID ||
-                below_right == ban_map_t::Type::ICE) {
+            if ( below_boxes.is_floor() ) {
                 player.y_add = -280000L;
                 player.set_anim(2);
                 player.jump_ready = false;
@@ -463,6 +460,9 @@ void player_t::do_falling() {
     auto& ban_map = this->get_game_manager().get_stage().get_map();
 
     screen_position_t screen_position = player.get_position();
+
+
+
 
     auto player_bounding_box = player.get_bounding_box_for_walls();
 

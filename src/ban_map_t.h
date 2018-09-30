@@ -19,7 +19,6 @@ class bounding_box_t;
  * A map in the game as 22x17 blocks. A block is about the size of a bunny.
  * It seems that the ban map has information about objects on the map to calculate valid positions of bunnies.
  * For example to not respawn a death bunny in a position where is already something, like a floor block, water or someything else.
- * If you want to get a ban map pos from pizel use {@see ban_map_t::get_by_pixel()}
  */
 class ban_map_t {
 
@@ -33,17 +32,11 @@ public:
 
     bool read_from_file(const std::string& filename);
 
-    Type get(const map_position_t& position) const;
-    Type get_over_block(const bounding_box_t& box) const;
+    [[deprecated]] Type get(const map_position_t& position) const;
 
     map_elements_t get(const bounding_box_t& box) const;
 
-    bounding_box_t get_bounding_box(const map_position_t& pos) const {
-        return bounding_box_t{pos, 1 << 20, 1 << 20};
-    }
-
     bool is_in_water(const screen_position_t& position) const;
-    bool is_solid(const screen_position_t& position) const;
     map_position_t get_random_position() const;
 
     /**

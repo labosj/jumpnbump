@@ -214,9 +214,6 @@ void player_t::check_ceiling() {
         auto top = lower_ceil.bounding_box.get_bottom();
         top.value += 1;
 
-        this->position.y = (((screen_position_t{this->get_position()}.y.value + 16) & 0xfff0)) << 16; //TODO: MASK
-        debug_diff("CEILING", top.value, this->position.y.value);
-
         this->position.y = top;
         this->y_add = 0;
 
@@ -251,14 +248,8 @@ void player_t::check_lateral_walls() {
       if ( left_walls.is_wall() ) {
         auto left_wall =left_walls.get_rightmost_wall();
 
-        //auto right = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_right();
         auto right = left_wall.bounding_box.get_right();
         right.value += 1;
-
-
-        int s1 = (this->position.x.value >> 16);
-        this->position.x = (((s1 + 16) & 0xfff0)) << 16;
-        debug_diff("LATERAL_LEFT", right.value, this->position.x.value);
 
         this->position.x = right;
         this->x_add = 0;
@@ -270,14 +261,9 @@ void player_t::check_lateral_walls() {
         if (right_walls.is_wall()) {
 
         auto right_wall = right_walls.get_leftmost_wall();
+
         auto left = right_wall.bounding_box.get_left();
-        //auto left = ban_map.get_bounding_box(player_bounding_box.get_bottom_right()).get_left();
         left.value -= player_bounding_box.width;
-
-        int s1 = (this->position.x.value >> 16);
-        this->position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
-
-        debug_diff("LATERAL_RIGHT", left.value, this->position.x.value);
 
         this->position.x = left;
 

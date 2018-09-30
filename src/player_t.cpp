@@ -11,6 +11,14 @@
 #include "game_manager_t.h"
 #include "game_manager_t.h"
 
+namespace {
+    void debug_diff(std::string name, int value1, int value2) {
+        if ( value1 != value2 ) {
+            std::cout << name << value1 << " - " << value2 << " = " << value1 - value2 << "\n";
+        }
+    }
+}
+
 player_t::player_t(game_manager_t& game_manager, int id) : id{id}, game_manager(game_manager) {}
 
 void player_t::set_position(const position_t &position) {
@@ -194,12 +202,24 @@ void player_t::check_ceiling() {
 
     auto& ban_map = this->game_manager.get_stage().get_map();
 
+    auto player_bounding_box = this->get_bounding_box_for_walls();
+
     //if the bunny collide in the top with a solid wall
+    if (ban_map.is_solid(player_bounding_box.get_top_right()) ||
+        ban_map.is_solid(player_bounding_box.get_top_left())) {
+    /*
     if (ban_map.is_solid(this->get_position() + screen_position_t{0,  0}) ||
         ban_map.is_solid(this->get_position() + screen_position_t{15, 0}) ) {
+        */
         //stop the velocity in y
+        auto top = ban_map.get_bounding_box(player_bounding_box.get_top_right()).get_bottom_right().below().y;
+
         this->position.y = (((screen_position_t{this->get_position()}.y.value + 16) & 0xfff0)) << 16; //TODO: MASK
+        debug_diff("CEILING", top.value, this->position.y.value);
+
+        this->position.y = top;
         this->y_add = 0;
+
         this->set_anim(0);
     }
 }
@@ -224,10 +244,8 @@ void player_t::check_lateral_walls() {
     auto player_bounding_box = this->get_bounding_box_for_walls();
 
     // if the bunny collide in the left with a wall |B
-    if (ban_map.is_solid(this->get_position() + screen_position_t{0,  0}) ||
-        ban_map.is_solid(this->get_position() + screen_position_t{0, 15})) {
-  //    if (ban_map.is_solid(player_bounding_box.get_bottom_left()) ||
-  //        ban_map.is_solid(player_bounding_box.get_top_left())) {
+      if (ban_map.is_solid(player_bounding_box.get_bottom_left()) ||
+          ban_map.is_solid(player_bounding_box.get_top_left())) {
 
         auto right = ban_map.get_bounding_box(player_bounding_box.get_bottom_left()).get_right();
         right.value += 1;
@@ -235,17 +253,16 @@ void player_t::check_lateral_walls() {
 
         int s1 = (this->position.x.value >> 16);
         this->position.x = (((s1 + 16) & 0xfff0)) << 16;
-        if ( right.value != this->position.x.value ) {
-            std::cout << right.value << " " << this->position.x.value << " " << right.value - this->position.x.value << "\n";
-        }
+        debug_diff("LATERAL_LEFT", right.value, this->position.x.value);
+
         this->position.x = right;
         this->x_add = 0;
     }
 
 
     // if the bunny collide in the right with a wall    B|
-    if (ban_map.is_solid(this->get_position() + screen_position_t{15, 0}) ||
-        ban_map.is_solid(this->get_position() + screen_position_t{15, 15})) {
+        if (ban_map.is_solid(player_bounding_box.get_bottom_right()) ||
+            ban_map.is_solid(player_bounding_box.get_top_right())) {
 
         auto left = ban_map.get_bounding_box(player_bounding_box.get_bottom_right()).get_left();
         left.value -= player_bounding_box.width;
@@ -253,9 +270,9 @@ void player_t::check_lateral_walls() {
         int s1 = (this->position.x.value >> 16);
         this->position.x = (((s1 + 16) & 0xfff0) - 16) << 16;
 
-        if ( left.value != this->position.x.value ) {
-            std::cout << left.value << " " << this->position.x.value << " " << left.value - this->position.x.value << "\n";
-        }
+        debug_diff("LATERAL_RIGHT", left.value, this->position.x.value);
+
+        this->position.x = left;
 
         this->x_add = 0;
     }
@@ -376,8 +393,6 @@ void player_t::do_action_up() {
         /* no jetpack */
         if (player.pogostick || (player.jump_ready && player.action_up)) {
 
-            //auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
-            //auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
             auto below_left = ban_map.get(player.get_bounding_box_for_walls().get_bottom_left().below());
             auto below_right = ban_map.get(player.get_bounding_box_for_walls().get_bottom_right().below());
 
@@ -472,12 +487,10 @@ void player_t::do_falling() {
             player.y_add = 0;
         }
         //check is you are in the floor
-    } else if ( ban_map.is_solid(screen_position + screen_position_t{0, 15}) ||
-                ban_map.is_solid(screen_position + screen_position_t{15, 15}) ) {
-/*
+
             } else if (ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_left()) ||
                        ban_map.is_solid(player.get_bounding_box_for_walls().get_bottom_right()) ) {
-*/
+
 
         player.in_water = false;
 
@@ -492,10 +505,8 @@ void player_t::do_falling() {
         player.position.y = top;
 
         //TO DELETE TODO
-        if ( player.position.y.value - top.value != 0 ) {
-            std::cout << player.position.y.value << " " << top.value << " "
-                      << player.position.y.value - top.value << std::endl;
-        }
+        debug_diff("FLOOR", top.value, player.position.y.value);
+
         player.y_add = 0;
 
 

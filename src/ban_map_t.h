@@ -11,6 +11,7 @@ class bounding_box_t;
 #include <vector>
 #include "map_position_t.h"
 #include "bounding_box_t.h"
+#include "map_element_t.h"
 
 /**
  * The ban map is a two dimensional map of blocks.
@@ -23,13 +24,8 @@ class ban_map_t {
 
 public:
 
-    enum class Type {
-        VOID = 0,
-        SOLID = 1,
-        WATER = 2,
-        ICE = 3,
-        SPRING = 4
-    };
+    using Type = map_element_t::Type;
+
 
     int width;
     int height;
@@ -39,8 +35,10 @@ public:
     Type get(const map_position_t& position) const;
     Type get_over_block(const bounding_box_t& box) const;
 
+    void get(const bounding_box_t& box) const;
+
     bounding_box_t get_bounding_box(const map_position_t& pos) const {
-        return bounding_box_t{pos, 16 << 16, 16 << 16};
+        return bounding_box_t{pos, 1 << 20, 1 << 20};
     }
 
     bool is_in_water(const screen_position_t& position) const;

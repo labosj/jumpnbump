@@ -21,17 +21,25 @@ ban_map_t::Type ban_map_t::get(const map_position_t& pos) const {
     return this->map[pos.y.value][pos.x.value];
 }
 
-ban_map_t::Type ban_map_t::get_over_block(const bounding_box_t& box) const {
-    for ( auto y = 0 ; y < this->map.size() ; y++ ) {
-        auto row = this->map[y];
-        for ( auto x = 0 ; x < row.size() ; x++ ) {
-            bounding_box_t block{position_t{x << 16, y << 16}, 16, 16};
+void ban_map_t::get(const bounding_box_t& box) const {
+    auto left = map_position_component_t{box.get_left()}.value;
+    auto right = map_position_component_t{box.get_right()}.value;
 
-            if ( box.over(block) )
-                return row[x];
+    if ( left < 0 ) left = 0;
+    if ( right >= this->width ) right = this->width;
+
+    auto top = map_position_component_t{box.get_top()}.value;
+    auto bottom = map_position_component_t{box.get_bottom()}.value;
+
+    if ( top < 0 ) top = 0;
+    if ( bottom >= this->height ) bottom = this->height;
+
+    for ( auto y = top; y <= bottom ; y++ ) {
+        for (auto x = left; x <= right; x++) {
+            auto bounding_box = bounding_box_t{map_position_t{x, y}, 1 << 20, 1 << 20};
+            auto type = this->map[y][x];
         }
     }
-    return ban_map_t::Type::VOID;
 }
 
 bool ban_map_t::is_in_water(const screen_position_t& position) const {

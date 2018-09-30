@@ -37,6 +37,13 @@ public:
         };
     }
 
+    position_t right() const {
+        return position_t{
+            this->x + 1,
+            this->y
+        };
+    }
+
 };
 
 

@@ -511,6 +511,7 @@ void player_t::do_falling() {
             //water floatability, double in space
             player.y_add = std::min(player.y_add + 12288, 327680);
 
+
         } else {
             player.position.y = (player.position.y.value & 0xffff0000) + 0x10000;
             player.y_add = 0;

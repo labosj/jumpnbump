@@ -17,6 +17,8 @@ public:
     bool is_wall() const;
     bool is_ceil() const;
     bool is_floor() const;
+    bool is_slippery() const;
+    bool is_spring() const;
     const map_element_t& get_leftmost_wall() const;
     const map_element_t& get_rightmost_wall() const;
     const map_element_t& get_lowest_ceil() const;

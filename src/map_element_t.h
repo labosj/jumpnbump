@@ -33,7 +33,8 @@ public:
     bool is_floor() const {
         return
             this->type == Type::SOLID ||
-            this->type == Type::ICE;
+            this->type == Type::ICE ||
+            this->type == Type::SPRING;
     }
 
     bool is_ceil() const {
@@ -43,6 +44,15 @@ public:
           this->type == Type::SPRING;
     }
 
+    bool is_ice() const {
+        return
+            this->type == Type::ICE;
+    }
+
+    bool is_spring() const {
+        return
+            this->type == Type::SPRING;
+    }
 
 
 };

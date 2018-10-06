@@ -51,6 +51,25 @@ bool map_elements_t::is_floor() const {
             ) != std::end(this->elements);
 }
 
+bool map_elements_t::is_slippery() const {
+    bool has_ice = false;
+    for ( const auto& element : this->elements ) {
+
+        if ( element.is_ice() ) has_ice = true;
+        else if ( element.is_floor() ) return false;
+
+    }
+    return has_ice;
+}
+
+bool map_elements_t::is_spring() const {
+    for ( const auto& element : this->elements ) {
+        if ( element.is_spring() ) return true;
+
+    }
+    return false;
+}
+
 const map_element_t& map_elements_t::get_rightmost_wall() const {
     return *std::max_element(
             this->elements.cbegin(),

@@ -44,6 +44,12 @@ public:
         };
     }
 
+    bool operator==(const position_t& position) const {
+        return
+            this->x == position.x &&
+            this->y == position.y;
+    }
+
 };
 
 

@@ -11,14 +11,6 @@
 #include "game_manager_t.h"
 #include "game_manager_t.h"
 
-namespace {
-    void debug_diff(std::string name, int value1, int value2) {
-        if ( value1 != value2 ) {
-            std::cout << name << value1 << " - " << value2 << " = " << value1 - value2 << "\n";
-        }
-    }
-}
-
 player_t::player_t(game_manager_t& game_manager, int id) : id{id}, game_manager(game_manager) {}
 
 void player_t::set_position(const position_t &position) {
@@ -38,13 +30,10 @@ void player_t::do_action_left() {
     auto& player = *this;
     auto& ban_map = player.get_game_manager().get_stage().get_map();
 
-    screen_position_t pixel_pos = player.position;
-    auto below_left = ban_map.get(pixel_pos + screen_position_t{0, 16});
-    auto below = ban_map.get(pixel_pos + screen_position_t{8, 16});
-    auto below_right = ban_map.get(pixel_pos + screen_position_t{15, 16});
+    auto below_boxes = ban_map.get(player.get_bounding_box_for_walls().get_below_box());
+    below_boxes = below_boxes.just_below(player.get_bounding_box_for_walls().get_bottom());
 
-    if (below == ban_map_t::Type::ICE || ((below_left != ban_map_t::Type::SOLID && below_right == ban_map_t::Type::ICE) ||
-               (below_left == ban_map_t::Type::ICE && below_right != ban_map_t::Type::SOLID)) ) {
+    if (below_boxes.is_slippery() ) {
         if (player.x_add > 0)
             player.x_add -= 1024;
         else
@@ -52,7 +41,7 @@ void player_t::do_action_left() {
     } else {
         if (player.x_add > 0) {
             player.x_add -= 16384;
-            if (player.x_add > -98304L && !player.in_water && below == ban_map_t::Type::SOLID)
+            if (player.x_add > -98304L && !player.in_water && below_boxes.is_floor())
                 player.get_game_manager().objects.add_smoke(player);
         } else
             player.x_add -= 12288;
@@ -72,13 +61,10 @@ void player_t::do_action_right() {
 
     auto& ban_map = player.get_game_manager().get_stage().get_map();
 
-    auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
-    auto below = ban_map.get(player.get_position() + screen_position_t{8, 16});
-    auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
+    auto below_boxes = ban_map.get(player.get_bounding_box_for_walls().get_below_box());
+    below_boxes = below_boxes.just_below(player.get_bounding_box_for_walls().get_bottom());
 
-    if (below == ban_map_t::Type::ICE ||
-            ((below_left != ban_map_t::Type::SOLID && below_right == ban_map_t::Type::ICE) ||
-            (below_left == ban_map_t::Type::ICE && below_right != ban_map_t::Type::SOLID)) ) {
+    if (below_boxes.is_slippery() ) {
         if (player.x_add < 0)
             player.x_add += 1024;
         else
@@ -86,7 +72,7 @@ void player_t::do_action_right() {
     } else {
         if (player.x_add < 0) {
             player.x_add += 16384;
-            if (player.x_add < 98304L && !player.in_water && below == ban_map_t::Type::SOLID)
+            if (player.x_add < 98304L && !player.in_water && below_boxes.is_floor())
                 player.get_game_manager().objects.add_smoke(player);
         } else
             player.x_add += 12288;
@@ -105,15 +91,10 @@ void player_t::do_no_action() {
 
     auto& ban_map = player.get_game_manager().get_stage().get_map();
 
-    auto below_left = ban_map.get(player.get_position() + screen_position_t{0, 16});
-    auto below = ban_map.get(player.get_position() + screen_position_t{8, 16});
-    auto below_right = ban_map.get(player.get_position() + screen_position_t{15, 16});
+    auto below_boxes = ban_map.get(player.get_bounding_box_for_walls().get_below_box());
+    below_boxes = below_boxes.just_below(player.get_bounding_box_for_walls().get_bottom());
 
-    if (below == ban_map_t::Type::SOLID || below == ban_map_t::Type::SPRING ||
-        (((below_left == ban_map_t::Type::SOLID || below_left == ban_map_t::Type::SPRING) &&
-          below_right != ban_map_t::Type::ICE) ||
-         (below_left != ban_map_t::Type::ICE &&
-          (below_right == ban_map_t::Type::SOLID || below_right == ban_map_t::Type::SPRING)))) {
+    if (!below_boxes.is_slippery() ) {
         if (player.x_add < 0) {
             player.x_add += 16384;
             if (player.x_add > 0)
@@ -123,7 +104,7 @@ void player_t::do_no_action() {
             if (player.x_add < 0)
                 player.x_add = 0;
         }
-        if (player.x_add != 0 && below == ban_map_t::Type::SOLID)
+        if (player.x_add != 0)
             player.get_game_manager().objects.add_smoke(player);
     }
     if ( player.anim_handler.anim == 1 )
@@ -146,43 +127,32 @@ void player_t::gravity_fall() {
  * need a refactor
  */
 void player_t::check_spring_jump() {
-    position_t position = this->get_position();
+    auto& player = *this;
 
     auto& ban_map = this->game_manager.get_stage().get_map();
 
-    if (ban_map.get(this->get_position() + screen_position_t{8, 15}) == ban_map_t::Type::SPRING ||
-        ((ban_map.get(this->get_position() + screen_position_t{0, 15}) == ban_map_t::Type::SPRING &&
-          ban_map.get(this->get_position() + screen_position_t{15, 15}) != ban_map_t::Type::SOLID) ||
-         (ban_map.get(this->get_position() + screen_position_t{0, 15}) != ban_map_t::Type::SOLID &&
-          ban_map.get(this->get_position() + screen_position_t{15, 15}) == ban_map_t::Type::SPRING))) {
+    auto below_boxes = ban_map.get(player.get_bounding_box_for_walls().get_below_box());
+    below_boxes = below_boxes.just_below(player.get_bounding_box_for_walls().get_bottom());
 
+
+
+    if (below_boxes.is_spring() ) {
+
+        auto spring = *std::find_if(
+                below_boxes.elements.cbegin(),
+                below_boxes.elements.cend(),
+                [](const map_element_t& element) { return element.is_spring(); }
+        );
         /**
          * this code just animate a spring
          * this can be simplified a lot
          */
         for (auto &object : this->game_manager.objects.objects) {
-            screen_position_t screen_position = position;
+
             if (object.used == 1 && object.type == object_t::Type::SPRING) {
-                if (ban_map.get(screen_position + screen_position_t{8, 15}) == ban_map_t::Type::SPRING) {
-                    if ((object.position.x.value >> 20) == ((screen_position.x.value + 8) >> 4) &&
-                        (object.position.y.value >> 20) == ((screen_position.y.value + 15) >> 4)) {
-                        object.set_anim(object.anim_handler.anim, 0);
-                        break;
-                    }
-                } else {
-                    if (ban_map.get(screen_position + screen_position_t{0, 15}) == ban_map_t::Type::SPRING) {
-                        if ((object.position.x.value >> 20) == (screen_position.x.value >> 4) &&
-                            (object.position.y.value >> 20) == ((screen_position.y.value + 15) >> 4)) {
-                            object.set_anim(object.anim_handler.anim, 0);
-                            break;
-                        }
-                    } else if (ban_map.get(screen_position + screen_position_t{15, 15}) == ban_map_t::Type::SPRING) {
-                        if ((object.position.x.value >> 20) == ((screen_position.x.value + 15) >> 4) &&
-                            (object.position.y.value >> 20) == ((screen_position.y.value + 15) >> 4)) {
-                            object.set_anim(object.anim_handler.anim, 0);
-                            break;
-                        }
-                    }
+                if ( object.get_position() == spring.bounding_box.get_top_left() ) {
+                    object.set_anim(object.anim_handler.anim, 0);
+                    break;
                 }
             }
         }
@@ -460,9 +430,6 @@ void player_t::do_falling() {
     auto& ban_map = this->get_game_manager().get_stage().get_map();
 
     screen_position_t screen_position = player.get_position();
-
-
-
 
     auto player_bounding_box = player.get_bounding_box_for_walls();
 

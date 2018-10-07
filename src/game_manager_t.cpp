@@ -297,21 +297,6 @@ bool game_manager_t::init() {
                     objects.add(*this, object_t::Type::SPRING, map_position_t{c2, c1}, 0, 0, OBJ_ANIM_SPRING, 5);
             }
         }
-
-        for ( int i = 0 ; i < 2 ; i++ ) {
-            auto new_pos = ban_map.get_random_available_position();
-            objects.add(*this, object_t::Type::YEL_BUTFLY, screen_position_t{8, 8} + new_pos , (rnd(65535) - 32768) * 2,
-                        (rnd(65535) - 32768) * 2,
-                        0, 0);
-        }
-
-        for ( int i = 0 ; i < 2 ; i++ ) {
-            auto new_pos = ban_map.get_random_available_position();
-            objects.add(*this, object_t::Type::PINK_BUTFLY,  screen_position_t{8, 8} + new_pos, (rnd(65535) - 32768) * 2,
-                        (rnd(65535) - 32768) * 2, 0, 0);
-        }
-
-
         return true;
 
 }

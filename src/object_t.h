@@ -20,8 +20,6 @@ struct object_t{
 		SPRING = 0,
 		SPLASH = 1,
 		SMOKE = 2,
-		YEL_BUTFLY = 3,
-		PINK_BUTFLY = 4,
 		FUR = 5,
 		FLESH = 6,
 		FLESH_TRACE = 7
@@ -56,7 +54,6 @@ struct object_t{
 	void update_smoke();
 	void update_spring();
 	void update_splash();
-	void update_butterfly();
 	void update_flesh();
 	void update_fur();
 

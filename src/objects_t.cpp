@@ -40,12 +40,6 @@ void objects_t::update(game_manager_t& game_manager) {
                     if (object.is_used() )
                         game_manager.pobs.add(object.get_position(), object.anim_handler.image, &game_manager.object_gobs);
                     break;
-                case object_t::Type::YEL_BUTFLY:
-                case object_t::Type::PINK_BUTFLY:
-                    object.update_butterfly();
-                    if (object.is_used() )
-                        game_manager.pobs.add(object.get_position(), object.anim_handler.image, &game_manager.object_gobs);
-                    break;
                 case object_t::Type::FUR:
                     object.update_fur();
                     if (object.is_used() ) {

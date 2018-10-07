@@ -25,7 +25,6 @@ public:
 	enum class PLAYER_DIRECTION { LEFT, RIGHT };
 
 
-	int character_id = 0;
 	int action_left,action_up,action_right;
 	bool dead_flag;
 	bool pogostick = false;
@@ -58,7 +57,6 @@ public:
 	bool is_alive() const { return !this->dead_flag; }
 
 	void set_position(const position_t& position);
-	int get_character_id() const { return this->character_id; }
 	void check_spring_jump();
 
 	void reset_kills();

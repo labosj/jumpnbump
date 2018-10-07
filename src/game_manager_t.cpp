@@ -362,7 +362,6 @@ void game_manager_t::init_players()
 
     {
         this->players[0].player_name = "Edwin";
-        this->players[0].character_id = 0;
         auto& control = this->players[0].control;
         control.up_key = sf::Keyboard::Key::W;
         control.left_key = sf::Keyboard::Key::A;
@@ -371,7 +370,6 @@ void game_manager_t::init_players()
 
     {
         this->players[1].player_name = "Amanda";
-        this->players[1].character_id = 1;
         auto& control = this->players[1].control;
         control.up_key = sf::Keyboard::Key::I;
         control.left_key = sf::Keyboard::Key::J;
@@ -380,7 +378,6 @@ void game_manager_t::init_players()
 
     {
         this->players[2].player_name = "Dani";
-        this->players[2].character_id = 2;
         auto& control = this->players[2].control;
         control.up_key = sf::Keyboard::Key::Up;
         control.left_key = sf::Keyboard::Key::Left;
@@ -389,7 +386,6 @@ void game_manager_t::init_players()
 
     {
         this->players[3].player_name = "Lesluchis";
-        this->players[3].character_id = 3;
         auto& control = this->players[3].control;
         control.up_key = sf::Keyboard::Key::Numpad8;
         control.left_key = sf::Keyboard::Key::Numpad4;

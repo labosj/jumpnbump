@@ -42,7 +42,6 @@ public:
 
     std::vector<player_t> players;
 
-    std::vector<anim_t> player_anims;
     std::vector<anim_t> object_anims;
     gob_t object_gobs;
     objects_t objects;

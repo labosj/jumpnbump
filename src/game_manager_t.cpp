@@ -41,28 +41,6 @@ void game_manager_t::init_character() {
 }
 
 void game_manager_t::init_deprecated_data() {
-    std::ifstream file{"/home/edwin/Projects/jumpnbump/data/chara_anim_data.json"};
-    nlohmann::json json;
-    file >> json;
-
-
-    auto read_anim = [&](const nlohmann::json& element) {
-        anim_t anim;
-        anim.restart_frame = element["restart_frame"];
-        for ( auto& frame : element["frames"] ) {
-            anim.frame.emplace_back(frame["sprite"], frame["duration"]);
-        }
-        return anim;
-    };
-
-    this->player_anims.emplace_back(read_anim(json["anim_data"]["standing"]));
-    this->player_anims.emplace_back(read_anim(json["anim_data"]["running"]));
-    this->player_anims.emplace_back(read_anim(json["anim_data"]["jump_up"]));
-    this->player_anims.emplace_back(read_anim(json["anim_data"]["falling"]));
-    this->player_anims.emplace_back(read_anim(json["anim_data"]["dive"]));
-    this->player_anims.emplace_back(read_anim(json["anim_data"]["float_up"]));
-    this->player_anims.emplace_back(read_anim(json["anim_data"]["stomped"]));
-
 
     this->object_anims = {
             {

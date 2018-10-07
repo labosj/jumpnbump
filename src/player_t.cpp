@@ -338,9 +338,7 @@ void player_t::set_anim(int anim) {
 
 void player_t::animate() {
 
-    auto& player_anims = this->get_game_manager().player_anims;
-
-    this->anim_handler.animate(player_anims,this->direction == player_t::PLAYER_DIRECTION::LEFT ? 9 : 0);
+    this->anim_handler.animate(this->character->anims,this->direction == player_t::PLAYER_DIRECTION::LEFT ? 9 : 0);
 }
 
 void player_t::do_action_up() {

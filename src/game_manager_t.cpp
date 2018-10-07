@@ -30,14 +30,14 @@ void game_manager_t::init_textures() {
 }
 
 void game_manager_t::init_character() {
-    this->characters.emplace_back(character_t{});
-    this->characters.emplace_back(character_t{});
-    this->characters.emplace_back(character_t{});
-    this->characters.emplace_back(character_t{});
-    this->characters[0].load("/home/edwin/Projects/jumpnbump/data/charas/jiffy");
-    this->characters[1].load("/home/edwin/Projects/jumpnbump/data/charas/mijji");
-    this->characters[2].load("/home/edwin/Projects/jumpnbump/data/charas/dott");
-    this->characters[3].load("/home/edwin/Projects/jumpnbump/data/charas/fizz");
+    this->characters.emplace_back(std::make_shared<character_t>());
+    this->characters.emplace_back(std::make_shared<character_t>());
+    this->characters.emplace_back(std::make_shared<character_t>());
+    this->characters.emplace_back(std::make_shared<character_t>());
+    this->characters[0]->load("/home/edwin/Projects/jumpnbump/data/charas/jiffy");
+    this->characters[1]->load("/home/edwin/Projects/jumpnbump/data/charas/mijji");
+    this->characters[2]->load("/home/edwin/Projects/jumpnbump/data/charas/dott");
+    this->characters[3]->load("/home/edwin/Projects/jumpnbump/data/charas/fizz");
 }
 
 void game_manager_t::init_deprecated_data() {
@@ -233,7 +233,7 @@ void game_manager_t::draw() {
 
 
     for (int i = 0 ; i < players.size(); i++) {
-        this->pobs.add(players[i].get_position(), players[i].anim_handler.image, &this->characters[players[i].get_character_id()].gobs);
+        this->pobs.add(players[i].get_position(), players[i].anim_handler.image, &this->characters[players[i].get_character_id()]->gobs);
     }
 
     this->pobs.draw(*this);

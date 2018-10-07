@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics/Texture.hpp>
 #include "gob_t.h"
+#include "anim_t.h"
 
 class character_t {
 
@@ -16,6 +17,7 @@ public:
     std::string name;
     sf::Texture texture;
     gob_t gobs;
+    std::vector<anim_t> anims;
 };
 
 

@@ -29,7 +29,7 @@ public:
 
     sf::Texture object_texture;
 
-    std::vector<character_t> characters;
+    std::vector<std::shared_ptr<character_t>> characters;
 
     sf::Font font;
 

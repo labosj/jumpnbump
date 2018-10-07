@@ -163,5 +163,98 @@
       "hotspot_x": 2,
       "hotspot_y": -4
     }
-  ]
+  ],
+  "anim_data": {
+    "standing": {
+      "restart_frame": 0,
+      "frames": [
+        {
+          "sprite": 0,
+          "duration": 32767
+        }
+      ]
+    },
+    "running": {
+      "restart_frame": 0,
+      "frames": [
+        {
+          "sprite": 0,
+          "duration": 4
+        },
+        {
+          "sprite": 1,
+          "duration": 4
+        },
+        {
+          "sprite": 2,
+          "duration": 4
+        },
+        {
+          "sprite": 3,
+          "duration": 4
+        }
+      ]
+    },
+    "jump_up": {
+      "restart_frame": 0,
+      "frames": [
+        {
+          "sprite": 4,
+          "duration": 32767
+        }
+      ]
+    },
+    "falling": {
+      "restart_frame": 2,
+      "frames": [
+        {
+          "sprite": 5,
+          "duration": 8
+        },
+        {
+          "sprite": 6,
+          "duration": 10
+        },
+        {
+          "sprite": 7,
+          "duration": 3
+        },
+        {
+          "sprite": 6,
+          "duration": 3
+        }
+      ]
+    },
+    "dive": {
+      "restart_frame": 0,
+      "frames": [
+        {
+          "sprite": 6,
+          "duration": 32767
+        }
+      ]
+    },
+    "float_up": {
+      "restart_frame": 1,
+      "frames": [
+        {
+          "sprite": 5,
+          "duration": 8
+        },
+        {
+          "sprite": 4,
+          "duration": 32767
+        }
+      ]
+    },
+    "stomped": {
+      "restart_frame": 0,
+      "frames": [
+        {
+          "sprite": 8,
+          "duration": 5
+        }
+      ]
+    }
+  }
 }

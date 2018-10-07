@@ -233,7 +233,7 @@ void game_manager_t::draw() {
 
 
     for (int i = 0 ; i < players.size(); i++) {
-        this->pobs.add(players[i].get_position(), players[i].anim_handler.image, &this->characters[players[i].get_character_id()]->gobs);
+        this->pobs.add(players[i].get_position(), players[i].anim_handler.image, &this->players[i].character->gobs);
     }
 
     this->pobs.draw(*this);
@@ -377,6 +377,7 @@ void game_manager_t::init_players()
         player.direction = rnd(2) ? player_t::PLAYER_DIRECTION::LEFT : player_t::PLAYER_DIRECTION::RIGHT;
         player.jump_ready = true;
         player.anim_handler.set_anim(0);
+        player.character = this->characters[c1];
 
         this->players.push_back(player);
     }

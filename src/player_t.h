@@ -6,10 +6,12 @@
 #define JUMPNBUMP_PLAYER_H
 
 #include <vector>
+#include <memory>
 #include "position_t.h"
 #include "anim_handler_t.h"
 #include "player_control_t.h"
 #include "bounding_box_t.h"
+#include "character_t.h"
 
 class game_manager_t;
 
@@ -41,6 +43,8 @@ public:
 	bool in_water;
 	PLAYER_DIRECTION direction;
 	anim_handler_t anim_handler;
+
+	std::shared_ptr<character_t> character;
 
 	player_control_t control;
 

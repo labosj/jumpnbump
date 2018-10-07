@@ -10,6 +10,8 @@ class anim_frame_t {
 public:
     int image;
     int ticks;
+
+    anim_frame_t(int image, int ticks) :image(image), ticks(ticks) {}
 };
 
 

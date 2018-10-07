@@ -15,6 +15,8 @@
 #include "util.h"
 #include "sound_manager_t.h"
 #include <iostream>
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 game_manager_t::game_manager_t(sf::RenderWindow& window) :window(window) {
 }
@@ -39,15 +41,27 @@ void game_manager_t::init_character() {
 }
 
 void game_manager_t::init_deprecated_data() {
-    this->player_anims = {
-            {0, {{ 0, 0x7fff}}},
-            {0, {{0, 4}, {1, 4}, {2, 4}, {3, 4}}},
-            {0, {{4, 0x7fff}}},
-            {2, {{5, 8}, {6, 10}, {7, 3}, {6, 3}}},
-            {0, {{6, 0x7fff}}},
-            {1, {{5, 8}, {4, 0x7fff}}},
-            {0, {{8, 5}}}
+    std::ifstream file{"/home/edwin/Projects/jumpnbump/data/chara_anim_data.json"};
+    nlohmann::json json;
+    file >> json;
+
+
+    auto read_anim = [&](const nlohmann::json& element) {
+        anim_t anim;
+        anim.restart_frame = element["restart_frame"];
+        for ( auto& frame : element["frames"] ) {
+            anim.frame.emplace_back(frame["sprite"], frame["duration"]);
+        }
+        return anim;
     };
+
+    this->player_anims.emplace_back(read_anim(json["anim_data"]["standing"]));
+    this->player_anims.emplace_back(read_anim(json["anim_data"]["running"]));
+    this->player_anims.emplace_back(read_anim(json["anim_data"]["jump_up"]));
+    this->player_anims.emplace_back(read_anim(json["anim_data"]["falling"]));
+    this->player_anims.emplace_back(read_anim(json["anim_data"]["dive"]));
+    this->player_anims.emplace_back(read_anim(json["anim_data"]["float_up"]));
+    this->player_anims.emplace_back(read_anim(json["anim_data"]["stomped"]));
 
 
     this->object_anims = {

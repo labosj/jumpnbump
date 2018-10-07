@@ -66,24 +66,10 @@ struct object_t{
 	 */
 	bool is_used() const { return this->used == 1; }
 
-	/**
-	 * Is this element available to create a new element?
-	 * @return
-	 */
-	bool is_available() const { return this->used == 0; }
-
-	/**
-	 * Set this element available.
-	 *
-	 * Use this function when you want to free this element as a new element
-	 */
-	void set_available() { this->used = 0; }
-
 	void set_anim(int anim, int frame);
 
 	void advance_anim();
 
-	sf::Sprite get_pob();
 };
 
 #endif //JUMPNBUMP_OBJECT_T_H

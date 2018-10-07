@@ -10,6 +10,7 @@ class position_t;
 
 #include "map_position_component_t.h"
 
+[[deprecated]]
 class map_position_t {
 
 public:

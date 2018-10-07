@@ -94,7 +94,7 @@ void player_t::do_no_action() {
     auto below_boxes = ban_map.get(player.get_bounding_box_for_walls().get_below_box());
     below_boxes = below_boxes.just_below(player.get_bounding_box_for_walls().get_bottom());
 
-    if (!below_boxes.is_slippery() ) {
+    if (!below_boxes.empty() && !below_boxes.is_slippery() ) {
         if (player.x_add < 0) {
             player.x_add += 16384;
             if (player.x_add > 0)
@@ -158,7 +158,7 @@ void player_t::check_spring_jump() {
         }
 
 
-        this->position.y = ((this->position.y.value >> 16) & 0xfff0) << 16;
+        //this->position.y = ((this->position.y.value >> 16) & 0xfff0) << 16;
         this->y_add = -400000L;
         this->set_anim(2);
         this->jump_ready = false;
@@ -248,11 +248,9 @@ void player_t::update_movement() {
 }
 
 void player_t::position_player() {
-
     auto& ban_map = this->get_game_manager().get_stage().get_map();
 
     map_position_t position;
-
 
     again:
 

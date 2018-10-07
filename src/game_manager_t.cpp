@@ -498,9 +498,10 @@ void game_manager_t::steer_players() {
 
             player.check_lateral_walls();
 
-            player.position.y += player.y_add;
-
+            //must be after y change because is checked using y position
             player.check_spring_jump();
+
+            player.position.y += player.y_add;
 
             player.check_ceiling();
 

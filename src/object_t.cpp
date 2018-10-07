@@ -344,12 +344,3 @@ void object_t::update_fur() {
     if (this->x_add > 0 && this->x_add < 16384)
         this->x_add = 16384;
 }
-
-sf::Sprite object_t::get_pob() {
-    screen_position_t position = this->get_position();
-
-    auto sprite = this->game_manager.object_gobs.get_sprite(this->anim_handler.image);
-    sprite.setPosition(position.x.value, position.y.value);
-
-    return sprite;
-}

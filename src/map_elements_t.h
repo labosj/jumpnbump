@@ -12,6 +12,7 @@ class map_elements_t {
 public:
     std::vector<map_element_t> elements;
 
+    bool empty() const;
     map_elements_t collide(const bounding_box_t& bounding_box) const;
     map_elements_t just_below(const position_component_t& y) const;
     bool is_wall() const;

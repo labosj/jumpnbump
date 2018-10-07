@@ -5,6 +5,9 @@
 #include <algorithm>
 #include "map_elements_t.h"
 
+bool map_elements_t::empty() const {
+    return this->elements.size() == 0;
+}
 
 map_elements_t map_elements_t::collide(const bounding_box_t& bounding_box) const {
     map_elements_t elements;

@@ -126,6 +126,11 @@ public:
 	void do_action_up();
 	void do_falling();
 	bool check_floor();
+
+	void fx_start_anim();
+	void fx_jump();
+	void fx_jetpack_smoke();
+	void fx_if_standing_then_run();
 };
 
 

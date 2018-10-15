@@ -50,8 +50,13 @@ void player_t::do_action_left() {
         player.x_add = -98304L;
     player.direction = PLAYER_DIRECTION::LEFT;
 
-    if (player.anim_handler.anim == 0) {
-        player.set_anim(1);
+    this->fx_if_standing_then_run();
+
+}
+
+void player_t::fx_if_standing_then_run() {
+    if (this->anim_handler.anim == 0) {
+        this->set_anim(1);
     }
 }
 
@@ -81,8 +86,7 @@ void player_t::do_action_right() {
     if (player.x_add > 98304L)
         player.x_add = 98304L;
     player.direction = PLAYER_DIRECTION::RIGHT;
-    if ( player.anim_handler.anim == 0 )
-        player.set_anim(1);
+    this->fx_if_standing_then_run();
 }
 
 void player_t::do_no_action() {
@@ -138,6 +142,7 @@ void player_t::check_spring_jump() {
 
     if (below_boxes.is_spring() ) {
 
+
         auto spring = *std::find_if(
                 below_boxes.elements.cbegin(),
                 below_boxes.elements.cend(),
@@ -160,10 +165,10 @@ void player_t::check_spring_jump() {
 
         //this->position.y = ((this->position.y.value >> 16) & 0xfff0) << 16;
         this->y_add = -400000L;
-        this->set_anim(2);
         this->jump_ready = false;
         this->jump_abort = false;
-        this->game_manager.sound_manager.play_sfx_spring();
+
+        this->fx_jump();
 
     }
 }
@@ -187,7 +192,7 @@ void player_t::check_ceiling() {
         this->position.y = top;
         this->y_add = 0;
 
-        this->set_anim(0);
+        this->fx_start_anim();
     }
 }
 
@@ -273,9 +278,14 @@ void player_t::position_player() {
     this->direction = PLAYER_DIRECTION::RIGHT;
     this->jump_ready = true;
     this->in_water = false;
-    this->anim_handler.set_anim(0);
     this->dead_flag = false;
 
+    this->fx_start_anim();
+
+}
+
+void player_t::fx_start_anim() {
+    this->anim_handler.set_anim(0);
 }
 
 void player_t::player_kill(player_t &player_1, player_t &player_2) {
@@ -341,6 +351,17 @@ void player_t::animate() {
     this->anim_handler.animate(this->character->anims,this->direction == player_t::PLAYER_DIRECTION::LEFT ? 9 : 0);
 }
 
+void player_t::fx_jump() {
+    auto& player = *this;
+
+    player.set_anim(2);
+    if (!player.pogostick) {
+        game_manager.sound_manager.play_sfx_jump();
+    } else {
+        game_manager.sound_manager.play_sfx_spring();
+    }
+}
+
 void player_t::do_action_up() {
     auto& player = *this;
 
@@ -358,27 +379,22 @@ void player_t::do_action_up() {
             /* jump */
             if ( below_boxes.is_floor() ) {
                 player.y_add = -280000L;
-                player.set_anim(2);
+
                 player.jump_ready = false;
                 player.jump_abort = true;
-                if (!player.pogostick) {
-                    game_manager.sound_manager.play_sfx_jump();
-                } else {
-                    game_manager.sound_manager.play_sfx_spring();
-                }
+
+                player.fx_jump();
+
             }
             /* jump out of water */
             if (ban_map.is_in_water(player.get_position())) {
                 player.y_add = -196608L;
                 player.in_water = false;
-                player.set_anim(2);
+
                 player.jump_ready = false;
                 player.jump_abort = true;
-                if (!player.pogostick) {
-                    game_manager.sound_manager.play_sfx_jump();
-                } else {
-                    game_manager.sound_manager.play_sfx_spring();
-                }
+
+                player.fx_jump();
 
             }
         }
@@ -393,10 +409,14 @@ void player_t::do_action_up() {
 
             if (ban_map.is_in_water(player.get_position()))
                 player.in_water = false;
-            if (rnd(100) < 50)
-                game_manager.objects.add_jetpack_smoke(player);
+            this->fx_jetpack_smoke();
         }
     }
+}
+
+void player_t::fx_jetpack_smoke() {
+    if (rnd(100) < 50)
+        game_manager.objects.add_jetpack_smoke(*this);
 }
 
 bool player_t::check_floor() {
